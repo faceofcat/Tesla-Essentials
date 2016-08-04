@@ -1,6 +1,7 @@
 package com.trials.modsquad;
 
 import com.trials.modsquad.block.ModBlocks;
+import com.trials.modsquad.block.ModOre;
 import com.trials.modsquad.gui.GUIHandler;
 import com.trials.modsquad.proxy.CommonProxy;
 import com.trials.modsquad.world.ModWorldGen;
@@ -40,6 +41,8 @@ public class ModSquad
     public void init(FMLInitializationEvent event) {
         // Recipes
         proxy.init();
+
+        ModOre.registerBlocks();
     }
 
     @EventHandler
