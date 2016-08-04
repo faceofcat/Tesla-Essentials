@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class BlockGrinder extends BlockContainer {
 
 
-    protected BlockGrinder() {
+    public BlockGrinder() {
         super(Material.IRON);
     }
 
