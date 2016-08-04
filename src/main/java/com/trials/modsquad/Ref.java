@@ -4,7 +4,7 @@ public class Ref {
 
 
     public enum ItemReference{
-        ;
+
 
         private String unlocalizedName, registryName;
         ItemReference(String unlocalizedName, String registryName){
