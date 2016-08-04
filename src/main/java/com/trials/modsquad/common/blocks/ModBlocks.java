@@ -1,7 +1,7 @@
 package com.trials.modsquad.common.blocks;
 
+import com.trials.modsquad.common.blocks.machines.BlockElectricFurnace;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -10,10 +10,10 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ModBlocks {
 
-    public static Block machineFurnace;
+     public static Block machineFurnace;
 
     public static void init() {
-        machineFurnace = new Block(Material.AIR);
+        machineFurnace = new BlockElectricFurnace();
     }
 
     public static void register() {
