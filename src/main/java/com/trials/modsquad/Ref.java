@@ -33,12 +33,7 @@ public class Ref {
 
     public enum OreReference {
         COPPER("oreCopper", "BlockOreCopper"),
-        TIN("oreTin", "BlockOreTin"),
-        SILVER("oreSilver", "BlockOreSilver"),
-        OIL("oreOil", "BlockOreOil"),
-        OSMIUM("oreOsmium", "BlockOreOsmium"),
         TITANIUM("oreTitanium", "BlockOreTitanium"),
-        CHROMIUM("oreChromium", "BlockOreChromium"),
         NICKEL("oreNickel", "BlockOreNickel"),
         LEAD("oreLead", "BlockOreLead"),
         ;

@@ -3,11 +3,13 @@ package com.trials.modsquad;
 import com.trials.modsquad.block.ModBlocks;
 import com.trials.modsquad.gui.GUIHandler;
 import com.trials.modsquad.proxy.CommonProxy;
+import com.trials.modsquad.world.ModWorldGen;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @Mod(modid = ModSquad.MODID, version = ModSquad.VERSION)
 public class ModSquad
@@ -36,6 +38,7 @@ public class ModSquad
     public void init(FMLInitializationEvent event) {
         // Recipes
         proxy.init();
+        GameRegistry.registerWorldGenerator(new ModWorldGen(), 0);
     }
 
     @EventHandler
