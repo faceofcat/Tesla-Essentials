@@ -34,6 +34,8 @@ public class BasicCable extends Block implements ITeslaConsumer, ITeslaHolder, I
      */
     private long outputRate;
 
+    private Ref.BlockReference type;
+
     public BasicCable() {
 
         this(5000, 50, 50, 1);
@@ -64,6 +66,13 @@ public class BasicCable extends Block implements ITeslaConsumer, ITeslaHolder, I
         this.capacity = capacity;
         this.inputRate = input;
         this.outputRate = output;
+        for(Ref.BlockReference b : Ref.BlockReference.values())
+            if(b.ordinal()==index){
+                type = b;
+                setUnlocalizedName(type.getUnlocalizedName());
+                setRegistryName(type.getRegistryName());
+                break;
+            }
     }
     /**
      * Constructor for creating an instance directly from a compound tag. This expects that the
