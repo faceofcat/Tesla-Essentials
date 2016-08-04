@@ -44,7 +44,7 @@ public class ModSquad
         // Recipes
         proxy.init();
 
-        ModOreDictionary.register("copperOre", new ItemStack(ModBlocks.oreCopper)); //TODO: Fix
+        ModOreDictionary.registerBlocks();
     }
 
     @EventHandler

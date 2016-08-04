@@ -7,11 +7,10 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class ModOreDictionary {
 
-    public void registerBlocks() {
-        register("oreCopper", stack(ModBlocks.oreCopper));
-        register("oreTin", stack(ModBlocks.oreTin));
-        register("oreSilver", stack(ModBlocks.oreSilver));
-        register("oreLead", stack(ModBlocks.oreLead));
+    public static void registerBlocks() {
+        register("oreCopper", stacker(ModBlocks.oreCopper));
+        register("oreTin", stacker(ModBlocks.oreTin));
+        register("oreLead", stacker(ModBlocks.oreLead));
 
     }
 
@@ -19,7 +18,7 @@ public class ModOreDictionary {
         OreDictionary.registerOre(name, stack);
     }
 
-    public ItemStack stack(Block block) {
+    public static ItemStack stacker(Block block) {
         ItemStack stack = new ItemStack(block);
         return stack;
     }

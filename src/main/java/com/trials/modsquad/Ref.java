@@ -34,7 +34,6 @@ public class Ref {
     public enum OreReference {
         COPPER("oreCopper", "BlockOreCopper"),
         TIN("oreTin", "BlockOreTin"),
-        SILVER("oreSilver", "BlockOreSilver"),
         LEAD("oreLead", "BlockOreLead");        ;
 
         private String unlocalizedName, registryName;
@@ -47,4 +46,35 @@ public class Ref {
 
         public String getRegistryName() { return registryName; }
     }
+
+    public enum IngotReference{
+        COPPER("ingotCopper", "ItemIngotCopper"),
+        TIN("ingotTin", "ItemIngotTin"),
+        LEAD("ingotLead", "ItemIngotLead");
+
+        private String unlocalizedName, registryName;
+        IngotReference(String unlocalizedName, String registryName){
+            this.unlocalizedName = unlocalizedName;
+            this.registryName = registryName;
+        }
+
+        public String getUnlocalizedName(){ return unlocalizedName; }
+        public String getRegistryName(){ return registryName; }
+    }
+
+    public enum DustReference{
+        COPPER("dustCopper", "ItemDustCopper"),
+        TIN("dustTin", "ItemDustTin"),
+        LEAD("dustLead", "ItemDustLead");
+
+        private String unlocalizedName, registryName;
+        DustReference(String unlocalizedName, String registryName){
+            this.unlocalizedName = unlocalizedName;
+            this.registryName = registryName;
+        }
+
+        public String getUnlocalizedName(){ return unlocalizedName; }
+        public String getRegistryName(){ return registryName; }
+    }
+
 }

@@ -15,14 +15,12 @@ public class ModWorldGen implements IWorldGenerator {
 
     private WorldGenerator gen_oreCopper;
     private WorldGenerator gen_oreTin;
-    private WorldGenerator gen_oreSilver;
     private WorldGenerator gen_oreLead;
 
     public ModWorldGen() {
         //The int is veinsize
         gen_oreCopper = new WorldGenMinable(ModBlocks.oreCopper.getDefaultState(), 6);
         gen_oreTin = new WorldGenMinable(ModBlocks.oreTin.getDefaultState(), 6);
-        gen_oreSilver = new WorldGenMinable(ModBlocks.oreSilver.getDefaultState(), 2);
         gen_oreLead = new WorldGenMinable(ModBlocks.oreLead.getDefaultState(), 2);
     }
 
@@ -45,7 +43,6 @@ public class ModWorldGen implements IWorldGenerator {
             case 0: //Overworld
                 runGenerator(gen_oreCopper, world, random, chunkX, chunkZ, 9, 20, 64);
                 runGenerator(gen_oreTin, world, random, chunkX, chunkZ, 9, 20, 64);
-                runGenerator(gen_oreSilver, world, random, chunkX, chunkZ, 4, 0, 40);
                 runGenerator(gen_oreLead, world, random, chunkX, chunkZ, 4, 0, 40);
                 break;
             case -1: /*Nether*/ break;

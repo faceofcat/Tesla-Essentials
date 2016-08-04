@@ -15,7 +15,6 @@ public class ModBlocks {
     //Ores
     public static Block oreCopper;
     public static Block oreTin;
-    public static Block oreSilver;
     public static Block oreLead;
 
     //Machines
@@ -25,7 +24,6 @@ public class ModBlocks {
         //Ores
         oreCopper = new ModOre(Ref.OreReference.COPPER.getUnlocalizedName(), Ref.OreReference.COPPER.getRegistryName(), 1);
         oreTin = new ModOre(Ref.OreReference.TIN.getUnlocalizedName(), Ref.OreReference.TIN.getRegistryName(), 1);
-        oreSilver = new ModOre(Ref.OreReference.SILVER.getUnlocalizedName(), Ref.OreReference.SILVER.getRegistryName(), 2);
         oreLead = new ModOre(Ref.OreReference.LEAD.getUnlocalizedName(), Ref.OreReference.LEAD.getRegistryName(), 2);
 
         grinder = new BlockGrinder(Ref.BlockReference.MACHINE_GRINDER.getUnlocalizedName(), Ref.BlockReference.MACHINE_GRINDER.getRegistryName());
@@ -35,7 +33,6 @@ public class ModBlocks {
         //Ores
         registerBlock(oreCopper);
         registerBlock(oreTin);
-        registerBlock(oreSilver);
         registerBlock(oreLead);
 
         //Machines
@@ -53,7 +50,6 @@ public class ModBlocks {
         //Ores
         registerRender(oreCopper);
         registerRender(oreTin);
-        registerRender(oreSilver);
         registerRender(oreLead);
 
         //Machines
