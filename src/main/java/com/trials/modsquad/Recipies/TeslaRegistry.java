@@ -18,7 +18,7 @@ public class TeslaRegistry{
 }
 
 class TeslaCraftingHandler {
-    private ArrayList<GrinderRecipe> grinderRecipeList = new ArrayList<>();
+    private ArrayList<GrinderRecipe> grinderRecipeList = new ArrayList<GrinderRecipe>();
 
     TeslaCraftingHandler(){
         grinderRecipeList.trimToSize();
