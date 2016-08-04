@@ -21,10 +21,8 @@ public class ModBlocks {
     public static Block oreNickel;
     public static Block oreLead;
 
-    Enum ores = new Ref.OreReference;
-
     public static void init() {
-        oreCopper = new ModOre();
+        oreCopper = new ModOre(Ref.OreReference.COPPER.getUnlocalizedName(), Ref.OreReference.COPPER.getRegistryName());
     }
 
     public static void register() {
