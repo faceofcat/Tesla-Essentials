@@ -17,7 +17,7 @@ public class Ref {
     }
 
     public enum BlockReference {
-        MACHINE_POWER_BANK("powerbank", "BlockPowerBank");
+        ;
 
         private String unlocalizedName, registryName;
         BlockReference(String unlocalizedName, String registryName) {
