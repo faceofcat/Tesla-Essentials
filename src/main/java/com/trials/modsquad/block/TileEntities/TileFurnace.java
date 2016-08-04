@@ -1,17 +1,12 @@
 package com.trials.modsquad.block.TileEntities;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import mcp.MethodsReturnNonnullByDefault;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockFurnace;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerFurnace;
 import net.minecraft.item.*;
@@ -19,9 +14,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.math.MathHelper;
 
-/**
- * Created by Tjeltigre on 8/4/2016.
- */
+
 @SuppressWarnings("unused")
 public class TileFurnace extends TileEntityFurnace implements ITeslaConsumer, ITeslaHolder {
     private BaseTeslaContainer container;
