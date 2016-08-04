@@ -7,14 +7,16 @@ import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.List;
 
-public class TileGrinder extends TileEntity implements IInventory, ITeslaConsumer, ITeslaHolder, ITickable {
+public class TileGrinder extends TileEntity implements IInventory, ITeslaConsumer, ITeslaHolder, ITickable, ISidedInventory {
     // Primitives
     private int workTime = 0;
     private int grindTime;
@@ -77,6 +79,7 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
 
     @Override
     public void setInventorySlotContents(int index, @Nullable ItemStack stack) {
+
         inventory[index] = stack;
     }
 
@@ -197,5 +200,20 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
             }else --grindTime;
         }
 
+    }
+
+    @Override
+    public int[] getSlotsForFace(EnumFacing side) {
+        return new int[]{0, 1};
+    }
+
+    @Override
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
+        return index==0;
+    }
+
+    @Override
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
+        return index==1;
     }
 }

@@ -3,8 +3,10 @@ package com.trials.modsquad;
 import com.trials.modsquad.block.ModBlocks;
 import com.trials.modsquad.block.ModOre;
 import com.trials.modsquad.gui.GUIHandler;
+import com.trials.modsquad.items.ModOreDictionary;
 import com.trials.modsquad.proxy.CommonProxy;
 import com.trials.modsquad.world.ModWorldGen;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -42,7 +44,7 @@ public class ModSquad
         // Recipes
         proxy.init();
 
-        ModOre.registerBlocks();
+        ModOreDictionary.register("copperOre", new ItemStack(ModBlocks.oreCopper)); //TODO: Fix
     }
 
     @EventHandler
