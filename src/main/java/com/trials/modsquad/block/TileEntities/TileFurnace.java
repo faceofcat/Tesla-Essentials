@@ -63,16 +63,6 @@ public class TileFurnace extends TileEntityFurnace implements ITeslaConsumer, IT
                     if (this.isBurning())
                     {
                         flag1 = true;
-
-                        if (this.furnaceItemStacks[1] != null)
-                        {
-                            --this.furnaceItemStacks[1].stackSize;
-
-                            if (this.furnaceItemStacks[1].stackSize == 0)
-                            {
-                                this.furnaceItemStacks[1] = furnaceItemStacks[1].getItem().getContainerItem(furnaceItemStacks[1]);
-                            }
-                        }
                     }
                 }
 
