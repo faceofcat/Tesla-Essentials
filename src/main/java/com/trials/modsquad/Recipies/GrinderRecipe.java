@@ -10,10 +10,12 @@ import net.minecraft.item.ItemStack;
 public class GrinderRecipe {
     private ItemStack input;
     private ItemStack output;
+    private int amount;
 
-    GrinderRecipe(ItemStack in, ItemStack out){
+    GrinderRecipe(ItemStack in, ItemStack out, int num){
         input = in;
         output = out;
+        amount = num;
     }
 
     public ItemStack getOutput() {
@@ -22,6 +24,10 @@ public class GrinderRecipe {
 
     public ItemStack getInput() {
         return input;
+    }
+
+    public int getAmount() {
+        return amount;
     }
 
 }
