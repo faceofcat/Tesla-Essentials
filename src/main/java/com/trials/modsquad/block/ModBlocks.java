@@ -32,6 +32,7 @@ public class ModBlocks {
     }
 
     public static void register() {
+        registerBlock(oreCopper);
         registerBlock(grinder);
     }
 
@@ -43,6 +44,7 @@ public class ModBlocks {
     }
 
     public static void registerRenders() {
+        registerRender(oreCopper);
         registerRender(grinder);
     }
 

@@ -11,6 +11,7 @@ public class ModOre extends Block {
         this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
         setUnlocalizedName(unlocalizedName);
         setRegistryName(registryName);
+        setLightLevel(1F);
 
     }
 

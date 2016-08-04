@@ -20,6 +20,7 @@ public class ModWorldGen implements IWorldGenerator {
 
     public ModWorldGen() {
         gen_oreCopper = new WorldGenMinable(ModBlocks.oreCopper.getDefaultState(), 0);
+        System.out.println("Ore gen tried, might have worked");
     }
 
     private void runGenerator(WorldGenerator generator, World world, Random rand, int chunk_X, int chunk_Z, int chances, int minHeight, int maxHeight) {
@@ -32,6 +33,7 @@ public class ModWorldGen implements IWorldGenerator {
             int y = minHeight + rand.nextInt(heightDiff);
             int z = chunk_Z * 16 + rand.nextInt(16);
             generator.generate(world, rand, new BlockPos(x,y,z));
+            System.out.println("Test!");
         }
     }
 
@@ -39,7 +41,8 @@ public class ModWorldGen implements IWorldGenerator {
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
         switch (world.provider.getDimension()) {
             case 0: //Overworld
-                runGenerator(gen_oreCopper, world, random, chunkX, chunkZ, 40, 0, 64);
+                runGenerator(gen_oreCopper, world, random, chunkX, chunkZ, 200, 0, 64);
+                System.out.println("Ran generator");
                 break;
             case -1: //Nether
 

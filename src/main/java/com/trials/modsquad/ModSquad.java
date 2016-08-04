@@ -29,7 +29,7 @@ public class ModSquad
         ModBlocks.init();
         ModBlocks.register();
 
-        GameRegistry.registerWorldGenerator(new ModWorldGen(), 0);
+        GameRegistry.registerWorldGenerator(new ModWorldGen(), 1);
 
         proxy.preInit();
 
@@ -40,6 +40,8 @@ public class ModSquad
     public void init(FMLInitializationEvent event) {
         // Recipes
         proxy.init();
+
+
 
     }
 
