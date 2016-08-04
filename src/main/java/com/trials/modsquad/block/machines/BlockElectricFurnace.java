@@ -1,4 +1,4 @@
-package com.trials.modsquad.common.blocks.machines;
+package com.trials.modsquad.block.machines;
 
 import com.trials.modsquad.Ref;
 import net.minecraft.block.Block;
