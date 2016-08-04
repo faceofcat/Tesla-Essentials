@@ -30,6 +30,7 @@ public class TeslaCrafting {
         return grinderRecipeList.get(index).getInput();
     }
 
+    @Deprecated
     public int getGrinderRecipeIndex(ItemStack in)
     {
         for(int i = 0; i< grinderRecipeList.size(); i++)
