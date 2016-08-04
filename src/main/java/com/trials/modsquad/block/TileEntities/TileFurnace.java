@@ -50,6 +50,7 @@ public class TileFurnace extends TileEntityFurnace implements ITeslaConsumer, IT
         }
     }
 
+    @Override
     public static int getItemBurnTime()
     {
         if(this.getStoredPower() > 0) {
