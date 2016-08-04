@@ -1,11 +1,13 @@
 package com.trials.modsquad;
 
 import com.trials.modsquad.block.ModBlocks;
+import com.trials.modsquad.gui.GUIHandler;
 import com.trials.modsquad.proxy.CommonProxy;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 @Mod(modid = ModSquad.MODID, version = ModSquad.VERSION)
 public class ModSquad
@@ -16,16 +18,18 @@ public class ModSquad
     @Mod.Instance(value = MODID)
     public static ModSquad instance;
 
-    @SidedProxy(clientSide = "com.trials.modsquad.proxy.ClientSide", serverSide = "com.trials.modsquad.proxy.ServerProxy")
+    @SidedProxy(clientSide = "com.trials.modsquad.proxy.ClientProxy", serverSide = "com.trials.modsquad.proxy.ServerProxy")
     public static CommonProxy proxy;
 
     @EventHandler
     public void preInit(FMLInitializationEvent e){
         // Item init and registration
-       // ModBlocks.init();
-       // ModBlocks.register();
+        ModBlocks.init();
+        ModBlocks.register();
 
         proxy.preInit();
+
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GUIHandler());
     }
 
     @EventHandler
