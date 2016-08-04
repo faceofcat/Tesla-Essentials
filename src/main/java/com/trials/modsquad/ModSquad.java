@@ -22,8 +22,8 @@ public class ModSquad
     @EventHandler
     public void preInit(FMLInitializationEvent e){
         // Item init and registration
-        ModBlocks.init();
-        ModBlocks.register();
+       // ModBlocks.init();
+       // ModBlocks.register();
 
         proxy.preInit();
     }

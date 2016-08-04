@@ -1,6 +1,7 @@
 package com.trials.modsquad.block.TileEntities;
 
 import jdk.nashorn.internal.ir.annotations.Ignore;
+import mcp.MethodsReturnNonnullByDefault;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
@@ -117,11 +118,6 @@ public class TileFurnace extends TileEntityFurnace implements ITeslaConsumer, IT
                 this.furnaceItemStacks[2].stackSize += itemstack.stackSize; // Forge BugFix: Results may have multiple items
             }
 
-            if (this.furnaceItemStacks[0].getItem() == Item.getItemFromBlock(Blocks.SPONGE) && this.furnaceItemStacks[0].getMetadata() == 1 && this.furnaceItemStacks[1] != null && this.furnaceItemStacks[1].getItem() == Items.BUCKET)
-            {
-                this.furnaceItemStacks[1] = new ItemStack(Items.WATER_BUCKET);
-            }
-
             --this.furnaceItemStacks[0].stackSize;
 
             if (this.furnaceItemStacks[0].stackSize <= 0)
@@ -148,32 +144,28 @@ public class TileFurnace extends TileEntityFurnace implements ITeslaConsumer, IT
         }
     }
 
-    public static int getItemBurnTime(ItemStack stack)
+    public int getItemBurnTime()
     {
-        if (stack == null){
             if(container.getStoredPower() > 0) {
                 container.takePower(10, false);
                 return 1;
             }
-        }
         return 0;
     }
 
     public static boolean isItemFuel(ItemStack stack)
     {
-        /**
-         * Returns the number of ticks that the supplied fuel item will keep the furnace burning, or 0 if the item isn't
-         * fuel
-         */
-        return TileFurnace.getItemBurnTime(stack) > 0;
+        return true;
     }
 
+    @MethodsReturnNonnullByDefault
     @Override
     public String getGuiID()
     {
         return "minecraft:furnace";
     }
 
+    @MethodsReturnNonnullByDefault
     public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
     {
         return new ContainerFurnace(playerInventory, this);
