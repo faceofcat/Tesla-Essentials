@@ -17,7 +17,8 @@ public class Ref {
     }
 
     public enum BlockReference {
-        MACHINEFURNACE("electric_furnace", "BlockElectricFurnace");
+        MACHINE_ELECTRIC_FURNACE("electric_furnace", "BlockElectricFurnace"),
+        MACHINE_ELECTRIC_LIT_FURNACE("lit_electric_furnace", "BlockLitElectricFurnace");
 
         private String unlocalizedName, registryName;
         BlockReference(String unlocalizedName, String registryName) {
