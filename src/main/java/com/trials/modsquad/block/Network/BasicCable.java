@@ -69,6 +69,8 @@ public class BasicCable extends Block implements ITeslaConsumer, ITeslaHolder, I
         for(Ref.BlockReference b : Ref.BlockReference.values())
             if(b.ordinal()==index){
                 type = b;
+                setUnlocalizedName(type.getUnlocalizedName());
+                setRegistryName(type.getRegistryName());
                 break;
             }
     }
