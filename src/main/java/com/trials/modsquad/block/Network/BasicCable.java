@@ -33,6 +33,8 @@ public class BasicCable extends Block implements ITeslaConsumer, ITeslaHolder, I
      */
     private long outputRate;
 
+    private enum a{}
+
     public BasicCable() {
 
         this(5000, 50, 50);
