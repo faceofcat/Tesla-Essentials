@@ -33,7 +33,6 @@ public class ModWorldGen implements IWorldGenerator {
             int y = minHeight + rand.nextInt(heightDiff);
             int z = chunk_Z * 16 + rand.nextInt(16);
             generator.generate(world, rand, new BlockPos(x,y,z));
-            System.out.println("Test!");
         }
     }
 
@@ -42,7 +41,6 @@ public class ModWorldGen implements IWorldGenerator {
         switch (world.provider.getDimension()) {
             case 0: //Overworld
                 runGenerator(gen_oreCopper, world, random, chunkX, chunkZ, 200, 0, 64);
-                System.out.println("Ran generator");
                 break;
             case -1: //Nether
 

@@ -29,7 +29,7 @@ public class ModSquad
         ModBlocks.init();
         ModBlocks.register();
 
-        GameRegistry.registerWorldGenerator(new ModWorldGen(), 1);
+        GameRegistry.registerWorldGenerator(new ModWorldGen(), 0);
 
         proxy.preInit();
 
