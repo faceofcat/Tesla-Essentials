@@ -1,0 +1,15 @@
+item.ingotCopper.name=Copper Ingot
+item.ingotTin.name=Tin Ingot
+item.ingotLead.name=Lead Ingot
+
+item.dustCopper.name=Copper Dust
+item.dustTin.name=Tin Dust
+item.dustLead.name=Lead Dust
+
+tile.oreCopper.name=Copper Ore
+tile.oreTin.name=Tin Ore
+tile.oreLead.name=Lead Ore
+
+tile.grinder.name=Grinder
+
+itemGroup.modSquad=ModSquad
