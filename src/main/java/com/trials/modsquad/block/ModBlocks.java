@@ -1,6 +1,8 @@
 package com.trials.modsquad.block;
 
 import com.trials.modsquad.Ref;
+import com.trials.modsquad.block.TileEntities.TileGrinder;
+import com.trials.modsquad.block.machines.BlockGrinder;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -12,26 +14,25 @@ public class ModBlocks {
 
     //Ores
     public static Block oreCopper;
+    public static Block oreTin;
+    public static Block oreSilver;
+    public static Block oreOil;
+    public static Block oreOsmium;
     public static Block oreTitanium;
+    public static Block oreChromium;
     public static Block oreNickel;
     public static Block oreLead;
 
-    public static void init() {
-        //Ores
-        oreCopper = new ModOre(Ref.OreReference.COPPER.getUnlocalizedName(), Ref.OreReference.COPPER.getRegistryName());
-        oreTitanium = new ModOre(Ref.OreReference.TITANIUM.getUnlocalizedName(), Ref.OreReference.TITANIUM.getRegistryName());
-        oreNickel = new ModOre(Ref.OreReference.NICKEL.getUnlocalizedName(), Ref.OreReference.NICKEL.getRegistryName());
-        oreLead = new ModOre(Ref.OreReference.LEAD.getUnlocalizedName(), Ref.OreReference.LEAD.getRegistryName());
+    //Machines
+    public static Block grinder;
 
+    public static void init() {
+        oreCopper = new ModOre(Ref.OreReference.COPPER.getUnlocalizedName(), Ref.OreReference.COPPER.getRegistryName());
+        grinder = new BlockGrinder(Ref.BlockReference.MACHINE_GRINDER.getUnlocalizedName(), Ref.BlockReference.MACHINE_GRINDER.getRegistryName());
     }
 
     public static void register() {
-        //Ores
-        registerBlock(oreCopper);
-        registerBlock(oreTitanium);
-        registerBlock(oreNickel);
-        registerBlock(oreLead);
-
+        registerBlock(grinder);
     }
 
     public static void registerBlock(Block block) {
@@ -42,10 +43,7 @@ public class ModBlocks {
     }
 
     public static void registerRenders() {
-        registerRender(oreCopper);
-        registerRender(oreTitanium);
-        registerRender(oreNickel);
-        registerRender(oreLead);
+        registerRender(grinder);
     }
 
     public static void registerRender(Block block) {
