@@ -21,13 +21,31 @@ public class ModBlocks {
     public static Block oreNickel;
     public static Block oreLead;
 
-    Enum ores = new Ref.OreReference;
-
     public static void init() {
-        oreCopper = new ModOre();
+        //Ores
+        oreCopper = new ModOre(Ref.OreReference.COPPER.getUnlocalizedName(), Ref.OreReference.COPPER.getRegistryName());
+        oreTin = new ModOre(Ref.OreReference.TIN.getUnlocalizedName(), Ref.OreReference.TIN.getRegistryName());
+        oreSilver = new ModOre(Ref.OreReference.SILVER.getUnlocalizedName(), Ref.OreReference.SILVER.getRegistryName());
+        oreOil = new ModOre(Ref.OreReference.OIL.getUnlocalizedName(), Ref.OreReference.OIL.getRegistryName());
+        oreOsmium = new ModOre(Ref.OreReference.OSMIUM.getUnlocalizedName(), Ref.OreReference.OSMIUM.getRegistryName());
+        oreTitanium = new ModOre(Ref.OreReference.TITANIUM.getUnlocalizedName(), Ref.OreReference.TITANIUM.getRegistryName());
+        oreChromium = new ModOre(Ref.OreReference.CHROMIUM.getUnlocalizedName(), Ref.OreReference.CHROMIUM.getRegistryName());
+        oreNickel = new ModOre(Ref.OreReference.NICKEL.getUnlocalizedName(), Ref.OreReference.NICKEL.getRegistryName());
+        oreLead = new ModOre(Ref.OreReference.LEAD.getUnlocalizedName(), Ref.OreReference.LEAD.getRegistryName());
+
     }
 
     public static void register() {
+        //Ores
+        GameRegistry.register(oreCopper);
+        GameRegistry.register(oreTin);
+        GameRegistry.register(oreSilver);
+        GameRegistry.register(oreOil);
+        GameRegistry.register(oreOsmium);
+        GameRegistry.register(oreTitanium);
+        GameRegistry.register(oreChromium);
+        GameRegistry.register(oreNickel);
+        GameRegistry.register(oreLead);
 
     }
 
@@ -39,7 +57,15 @@ public class ModBlocks {
     }
 
     public static void registerRenders() {
-
+        registerRender(oreCopper);
+        registerRender(oreTin);
+        registerRender(oreSilver);
+        registerRender(oreOil);
+        registerRender(oreOsmium);
+        registerRender(oreTitanium);
+        registerRender(oreChromium);
+        registerRender(oreNickel);
+        registerRender(oreLead);
     }
 
     public static void registerRender(Block block) {
