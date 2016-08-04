@@ -7,10 +7,24 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-public class ModBlocks {
+public class ModOres {
 
-    public static void init() {
+    public enum ORES {
+        COPPER("Copper"), TIN("Tin"), SILVER("Silver"), OIL("Oil"), OSMIUM("Osmium"), TITANIUM("Titanium"), CHROMIUM("Chromium"), NICKEL("Nickel"), LEAD("Lead");
 
+        private String name;
+        ORES(String name) {
+            this.name = name;
+        }
+
+        public String getName() { return name; }
+
+    }
+
+    public void init() {
+        for (i = 1; i == ORES.values().length; i++) {
+            
+        }
     }
 
     public static void register() {
