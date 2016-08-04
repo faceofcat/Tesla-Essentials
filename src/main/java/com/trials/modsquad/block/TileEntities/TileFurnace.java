@@ -51,7 +51,7 @@ public class TileFurnace extends TileEntityFurnace implements ITeslaConsumer, IT
             {
                 if (!this.isBurning() && this.canSmelt())
                 {
-                    this.furnaceBurnTime = TileFurnace.getItemBurnTime(this.furnaceItemStacks[1]);
+                    this.furnaceBurnTime = this.getItemBurnTime();
                     this.currentItemBurnTime = this.furnaceBurnTime;
 
                     if (this.isBurning())
