@@ -6,8 +6,6 @@ import com.trials.modsquad.block.containers.ContainerGrinder;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerFurnace;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -25,7 +23,7 @@ public class GUIGrinder extends GuiContainer{
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         ResourceLocation l;
-        ITextureObject o = mc.renderEngine.getTexture(l=new ResourceLocation(ModSquad.MODID, "textures/gui/ginder.png"));
+        ITextureObject o = mc.renderEngine.getTexture(l=new ResourceLocation(ModSquad.MODID, "/textures/gui/container/grinder.png"));
         GL11.glColor4f(1f, 1f, 1f, 1f);
         mc.renderEngine.bindTexture(l);
         drawTexturedModalRect((width - xSize)/2, (height-ySize)/2, 0, 0, xSize, ySize);
