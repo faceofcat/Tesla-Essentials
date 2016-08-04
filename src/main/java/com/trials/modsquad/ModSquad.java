@@ -1,19 +1,17 @@
 package com.trials.modsquad;
 
 import com.trials.modsquad.block.ModBlocks;
-import com.trials.modsquad.block.ModOre;
 import com.trials.modsquad.gui.GUIHandler;
 import com.trials.modsquad.items.ModItems;
-import com.trials.modsquad.items.ModOreDictionary;
 import com.trials.modsquad.proxy.CommonProxy;
 import com.trials.modsquad.world.ModWorldGen;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 
 @Mod(modid = ModSquad.MODID, version = ModSquad.VERSION)
 public class ModSquad
@@ -41,15 +39,28 @@ public class ModSquad
         proxy.preInit();
 
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GUIHandler());
+
+        //OreDictionary stuff
+        //Ores
+        OreDictionary.registerOre("oreCopper", ModBlocks.oreCopper);
+        OreDictionary.registerOre("oreTin", ModBlocks.oreTin);
+        OreDictionary.registerOre("oreLead", ModBlocks.oreLead);
+
+        //Ingots
+        OreDictionary.registerOre("ingotCopper", ModItems.ingotCopper);
+        OreDictionary.registerOre("ingotTin", ModItems.ingotTin);
+        OreDictionary.registerOre("ingotLead", ModItems.ingotLead);
+
+        //Dusts
+        OreDictionary.registerOre("dustCopper", ModItems.dustCopper);
+        OreDictionary.registerOre("dustTin", ModItems.dustTin);
+        OreDictionary.registerOre("dustLead", ModItems.dustLead);
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
         // Recipes
         proxy.init();
-
-        ModOreDictionary.registerBlocks();
-        ModOreDictionary.registerItems();
     }
 
     @EventHandler

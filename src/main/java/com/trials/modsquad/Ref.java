@@ -22,7 +22,8 @@ public class Ref {
 
     public enum BlockReference {
         LEAD_CABLE("lcable","BlockLeadCable"),
-        MACHINE_GRINDER("grinder", "BlockGrinder");
+        MACHINE_GRINDER("grinder", "BlockGrinder"),
+        MACHINE_FURNACE("electricFurnace", "BlockElectricFurnace");
 
         private String unlocalizedName, registryName;
         BlockReference(String unlocalizedName, String registryName) {

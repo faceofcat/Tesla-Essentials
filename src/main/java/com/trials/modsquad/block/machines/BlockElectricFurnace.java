@@ -2,6 +2,7 @@ package com.trials.modsquad.block.machines;
 
 import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.TileEntities.TileFurnace;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -16,4 +17,10 @@ public class BlockElectricFurnace extends BlockGrinder {
     public TileEntity createNewTileEntity(World worldIn, int meta) {
         return new TileFurnace();
     }
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
+    }
+
 }
