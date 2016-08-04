@@ -24,7 +24,7 @@ public class ModWorldGen implements IWorldGenerator {
 
     private void runGenerator(WorldGenerator generator, World world, Random rand, int chunk_X, int chunk_Z, int chances, int minHeight, int maxHeight) {
         if (minHeight < 0 || maxHeight > 256 || minHeight > maxHeight)
-            throw new IllegalArgumentException("Illegal Height Arguments for WorldGen");
+           throw new IllegalArgumentException("Illegal Height Arguments for WorldGen");
 
         int heightDiff = maxHeight - minHeight + 1;
         for (int i = 0; i < chances; i++) {
