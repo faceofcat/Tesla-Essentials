@@ -9,6 +9,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemClock;
+import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -238,8 +239,14 @@ public class BasicCable extends Block implements ITeslaConsumer, ITeslaHolder, I
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        if(heldItem != null && heldItem.getItem() instanceof ItemClock)
+        //clock: Wrench
+        if(heldItem != null && heldItem.getItem() instanceof ItemClock) {
             this.breakBlock(worldIn,pos,state);
+        }
+        //Door: Reader
+        if(heldItem != null && heldItem.getItem() instanceof ItemDoor) {
+            System.out.println(getStoredPower());
+        }
         return false;
     }
 }
