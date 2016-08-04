@@ -1,21 +1,25 @@
 package com.trials.modsquad.block.TileEntities;
 
+import com.trials.modsquad.Recipies.GrinderRecipe;
+import com.trials.modsquad.Recipies.TeslaRegistry;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import scala.xml.dtd.impl.Base;
-
+import net.minecraft.util.ITickable;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
+import java.util.List;
 
-public class TileGrinder extends TileEntity implements IInventory, ITeslaConsumer, ITeslaHolder{
+public class TileGrinder extends TileEntity implements IInventory, ITeslaConsumer, ITeslaHolder, ITickable {
     // Primitives
     private int workTime = 0;
+    private int grindTime;
+    public static final int DEFAULT_GRIND_TIME = 60;
+    private boolean isGrinding = false;
 
     // Objects
     private final ItemStack[] inventory; // I'm an idiot
@@ -144,7 +148,7 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
 
     @Override
     public int getFieldCount() {
-        return 5; //Update if more stuff is added
+        return 5; //TODO: Update if more stuff is added
     }
 
     @Override
@@ -169,5 +173,29 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
     @Override
     public boolean hasCustomName() {
         return false;
+    }
+
+    @Override
+    public void update() {
+        ItemStack s;
+        if(isGrinding){
+            if(grindTime == 0){
+                try{ //Troll tj
+                    Field f = Class.forName("com.trials.modsquad.Recipes.TeslaRegistry.TeslaCraftingHandler").getDeclaredField("grinderRecipeList");
+                    f.setAccessible(true);
+                    //noinspection unchecked
+                    for(GrinderRecipe g : (List<GrinderRecipe>) f.get(TeslaRegistry.teslaRegistry))
+                        if(g.getInput().getItem().equals(inventory[0].getItem()) &&
+                                (inventory[1]==null || (inventory[1].getItem().equals(g.getOutput()) &&
+                                        g.getAmount()+inventory[1].stackSize<=64))){
+                            ItemStack i = new ItemStack(g.getOutput().getItem(), inventory[1].stackSize+g.getAmount());
+                            if(g.getOutput().hasTagCompound() && g.getOutput().getTagCompound()!=null)
+                                i.setTagCompound(g.getOutput().getTagCompound());
+                        }else return;
+
+                }catch(Exception ignored){ System.out.println("SOMETHING WENT EXTREMELY WRONG! GO MAKE SURE YOUR HOUSE ISN'T ON FIRE!!!"); }
+            }else --grindTime;
+        }
+
     }
 }
