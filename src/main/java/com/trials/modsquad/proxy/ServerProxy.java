@@ -1,6 +1,6 @@
 package com.trials.modsquad.proxy;
 
-import com.trials.modsquad.common.blocks.machines.ModBlocks;
+import com.trials.modsquad.common.blocks.ModBlocks;
 
 public class ServerProxy implements CommonProxy {
 

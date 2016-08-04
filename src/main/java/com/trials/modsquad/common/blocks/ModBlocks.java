@@ -1,6 +1,7 @@
-package com.trials.modsquad.common.blocks.machines;
+package com.trials.modsquad.common.blocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -9,8 +10,10 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ModBlocks {
 
-    public static void init() {
+    public static Block machineFurnace;
 
+    public static void init() {
+        machineFurnace = new Block(Material.AIR);
     }
 
     public static void register() {

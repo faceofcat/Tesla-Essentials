@@ -1,6 +1,6 @@
 package com.trials.modsquad;
 
-import com.trials.modsquad.common.blocks.machines.ModBlocks;
+import com.trials.modsquad.common.blocks.ModBlocks;
 import com.trials.modsquad.proxy.CommonProxy;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
