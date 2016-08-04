@@ -20,12 +20,12 @@ public class TeslaCrafting {
         this.grinderRecipeList.add(new GrinderRecipe(in, out));
     }
 
-    public ItemStack getGrinderResult(int index)
+    private ItemStack getGrinderResult(int index)
     {
         return grinderRecipeList.get(index).getOutput();
     }
 
-    public ItemStack getGrinderInput(int index)
+    private ItemStack getGrinderInput(int index)
     {
         return grinderRecipeList.get(index).getInput();
     }
@@ -40,5 +40,12 @@ public class TeslaCrafting {
             }
         }
         return -1;
+    }
+    public ItemStack getGrinderOutFromIn(ItemStack in)
+    {
+        int i = getGrinderRecipeIndex(in);
+        if(i > -1)
+            return getGrinderResult(i);
+        return null;
     }
 }
