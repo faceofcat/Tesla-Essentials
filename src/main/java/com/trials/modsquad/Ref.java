@@ -1,5 +1,9 @@
 package com.trials.modsquad;
 
+import com.trials.modsquad.items.ModItems;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+
 public class Ref {
 
 
@@ -34,7 +38,7 @@ public class Ref {
     public enum OreReference {
         COPPER("oreCopper", "BlockOreCopper"),
         TIN("oreTin", "BlockOreTin"),
-        LEAD("oreLead", "BlockOreLead");        ;
+        LEAD("oreLead", "BlockOreLead");
 
         private String unlocalizedName, registryName;
         OreReference (String unlocalizedName, String registryName) {
@@ -76,5 +80,11 @@ public class Ref {
         public String getUnlocalizedName(){ return unlocalizedName; }
         public String getRegistryName(){ return registryName; }
     }
+
+    public static final CreativeTabs tabModSquad = new CreativeTabs("modSquad") {
+        @Override public Item getTabIconItem() {
+            return ModItems.ingotCopper;
+        }
+    };
 
 }

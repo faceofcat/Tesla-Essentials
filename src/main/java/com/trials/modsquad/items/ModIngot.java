@@ -9,7 +9,7 @@ public class ModIngot extends Item {
     public ModIngot(String unlocalizedName, String registryName) {
         setUnlocalizedName(unlocalizedName);
         setRegistryName(registryName);
-        setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
+        setCreativeTab(Ref.tabModSquad);
     }
 
 }

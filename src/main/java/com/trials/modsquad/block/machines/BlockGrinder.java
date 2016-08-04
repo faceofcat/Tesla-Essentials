@@ -1,6 +1,7 @@
 package com.trials.modsquad.block.machines;
 
 import com.trials.modsquad.ModSquad;
+import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.TileEntities.TileGrinder;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -25,6 +26,7 @@ public class BlockGrinder extends BlockContainer {
         super(Material.IRON);
         setUnlocalizedName(s);
         setRegistryName(s1);
+        setCreativeTab(Ref.tabModSquad);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.trials.modsquad;
 import com.trials.modsquad.block.ModBlocks;
 import com.trials.modsquad.block.ModOre;
 import com.trials.modsquad.gui.GUIHandler;
+import com.trials.modsquad.items.ModItems;
 import com.trials.modsquad.items.ModOreDictionary;
 import com.trials.modsquad.proxy.CommonProxy;
 import com.trials.modsquad.world.ModWorldGen;
@@ -32,6 +33,9 @@ public class ModSquad
         ModBlocks.init();
         ModBlocks.register();
 
+        ModItems.init();
+        ModItems.register();
+
         GameRegistry.registerWorldGenerator(new ModWorldGen(), 0);
 
         proxy.preInit();
@@ -45,6 +49,7 @@ public class ModSquad
         proxy.init();
 
         ModOreDictionary.registerBlocks();
+        ModOreDictionary.registerItems();
     }
 
     @EventHandler
