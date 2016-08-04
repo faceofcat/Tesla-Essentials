@@ -14,13 +14,16 @@ import java.util.Random;
 public class ModWorldGen implements IWorldGenerator {
 
     private WorldGenerator gen_oreCopper;
-    private WorldGenerator gen_oreTitanium;
-    private WorldGenerator gen_oreNickel;
+    private WorldGenerator gen_oreTin;
+    private WorldGenerator gen_oreSilver;
     private WorldGenerator gen_oreLead;
 
     public ModWorldGen() {
-        gen_oreCopper = new WorldGenMinable(ModBlocks.oreCopper.getDefaultState(), 0);
-        System.out.println("Ore gen tried, might have worked");
+        //The int is veinsize
+        gen_oreCopper = new WorldGenMinable(ModBlocks.oreCopper.getDefaultState(), 6);
+        gen_oreTin = new WorldGenMinable(ModBlocks.oreTin.getDefaultState(), 6);
+        gen_oreSilver = new WorldGenMinable(ModBlocks.oreSilver.getDefaultState(), 2);
+        gen_oreLead = new WorldGenMinable(ModBlocks.oreLead.getDefaultState(), 2);
     }
 
     private void runGenerator(WorldGenerator generator, World world, Random rand, int chunk_X, int chunk_Z, int chances, int minHeight, int maxHeight) {
@@ -40,14 +43,13 @@ public class ModWorldGen implements IWorldGenerator {
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
         switch (world.provider.getDimension()) {
             case 0: //Overworld
-                runGenerator(gen_oreCopper, world, random, chunkX, chunkZ, 200, 0, 64);
+                runGenerator(gen_oreCopper, world, random, chunkX, chunkZ, 9, 20, 64);
+                runGenerator(gen_oreTin, world, random, chunkX, chunkZ, 9, 20, 64);
+                runGenerator(gen_oreSilver, world, random, chunkX, chunkZ, 4, 0, 40);
+                runGenerator(gen_oreLead, world, random, chunkX, chunkZ, 4, 0, 40);
                 break;
-            case -1: //Nether
-
-                break;
-            case 1: //End
-
-                break;
+            case -1: /*Nether*/ break;
+            case 1: /*End*/ break;
         }
     }
 }

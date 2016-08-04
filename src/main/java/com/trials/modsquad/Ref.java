@@ -33,10 +33,9 @@ public class Ref {
 
     public enum OreReference {
         COPPER("oreCopper", "BlockOreCopper"),
-        TITANIUM("oreTitanium", "BlockOreTitanium"),
-        NICKEL("oreNickel", "BlockOreNickel"),
-        LEAD("oreLead", "BlockOreLead"),
-        ;
+        TIN("oreTin", "BlockOreTin"),
+        SILVER("oreSilver", "BlockOreSilver"),
+        LEAD("oreLead", "BlockOreLead");        ;
 
         private String unlocalizedName, registryName;
         OreReference (String unlocalizedName, String registryName) {

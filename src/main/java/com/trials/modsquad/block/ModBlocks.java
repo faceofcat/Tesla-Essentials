@@ -16,23 +16,29 @@ public class ModBlocks {
     public static Block oreCopper;
     public static Block oreTin;
     public static Block oreSilver;
-    public static Block oreOil;
-    public static Block oreOsmium;
-    public static Block oreTitanium;
-    public static Block oreChromium;
-    public static Block oreNickel;
     public static Block oreLead;
 
     //Machines
     public static Block grinder;
 
     public static void init() {
-        oreCopper = new ModOre(Ref.OreReference.COPPER.getUnlocalizedName(), Ref.OreReference.COPPER.getRegistryName());
+        //Ores
+        oreCopper = new ModOre(Ref.OreReference.COPPER.getUnlocalizedName(), Ref.OreReference.COPPER.getRegistryName(), 1);
+        oreTin = new ModOre(Ref.OreReference.TIN.getUnlocalizedName(), Ref.OreReference.TIN.getRegistryName(), 1);
+        oreSilver = new ModOre(Ref.OreReference.SILVER.getUnlocalizedName(), Ref.OreReference.SILVER.getRegistryName(), 2);
+        oreLead = new ModOre(Ref.OreReference.LEAD.getUnlocalizedName(), Ref.OreReference.LEAD.getRegistryName(), 2);
+
         grinder = new BlockGrinder(Ref.BlockReference.MACHINE_GRINDER.getUnlocalizedName(), Ref.BlockReference.MACHINE_GRINDER.getRegistryName());
     }
 
     public static void register() {
+        //Ores
         registerBlock(oreCopper);
+        registerBlock(oreTin);
+        registerBlock(oreSilver);
+        registerBlock(oreLead);
+
+        //Machines
         registerBlock(grinder);
     }
 
@@ -44,7 +50,13 @@ public class ModBlocks {
     }
 
     public static void registerRenders() {
+        //Ores
         registerRender(oreCopper);
+        registerRender(oreTin);
+        registerRender(oreSilver);
+        registerRender(oreLead);
+
+        //Machines
         registerRender(grinder);
     }
 

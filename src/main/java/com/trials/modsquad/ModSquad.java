@@ -40,9 +40,6 @@ public class ModSquad
     public void init(FMLInitializationEvent event) {
         // Recipes
         proxy.init();
-
-
-
     }
 
     @EventHandler
