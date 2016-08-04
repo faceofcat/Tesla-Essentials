@@ -1,6 +1,8 @@
 package com.trials.modsquad.block;
 
 import com.trials.modsquad.Ref;
+import com.trials.modsquad.block.TileEntities.TileGrinder;
+import com.trials.modsquad.block.machines.BlockGrinder;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -21,12 +23,16 @@ public class ModBlocks {
     public static Block oreNickel;
     public static Block oreLead;
 
+    //Machines
+    public static Block grinder;
+
     public static void init() {
         oreCopper = new ModOre(Ref.OreReference.COPPER.getUnlocalizedName(), Ref.OreReference.COPPER.getRegistryName());
+        grinder = new BlockGrinder(Ref.BlockReference.MACHINE_GRINDER.getUnlocalizedName(), Ref.BlockReference.MACHINE_GRINDER.getRegistryName());
     }
 
     public static void register() {
-
+        registerBlock(grinder);
     }
 
     public static void registerBlock(Block block) {
@@ -37,7 +43,7 @@ public class ModBlocks {
     }
 
     public static void registerRenders() {
-
+        registerRender(grinder);
     }
 
     public static void registerRender(Block block) {

@@ -21,8 +21,10 @@ import java.util.concurrent.ThreadLocalRandom;
 public class BlockGrinder extends BlockContainer {
 
 
-    public BlockGrinder() {
+    public BlockGrinder(String s, String s1) {
         super(Material.IRON);
+        setUnlocalizedName(s);
+        setRegistryName(s1);
     }
 
     @Override
