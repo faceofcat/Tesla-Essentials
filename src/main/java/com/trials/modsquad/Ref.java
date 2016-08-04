@@ -3,8 +3,9 @@ package com.trials.modsquad;
 public class Ref {
 
 
-    public enum ItemReference{
 
+    public enum ItemReference{
+        ;
 
         private String unlocalizedName, registryName;
         ItemReference(String unlocalizedName, String registryName){
