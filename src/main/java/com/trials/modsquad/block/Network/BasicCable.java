@@ -1,5 +1,6 @@
 package com.trials.modsquad.block.Network;
 
+import com.trials.modsquad.Ref;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
@@ -33,11 +34,9 @@ public class BasicCable extends Block implements ITeslaConsumer, ITeslaHolder, I
      */
     private long outputRate;
 
-    private enum a{}
-
     public BasicCable() {
 
-        this(5000, 50, 50);
+        this(5000, 50, 50, 1);
     }
     /**
      * Constructor for setting the basic values. Will not construct with any stored power.
@@ -46,9 +45,9 @@ public class BasicCable extends Block implements ITeslaConsumer, ITeslaHolder, I
      * @param input The maximum rate of power that can be accepted at a time.
      * @param output The maximum rate of power that can be extracted at a time.
      */
-    public BasicCable(long capacity, long input, long output) {
+    public BasicCable(long capacity, long input, long output, int index) {
 
-        this(0, capacity, input, output);
+        this(0, capacity, input, output, index);
     }
 
     /**
@@ -59,7 +58,7 @@ public class BasicCable extends Block implements ITeslaConsumer, ITeslaHolder, I
      * @param input The maximum rate of power that can be accepted at a time.
      * @param output The maximum rate of power that can be extracted at a time.
      */
-    public BasicCable(long power, long capacity, long input, long output) {
+    public BasicCable(long power, long capacity, long input, long output, int index) {
         super(Material.ANVIL);
         this.stored = power;
         this.capacity = capacity;
