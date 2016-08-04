@@ -42,7 +42,7 @@ public class TileGeneratorBase extends TileEntity implements ITeslaHolder,ITesla
         if(power>tickRate) {
             if (tickRate < storedPower) {
                 storedPower = storedPower-tickRate;
-                return tickrate;
+                return tickRate;
             }
             temp = storedPower;
             storedPower = storedPower-storedPower;
