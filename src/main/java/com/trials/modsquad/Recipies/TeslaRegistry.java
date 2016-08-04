@@ -1,17 +1,24 @@
 package com.trials.modsquad.Recipies;
 
 import net.minecraft.item.ItemStack;
-
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Tjeltigre on 8/4/2016.
  */
-public class TeslaCrafting {
+public class TeslaRegistry{
+    public static TeslaCraftingHandler teslaRegistry = new TeslaCraftingHandler();
+
+    public static void registerGrinderCrafting()
+    {
+
+    }
+}
+
+class TeslaCraftingHandler {
     private ArrayList<GrinderRecipe> grinderRecipeList = new ArrayList<GrinderRecipe>();
 
-    TeslaCrafting(){
+    TeslaCraftingHandler(){
         grinderRecipeList.trimToSize();
     }
 
@@ -50,3 +57,4 @@ public class TeslaCrafting {
         return null;
     }
 }
+
