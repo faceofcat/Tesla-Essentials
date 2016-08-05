@@ -14,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -157,7 +158,8 @@ public class TileCharger extends TileEntity implements IInventory, ITeslaProduce
 
     @Override
     public void update() {
-        System.out.println(item != null && item.hasCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN)?item+" has the capability!":item+" does not have the capability!");
+        System.out.println(item != null && item.getItem() instanceof ICapabilityProvider &&
+                ((ICapabilityProvider) item.getItem()).hasCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN)?item+" has the capability!":item+" does not have the capability!");
     }
 
     @Override
