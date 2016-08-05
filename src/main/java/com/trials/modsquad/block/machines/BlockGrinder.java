@@ -24,6 +24,7 @@ import static com.trials.modsquad.Ref.GUI_ID_GRINDER;
 
 public class BlockGrinder extends Block {
 
+    private TileEntity grinder;
 
     public BlockGrinder(String s, String s1) {
         super(Material.IRON);
@@ -32,20 +33,25 @@ public class BlockGrinder extends Block {
         setCreativeTab(Ref.tabModSquad);
     }
 
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking()) return false;
+        playerIn.openGui(ModSquad.instance, GUI_ID_GRINDER, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        return true;
+    }
+
+    @Override
+    public TileEntity createTileEntity(World world, IBlockState state) {
         return new TileGrinder();
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-
+    public boolean hasTileEntity(IBlockState state) {
         return true;
     }
 
     @Override
     public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn) {
-        if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking()) return;
-        playerIn.openGui(ModSquad.instance, GUI_ID_GRINDER, worldIn, pos.getX(), pos.getY(), pos.getZ());
         super.onBlockClicked(worldIn, pos, playerIn);
     }
 

@@ -29,13 +29,7 @@ public class BlockElectricFurnace extends BlockGrinder {
     }
 
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
+    public TileEntity createTileEntity(World worldIn, IBlockState state) {
         return new TileElectricFurnace();
     }
-
-    @Override
-    public boolean isOpaqueCube(IBlockState state) {
-        return false;
-    }
-
 }
