@@ -2,6 +2,7 @@ package com.trials.modsquad.block;
 
 import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.TileEntities.TileGrinder;
+import com.trials.modsquad.block.machines.BlockCharger;
 import com.trials.modsquad.block.machines.BlockElectricFurnace;
 import com.trials.modsquad.block.machines.BlockFurnaceGenerator;
 import com.trials.modsquad.block.machines.BlockGrinder;
@@ -19,7 +20,7 @@ public class ModBlocks {
     public static Block oreCopper, oreTin, oreLead;
 
     //Machines
-    public static Block grinder, electricFurnace, furnaceGen;
+    public static Block grinder, electricFurnace, furnaceGen, charger;
 
     public static void init() {
         //Ores
@@ -27,9 +28,11 @@ public class ModBlocks {
         oreTin = new ModOre(Ref.OreReference.TIN.getUnlocalizedName(), Ref.OreReference.TIN.getRegistryName(), 1);
         oreLead = new ModOre(Ref.OreReference.LEAD.getUnlocalizedName(), Ref.OreReference.LEAD.getRegistryName(), 2);
 
+        //Machines
         grinder = new BlockGrinder(MACHINE_GRINDER.getUnlocalizedName(), MACHINE_GRINDER.getRegistryName());
         electricFurnace = new BlockElectricFurnace(MACHINE_FURNACE.getUnlocalizedName(), MACHINE_FURNACE.getRegistryName());
         furnaceGen = new BlockFurnaceGenerator(GENERATOR_FURNACE.getUnlocalizedName(), GENERATOR_FURNACE.getRegistryName());
+        charger = new BlockCharger(MACHINE_CHARGER.getUnlocalizedName(), MACHINE_CHARGER.getRegistryName());
     }
 
     public static void register() {
@@ -42,6 +45,7 @@ public class ModBlocks {
         registerBlock(grinder);
         registerBlock(electricFurnace);
         registerBlock(furnaceGen);
+        registerBlock(charger);
     }
 
     private static void registerBlock(Block block) {
@@ -61,6 +65,7 @@ public class ModBlocks {
         registerRender(grinder);
         registerRender(electricFurnace);
         registerRender(furnaceGen);
+        registerRender(charger);
     }
 
     private static void registerRender(Block block) {
