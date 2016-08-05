@@ -49,7 +49,7 @@ public class GUIHandler implements IGuiHandler {
             case GUI_ID_FURNACE:
                 return new GUIElectricFurnace(player.inventory, (TileElectricFurnace) e);
             case GUI_ID_CHARGER:
-                return new GUIGrinder(player.inventory, (TileCharger) e);
+                return new GUICharger(player.inventory, (TileCharger) e);
         }
         return null;
     }

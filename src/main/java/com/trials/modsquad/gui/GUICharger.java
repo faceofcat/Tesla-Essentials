@@ -1,7 +1,9 @@
 package com.trials.modsquad.gui;
 
 import com.trials.modsquad.ModSquad;
+import com.trials.modsquad.block.TileEntities.TileCharger;
 import com.trials.modsquad.block.TileEntities.TileGrinder;
+import com.trials.modsquad.block.containers.ContainerCharger;
 import com.trials.modsquad.block.containers.ContainerGrinder;
 import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -11,16 +13,16 @@ import org.lwjgl.opengl.GL11;
 
 public class GUICharger extends GuiContainer{
 
-    private TileGrinder grinder;
+    private TileCharger grinder;
 
-    public GUICharger(InventoryPlayer player, TileGrinder grinder) {
-        super(new ContainerGrinder(player, grinder));
+    public GUICharger(InventoryPlayer player, TileCharger grinder) {
+        super(new ContainerCharger(player, grinder));
         this.grinder = grinder;
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRendererObj.drawString("Grinder", 8, 6, 4210751);
+        fontRendererObj.drawString("Charger", 8, 6, 4210751);
         fontRendererObj.drawString("Power: "+ TeslaUtils.getDisplayableTeslaCount(grinder.getStoredPower()), 8, 18, 4210751);
     }
 
