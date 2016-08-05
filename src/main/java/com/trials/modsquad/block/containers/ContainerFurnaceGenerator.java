@@ -19,7 +19,7 @@ public class ContainerFurnaceGenerator extends Container {
 
     public ContainerFurnaceGenerator(InventoryPlayer inv, TileFurnaceGenerator generator){
         this.generator = generator;
-        addSlotToContainer(new SlotFurnaceFuel(generator, 0, 86, 35)); // Nice and centered :P
+        addSlotToContainer(new SlotFurnaceFuel(generator, 0, 80, 34)); // Nice and centered :P
 
         for(int i = 0; i<3; ++i) for(int j = 0; j<9; ++j) addSlotToContainer(new Slot(inv, j+i*9+9, 8+j*18, 84+i*18));
         for(int i = 0; i<9; ++i) addSlotToContainer(new Slot(inv, i, 8+i*18, 142));

@@ -149,12 +149,16 @@ public class TileFurnaceGenerator extends TileEntity implements IInventory, ITes
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound c = super.serializeNBT();
+        System.out.println("Serializing");
         try{
             Field f = NBTTagCompound.class.getDeclaredField("tagMap");
             f.setAccessible(true);
             Map<String, NBTBase> r = (Map<String, NBTBase>) f.get(c);
             Map<String, NBTBase> m = (Map<String, NBTBase>) f.get(container);
-            for(String s : m.keySet()) r.put(s, m.get(s)); // Move container tags to my tags
+            for(String s : m.keySet()){
+                System.out.println("Ser: "+s);
+                r.put(s, m.get(s)); // Move container tags to my tags
+            }
             f.set(c, r);
         }catch(Exception ignored){}
         return c;
@@ -162,8 +166,10 @@ public class TileFurnaceGenerator extends TileEntity implements IInventory, ITes
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
+        System.out.println("Deserializing");
         super.deserializeNBT(nbt);
         container.deserializeNBT(nbt);
+        System.out.println(container.getStoredPower()+" "+nbt.toString());
     }
 
     @Override
@@ -173,7 +179,7 @@ public class TileFurnaceGenerator extends TileEntity implements IInventory, ITes
             if(workTime==0) isBurning = false;
             else --workTime;
         }
-        if(fuel!=null && TileEntityFurnace.isItemFuel(fuel)){
+        else if(fuel!=null && TileEntityFurnace.isItemFuel(fuel)){ // Fixes bug where generator tears through fuel supply
             isBurning = true;
             workTime = TileEntityFurnace.getItemBurnTime(fuel);
             decrStackSize(0, 1);
