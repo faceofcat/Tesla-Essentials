@@ -14,7 +14,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.concurrent.ThreadLocalRandom;
@@ -41,6 +40,11 @@ public class BlockFurnaceGenerator extends Block {
     }
 
     @Override
+    public boolean hasTileEntity(IBlockState state) {
+        return true;
+    }
+
+    @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) { // Drop items when block breaks
         ThreadLocalRandom rand = ThreadLocalRandom.current();
         TileEntity t = worldIn.getTileEntity(pos);
@@ -59,10 +63,4 @@ public class BlockFurnaceGenerator extends Block {
             }
         super.breakBlock(worldIn, pos, state);
     }
-
-    @Override
-    public boolean isOpaqueCube(IBlockState state) {
-        return false;
-    }
-
 }
