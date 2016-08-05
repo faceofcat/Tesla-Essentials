@@ -6,6 +6,7 @@ import com.trials.modsquad.block.TileEntities.TileFurnaceGenerator;
 import com.trials.modsquad.block.containers.ContainerCharger;
 import com.trials.modsquad.block.containers.ContainerFurnaceGenerator;
 import net.darkhax.tesla.lib.PowerBar;
+import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -24,7 +25,10 @@ public class GUICharger extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        String power;
+        int count = (power = TeslaUtils.getDisplayableTeslaCount(charger.getStoredPower())).length();
         fontRendererObj.drawString("Charger", 8, 6, 4210751);
+        fontRendererObj.drawString(power, xSize-24-count/2, 70, 4210751);
     }
 
     @Override
