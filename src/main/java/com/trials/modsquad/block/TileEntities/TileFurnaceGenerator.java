@@ -7,12 +7,15 @@ import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ITickable;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
+import java.util.Map;
 
 
 public class TileFurnaceGenerator extends TileEntity implements IInventory, ITeslaProducer, ITeslaHolder, ITickable {
@@ -141,6 +144,26 @@ public class TileFurnaceGenerator extends TileEntity implements IInventory, ITes
         container.setInputRate(0);
         container.setOutputRate(0);
 
+    }
+
+    @Override
+    public NBTTagCompound serializeNBT() {
+        NBTTagCompound c = super.serializeNBT();
+        try{
+            Field f = NBTTagCompound.class.getDeclaredField("tagMap");
+            f.setAccessible(true);
+            Map<String, NBTBase> r = (Map<String, NBTBase>) f.get(c);
+            Map<String, NBTBase> m = (Map<String, NBTBase>) f.get(container);
+            for(String s : m.keySet()) r.put(s, m.get(s)); // Move container tags to my tags
+            f.set(c, r);
+        }catch(Exception ignored){}
+        return c;
+    }
+
+    @Override
+    public void deserializeNBT(NBTTagCompound nbt) {
+        super.deserializeNBT(nbt);
+        container.deserializeNBT(nbt);
     }
 
     @Override

@@ -10,6 +10,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
@@ -18,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TileGrinder extends TileEntity implements IInventory, ITeslaConsumer, ITeslaHolder, ITickable, ISidedInventory {
@@ -184,6 +187,26 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
     }
 
     @Override
+    public NBTTagCompound serializeNBT() {
+        NBTTagCompound c = super.serializeNBT();
+        try{
+            Field f = NBTTagCompound.class.getDeclaredField("tagMap");
+            f.setAccessible(true);
+            Map<String, NBTBase> r = (Map<String, NBTBase>) f.get(c);
+            Map<String, NBTBase> m = (Map<String, NBTBase>) f.get(container);
+            for(String s : m.keySet()) r.put(s, m.get(s)); // Move container tags to my tags
+            f.set(c, r);
+        }catch(Exception ignored){}
+        return c;
+    }
+
+    @Override
+    public void deserializeNBT(NBTTagCompound nbt) {
+        super.deserializeNBT(nbt);
+        container.deserializeNBT(nbt);
+    }
+
+    @Override
     public String getName() {
         return "modsquad.tilegrinder";
     }
@@ -195,6 +218,7 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
 
     @Override
     public void update() {
+        if(container.getStoredPower()<container.getCapacity()) attemptDrawEnergy(); //Try to draw energy from adjacent blocks
         if(isGrinding){
             worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, pos.getX(), pos.getY()+1, pos.getZ(),
                     random.nextGaussian() * .05, random.nextGaussian() * .05+.2,random.nextGaussian() * .05);

@@ -11,8 +11,13 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerFurnace;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.math.MathHelper;
+
+import java.lang.reflect.Field;
+import java.util.Map;
 
 
 @SuppressWarnings("unused")
@@ -29,6 +34,27 @@ public class TileElectricFurnace extends TileEntityFurnace implements ITeslaCons
     @SuppressWarnings("unused")
     public TileElectricFurnace(){
         container = new BaseTeslaContainer();
+    }
+
+
+    @Override
+    public NBTTagCompound serializeNBT() {
+        NBTTagCompound c = super.serializeNBT();
+        try{
+            Field f = NBTTagCompound.class.getDeclaredField("tagMap");
+            f.setAccessible(true);
+            Map<String, NBTBase> r = (Map<String, NBTBase>) f.get(c);
+            Map<String, NBTBase> m = (Map<String, NBTBase>) f.get(container);
+            for(String s : m.keySet()) r.put(s, m.get(s)); // Move container tags to my tags
+            f.set(c, r);
+        }catch(Exception ignored){}
+        return c;
+    }
+
+    @Override
+    public void deserializeNBT(NBTTagCompound nbt) {
+        super.deserializeNBT(nbt);
+        container.deserializeNBT(nbt);
     }
 
     /**
