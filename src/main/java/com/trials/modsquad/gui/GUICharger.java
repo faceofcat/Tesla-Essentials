@@ -19,7 +19,7 @@ public class GUICharger extends GuiContainer {
     public GUICharger(InventoryPlayer player, TileCharger charger) {
         super(new ContainerCharger(player, charger));
         this.charger = charger;
-        p = new PowerBar(this, width / 2 - 14, height / 2 -50, PowerBar.BackgroundType.LIGHT);
+        p = new PowerBar(this, xSize+100, 50, PowerBar.BackgroundType.LIGHT);
     }
 
     @Override

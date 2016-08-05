@@ -10,10 +10,21 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+
+import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
 
 public class TileCable extends TileEntity implements ITeslaHolder, ITeslaConsumer, ITickable {
+
+    private BlockPos[] MySidesAreInOrbitxDDDDDDDDTopKek = new BlockPos[]{
+            new BlockPos(pos.getX()+1, pos.getY(), pos.getZ()),
+            new BlockPos(pos.getX()-1, pos.getY(), pos.getZ()),
+            new BlockPos(pos.getX(), pos.getY()+1, pos.getZ()),
+            new BlockPos(pos.getX(), pos.getY()-1, pos.getZ()),
+            new BlockPos(pos.getX(), pos.getY(), pos.getZ()+1),
+            new BlockPos(pos.getX(), pos.getY(), pos.getZ()-1)
+    };
 
     private BaseTeslaContainer container;
 
@@ -81,8 +92,7 @@ public class TileCable extends TileEntity implements ITeslaHolder, ITeslaConsume
 
     public TileCable setTransferRate (long rate) {
 
-        this.setInputRate(rate);
-        this.setOutputRate(rate);
+        container.setTransferRate(rate);
         return this;
     }
 
@@ -94,15 +104,17 @@ public class TileCable extends TileEntity implements ITeslaHolder, ITeslaConsume
     @Override
     public void update() {
         if(!worldObj.isRemote){
+            TileEntity e;
             if(getStoredPower() < getCapacity()){
                 x = this.getPos().getX();
                 y = this.getPos().getY();
                 z = this.getPos().getZ();
-                TileEntity e;
-                if((e=worldObj.getTileEntity(new BlockPos(x,y+1,z)))!=null && e.hasCapability(CAPABILITY_PRODUCER, ModBlocks.getRelativeFace(pos, e.getPos()).getOpposite()))
+                if((e=worldObj.getTileEntity(new BlockPos(x,y+1,z)))!=null && e.hasCapability(CAPABILITY_PRODUCER, ModBlocks.getRelativeFace(e.getPos(), pos)))
                     givePower(((ITeslaProducer) e).takePower(Math.min(getInputRate(), getCapacity()-getStoredPower()), false), false);
             }
-
+            for(BlockPos side : MySidesAreInOrbitxDDDDDDDDTopKek)
+                if((e=worldObj.getTileEntity(side))!=null && e.hasCapability(CAPABILITY_CONSUMER, ModBlocks.getRelativeFace(e.getPos(), pos)))
+                    container.takePower(((ITeslaConsumer) e).givePower(Math.min(getStoredPower(), getOutputRate()), false), false);
         }
     }
 }

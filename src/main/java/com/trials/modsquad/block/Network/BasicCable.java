@@ -18,14 +18,18 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.fml.common.registry.IForgeRegistry;
+import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 
-/**
- * Created by Tjeltigre on 8/4/2016.
- */
+import java.lang.reflect.Field;
+
+import static com.trials.modsquad.Ref.BlockReference.LEAD_CABLE;
+
+
 @SuppressWarnings("unused")
-public class BasicCable extends Block implements ITeslaConsumer, ITeslaHolder, ITeslaProducer, INBTSerializable<NBTTagCompound> {
+public class BasicCable extends Block implements INBTSerializable<NBTTagCompound> {
     /**
      * The amount of stored Tesla power.
      */
@@ -48,55 +52,46 @@ public class BasicCable extends Block implements ITeslaConsumer, ITeslaHolder, I
 
     private Ref.BlockReference type;
 
-    public BasicCable() {
+    public BasicCable(String unloc, String reg) {
 
-        this(5000, 50, 50, 1);
-    }
-    /**
-     * Constructor for setting the basic values. Will not construct with any stored power.
-     *
-     * @param capacity The maximum amount of Tesla power that the container should hold.
-     * @param input The maximum rate of power that can be accepted at a time.
-     * @param output The maximum rate of power that can be extracted at a time.
-     */
-    public BasicCable(long capacity, long input, long output, int index) {
-
-        this(0, capacity, input, output, index);
+        this(unloc, reg, 5000, 50, 50);
     }
 
-    /**
-     * Constructor for setting all of the base values, including the stored power.
-     *
-     * @param power The amount of stored power to initialize the container with.
-     * @param capacity The maximum amount of Tesla power that the container should hold.
-     * @param input The maximum rate of power that can be accepted at a time.
-     * @param output The maximum rate of power that can be extracted at a time.
-     */
-    public BasicCable(long power, long capacity, long input, long output, int index) {
+    public BasicCable(String unloc, String reg, long capacity, long input, long output) {
+
+        this(unloc, reg, 0, capacity, input, output);
+    }
+    public BasicCable(String unloc, String reg, long power, long capacity, long input, long output) {
         super(Material.ANVIL);
         this.stored = power;
         this.capacity = capacity;
         this.inputRate = input;
         this.outputRate = output;
-        for(Ref.BlockReference b : Ref.BlockReference.values())
-            if(b.ordinal()==index){
-                type = b;
-                setUnlocalizedName(type.getUnlocalizedName());
-                setRegistryName(type.getRegistryName());
-                break;
-            }
+        setUnlocalizedName(unloc);
+        setRegistryName(reg);
+        setCreativeTab(Ref.tabModSquad);
     }
-    /**
-     * Constructor for creating an instance directly from a compound tag. This expects that the
-     * compound tag has some of the required data. @See {@link #deserializeNBT(NBTTagCompound)}
-     * for precise info on what is expected. This constructor will only set the stored power if
-     * it has been written on the compound tag.
-     *
-     * @param dataTag The NBTCompoundTag to read the important data from.
-     */
+
     public BasicCable(NBTTagCompound dataTag) {
         super(Material.ANVIL);
         this.deserializeNBT(dataTag);
+
+        // Solve some issues with deserialization???
+        try{
+            Field f;
+
+            f = Block.class.getDeclaredField("unlocalizedName");
+            f.setAccessible(true);
+            if(f.get(this)==null) setUnlocalizedName(LEAD_CABLE.getUnlocalizedName()); // Default cable type
+
+            f = IForgeRegistryEntry.class.getDeclaredField("registryName");
+            f.setAccessible(true);
+            if(f.get(this)==null) setRegistryName(LEAD_CABLE.getRegistryName()); // Default registry name
+
+            f = Block.class.getDeclaredField("displayOnCreativeTab");
+            f.setAccessible(true);
+            if(f.get(this) == null) setCreativeTab(Ref.tabModSquad);
+        }catch(Exception ignored){}
     }
 
 
@@ -126,9 +121,6 @@ public class BasicCable extends Block implements ITeslaConsumer, ITeslaHolder, I
 
         if (nbt.hasKey("TeslaOutput"))
             this.outputRate = nbt.getLong("TeslaOutput");
-
-        if (this.stored > this.getCapacity())
-            this.stored = this.getCapacity();
     }
 
 
@@ -138,10 +130,6 @@ public class BasicCable extends Block implements ITeslaConsumer, ITeslaHolder, I
         //clock: Wrench
         if(heldItem != null && heldItem.getItem() instanceof ItemClock) {
             this.breakBlock(worldIn,pos,state);
-        }
-        //Door: Reader
-        if(heldItem != null && heldItem.getItem() instanceof ItemDoor) {
-            System.out.println(getStoredPower());
         }
         return false;
     }

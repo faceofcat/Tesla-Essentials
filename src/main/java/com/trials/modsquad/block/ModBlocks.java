@@ -1,6 +1,7 @@
 package com.trials.modsquad.block;
 
 import com.trials.modsquad.Ref;
+import com.trials.modsquad.block.Network.BasicCable;
 import com.trials.modsquad.block.TileEntities.TileGrinder;
 import com.trials.modsquad.block.machines.BlockCharger;
 import com.trials.modsquad.block.machines.BlockElectricFurnace;
@@ -24,6 +25,9 @@ public class ModBlocks {
     //Machines
     public static Block grinder, electricFurnace, furnaceGen, charger;
 
+    //Cables
+    public static Block leadCable;
+
     public static void init() {
         //Ores
         oreCopper = new ModOre(Ref.OreReference.COPPER.getUnlocalizedName(), Ref.OreReference.COPPER.getRegistryName(), 1);
@@ -35,6 +39,9 @@ public class ModBlocks {
         electricFurnace = new BlockElectricFurnace(MACHINE_FURNACE.getUnlocalizedName(), MACHINE_FURNACE.getRegistryName());
         furnaceGen = new BlockFurnaceGenerator(GENERATOR_FURNACE.getUnlocalizedName(), GENERATOR_FURNACE.getRegistryName());
         charger = new BlockCharger(MACHINE_CHARGER.getUnlocalizedName(), MACHINE_CHARGER.getRegistryName());
+
+        //Cables
+        leadCable = new BasicCable(LEAD_CABLE.getUnlocalizedName(), LEAD_CABLE.getRegistryName());
     }
 
     public static void register() {
@@ -48,6 +55,9 @@ public class ModBlocks {
         registerBlock(electricFurnace);
         registerBlock(furnaceGen);
         registerBlock(charger);
+
+        //Cables
+        registerBlock(leadCable);
     }
 
     private static void registerBlock(Block block) {
@@ -68,6 +78,9 @@ public class ModBlocks {
         registerRender(electricFurnace);
         registerRender(furnaceGen);
         registerRender(charger);
+
+        //Cables
+        registerRender(leadCable);
     }
 
     private static void registerRender(Block block) {

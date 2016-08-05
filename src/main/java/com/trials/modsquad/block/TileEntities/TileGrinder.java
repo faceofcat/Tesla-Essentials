@@ -2,6 +2,7 @@ package com.trials.modsquad.block.TileEntities;
 
 import com.trials.modsquad.Recipies.GrinderRecipe;
 import com.trials.modsquad.Recipies.TeslaRegistry;
+import com.trials.modsquad.block.ModBlocks;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
@@ -25,6 +26,7 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static com.trials.modsquad.block.ModBlocks.getRelativeFace;
+import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
 
 public class TileGrinder extends TileEntity implements IInventory, ITeslaConsumer, ITeslaHolder, ITickable, ISidedInventory {
     // Primitives
@@ -37,14 +39,6 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
     private final ItemStack[] inventory; // I'm an idiot
     private BaseTeslaContainer container;
     private ThreadLocalRandom random = ThreadLocalRandom.current();
-    private BlockPos[] sides = new BlockPos[]{
-            new BlockPos(pos.getX()+1, pos.getY(), pos.getZ()),
-            new BlockPos(pos.getX()-1, pos.getY(), pos.getZ()),
-            new BlockPos(pos.getX(), pos.getY()+1, pos.getZ()),
-            new BlockPos(pos.getX(), pos.getY()-1, pos.getZ()),
-            new BlockPos(pos.getX(), pos.getY(), pos.getZ()+1),
-            new BlockPos(pos.getX(), pos.getY(), pos.getZ()-1)
-    };
 
     public TileGrinder(){
         inventory = new ItemStack[2];
@@ -221,9 +215,6 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
 
     @Override
     public void update() {
-        if(container.getStoredPower()<container.getCapacity()){
-            attemptDrawEnergy(); //Try to draw energy from adjacent blocks
-        }
         if(isGrinding){
             worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, pos.getX(), pos.getY()+1, pos.getZ(),
                     random.nextGaussian() * .05, random.nextGaussian() * .05+.2,random.nextGaussian() * .05);
@@ -279,15 +270,5 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
     @Override
     public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
         return index==1;
-    }
-
-    private void attemptDrawEnergy(){
-
-        for(BlockPos bPos : sides){
-            // Try to pull as much energy as possible
-            worldObj.loadedTileEntityList.forEach(te -> System.out.print(te.hasCapability(TeslaCapabilities.CAPABILITY_PRODUCER, getRelativeFace(pos, te.getPos()).getOpposite())?te.toString()+"\n":""));
-            worldObj.loadedTileEntityList.stream().filter(e -> e != null && e.hasCapability(TeslaCapabilities.CAPABILITY_PRODUCER, getRelativeFace(pos, e.getPos()).getOpposite()))
-                    .forEach(e -> container.givePower(((ITeslaProducer) e).takePower(Math.min(container.getInputRate(), container.getCapacity() - container.getStoredPower()), false), false));
-        }
     }
 }
