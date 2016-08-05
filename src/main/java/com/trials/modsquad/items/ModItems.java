@@ -18,7 +18,7 @@ public class ModItems {
     public static Item dustTin;
     public static Item dustLead;
 
-    public static Item battery;
+
 
     public static void init() {
         //Ingots
@@ -30,8 +30,6 @@ public class ModItems {
         dustCopper = new ModDust(Ref.DustReference.COPPER.getUnlocalizedName(), Ref.DustReference.COPPER.getRegistryName());
         dustTin = new ModDust(Ref.DustReference.TIN.getUnlocalizedName(), Ref.DustReference.TIN.getRegistryName());
         dustLead = new ModDust(Ref.DustReference.LEAD.getUnlocalizedName(), Ref.DustReference.LEAD.getRegistryName());
-
-        battery = new ItemBattery(Ref.ItemReference.BATTERY.getUnlocalizedName(), Ref.ItemReference.BATTERY.getRegistryName(), 0);
 
     }
 
@@ -46,8 +44,6 @@ public class ModItems {
         GameRegistry.register(dustTin);
         GameRegistry.register(dustLead);
 
-        GameRegistry.register(battery);
-
     }
 
     public static void registerRenders() {
@@ -61,11 +57,9 @@ public class ModItems {
         registerRender(dustTin);
         registerRender(dustLead);
 
-        registerRender(battery);
-
     }
 
-    public static void registerRender(Item item) {
+    private static void registerRender(Item item) {
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
     }
 
