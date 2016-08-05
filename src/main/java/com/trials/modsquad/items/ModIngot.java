@@ -10,6 +10,7 @@ public class ModIngot extends Item {
         setUnlocalizedName(unlocalizedName);
         setRegistryName(registryName);
         setCreativeTab(Ref.tabModSquad);
+        
     }
 
 }

@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
 import static com.trials.modsquad.Ref.GUI_ID_FURNACE;
+import static com.trials.modsquad.Ref.GUI_ID_BOOK;
 import static com.trials.modsquad.Ref.GUI_ID_FURNACE_GEN;
 import static com.trials.modsquad.Ref.GUI_ID_GRINDER;
 
@@ -42,6 +43,8 @@ public class GUIHandler implements IGuiHandler {
                 return new GUIGrinder(player.inventory, (TileGrinder) e);
             case GUI_ID_FURNACE_GEN:
                 return new GUIFurnaceGenerator(player.inventory, (TileFurnaceGenerator) e);
+            case GUI_ID_BOOK:
+                return new GUIBook();
             case GUI_ID_FURNACE:
                 return new GUIElectricFurnace(player.inventory, (TileElectricFurnace) e);
         }

@@ -18,7 +18,7 @@ public class ModItems {
     public static Item dustTin;
     public static Item dustLead;
 
-
+    public static Item modBook;
 
     public static void init() {
         //Ingots
@@ -30,6 +30,8 @@ public class ModItems {
         dustCopper = new ModDust(Ref.DustReference.COPPER.getUnlocalizedName(), Ref.DustReference.COPPER.getRegistryName());
         dustTin = new ModDust(Ref.DustReference.TIN.getUnlocalizedName(), Ref.DustReference.TIN.getRegistryName());
         dustLead = new ModDust(Ref.DustReference.LEAD.getUnlocalizedName(), Ref.DustReference.LEAD.getRegistryName());
+
+        modBook = new ModBook(Ref.ItemReference.MODBOOK.getUnlocalizedName(), Ref.ItemReference.MODBOOK.getRegistryName());
 
     }
 
@@ -44,6 +46,8 @@ public class ModItems {
         GameRegistry.register(dustTin);
         GameRegistry.register(dustLead);
 
+        GameRegistry.register(modBook);
+
     }
 
     public static void registerRenders() {
@@ -56,6 +60,8 @@ public class ModItems {
         registerRender(dustCopper);
         registerRender(dustTin);
         registerRender(dustLead);
+
+        registerRender(modBook);
 
     }
 
