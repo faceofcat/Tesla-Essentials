@@ -1,8 +1,10 @@
 package com.trials.modsquad.gui;
 
 import com.trials.modsquad.Ref;
+import com.trials.modsquad.block.TileEntities.TileElectricFurnace;
 import com.trials.modsquad.block.TileEntities.TileFurnaceGenerator;
 import com.trials.modsquad.block.TileEntities.TileGrinder;
+import com.trials.modsquad.block.containers.ContainerElectricFurnace;
 import com.trials.modsquad.block.containers.ContainerFurnaceGenerator;
 import com.trials.modsquad.block.containers.ContainerGrinder;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,6 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
+import static com.trials.modsquad.Ref.GUI_ID_FURNACE;
 import static com.trials.modsquad.Ref.GUI_ID_FURNACE_GEN;
 import static com.trials.modsquad.Ref.GUI_ID_GRINDER;
 
@@ -25,6 +28,8 @@ public class GUIHandler implements IGuiHandler {
                 return new ContainerGrinder(player.inventory, (TileGrinder) e);
             case GUI_ID_FURNACE_GEN:
                 return new ContainerFurnaceGenerator(player.inventory, (TileFurnaceGenerator) e);
+            case GUI_ID_FURNACE:
+                return new ContainerElectricFurnace(player.inventory, (TileElectricFurnace) e);
         }
         return null;
     }
@@ -37,6 +42,8 @@ public class GUIHandler implements IGuiHandler {
                 return new GUIGrinder(player.inventory, (TileGrinder) e);
             case GUI_ID_FURNACE_GEN:
                 return new GUIFurnaceGenerator(player.inventory, (TileFurnaceGenerator) e);
+            case GUI_ID_FURNACE:
+                return new GUIElectricFurnace(player.inventory, (TileElectricFurnace) e);
         }
         return null;
     }
