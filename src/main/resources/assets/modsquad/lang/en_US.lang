@@ -14,6 +14,7 @@ tile.grinder.name=Grinder
 tile.electricFurnace.name=Electric Furnace
 tile.lcable.name=Lead Cable
 tile.generatorFurnace.name=Furnace Generator
+tile.charger.name=Charger
 
 
 itemGroup.modSquad=ModSquad

@@ -6,6 +6,7 @@ import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
+import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -282,8 +283,17 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
 
         TileEntity e;
 
-        for(BlockPos bPos : sides)
+        for(BlockPos bPos : sides){
+            System.out.println((e=worldObj.getTileEntity(bPos))+" "+(e!=null?e.getCapability(TeslaCapabilities.CAPABILITY_PRODUCER, EnumFacing.DOWN):""));
             if((e=worldObj.getTileEntity(bPos))!=null && e instanceof ITeslaProducer)
-                container.givePower(((ITeslaProducer) e).takePower(container.getCapacity()-container.getStoredPower(), false), false); //Try to pull as much energy as possible
+                container.givePower(((ITeslaProducer) e).takePower(container.getCapacity() - container.getStoredPower(), false), false); //Try to pull as much energy as possible
+        }
+    }
+
+    private EnumFacing getRelativeFacing(BlockPos pos){
+        EnumFacing face = EnumFacing.DOWN; // Default
+        //if(this.pos.getX()>pos.getX())
+
+        return face;
     }
 }

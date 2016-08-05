@@ -11,14 +11,17 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Map;
 
 
-public class TileFurnaceGenerator extends TileEntity implements IInventory, ITeslaProducer, ITeslaHolder, ITickable {
+public class TileFurnaceGenerator extends TileEntity implements IInventory, ITeslaProducer, ITeslaHolder, ITickable, ICapabilityProvider{
 
 
     private ItemStack fuel;
@@ -196,4 +199,6 @@ public class TileFurnaceGenerator extends TileEntity implements IInventory, ITes
         return false;
     }
 
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) { return capability.getDefaultInstance().getClass().isAssignableFrom(this.getClass()); }
 }

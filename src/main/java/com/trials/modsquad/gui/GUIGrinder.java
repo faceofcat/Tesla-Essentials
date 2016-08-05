@@ -18,12 +18,12 @@ public class GUIGrinder extends GuiContainer{
     public GUIGrinder(InventoryPlayer player, TileGrinder grinder) {
         super(new ContainerGrinder(player, grinder));
         this.grinder = grinder;
+        p = new PowerBar(this, xSize+100, 50, PowerBar.BackgroundType.LIGHT);
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         fontRendererObj.drawString("Grinder", 8, 6, 4210751);
-        p = new PowerBar(this, xSize+100, 50, PowerBar.BackgroundType.LIGHT);
     }
 
     @Override
