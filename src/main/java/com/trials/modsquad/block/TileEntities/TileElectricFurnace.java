@@ -16,7 +16,7 @@ import net.minecraft.util.math.MathHelper;
 
 
 @SuppressWarnings("unused")
-public class TileFurnace extends TileEntityFurnace implements ITeslaConsumer, ITeslaHolder {
+public class TileElectricFurnace extends TileEntityFurnace implements ITeslaConsumer, ITeslaHolder {
     private BaseTeslaContainer container;
     /** The ItemStacks that hold the items currently being used in the furnace */
     private ItemStack[] furnaceItemStacks = new ItemStack[3];
@@ -27,7 +27,7 @@ public class TileFurnace extends TileEntityFurnace implements ITeslaConsumer, IT
     private int cookTime;
     private int totalCookTime;
     @SuppressWarnings("unused")
-    public TileFurnace(){
+    public TileElectricFurnace(){
         container = new BaseTeslaContainer();
     }
 

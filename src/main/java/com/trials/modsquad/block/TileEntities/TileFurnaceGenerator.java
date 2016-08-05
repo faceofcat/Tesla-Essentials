@@ -146,7 +146,7 @@ public class TileFurnaceGenerator extends TileEntity implements IInventory, ITes
     @Override
     public void update() {
         if(isBurning){
-            container.givePower(40, false);
+            container.givePower(20, false);
             if(workTime==0) isBurning = false;
             else --workTime;
         }

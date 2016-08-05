@@ -84,12 +84,14 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
     @Override
     public void setInventorySlotContents(int index, @Nullable ItemStack stack) {
         if(index == 1) return;
-        if(stack == null){
-            inventory[index] = null;
+        if(stack == null || inventory[index]==null){
+            inventory[index] = stack;
             return;
         }
-        if(stack.getItem().equals(inventory[index].getItem()) && (inventory[0]==null || stack.stackSize+inventory[index].stackSize<=64)) {
-            inventory[index] = new ItemStack(stack.getItem());
+        if(stack.getItem().equals(inventory[index].getItem()) &&
+                (inventory[0]==null ||
+                        stack.stackSize+inventory[index].stackSize<=64)) {
+            inventory[index] = stack;
         }
 
     }

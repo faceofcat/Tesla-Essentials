@@ -8,6 +8,7 @@ public class Ref {
 
     public static final int GUI_ID_GRINDER = 0;
     public static final int GUI_ID_FURNACE_GEN = 1;
+    public static final int GUI_ID_FURNACE = 2;
 
 
     public enum ItemReference{

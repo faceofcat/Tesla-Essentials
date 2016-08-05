@@ -13,10 +13,6 @@ public class ContainerGrinder extends Container {
 
     private TileGrinder grinder;
     private int workTime;
-    private int storedPower;
-    private int capacity;
-    private int input;
-    private int output;
 
     public ContainerGrinder(InventoryPlayer inv, TileGrinder grinder){
         this.grinder = grinder;

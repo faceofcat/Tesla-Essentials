@@ -1,27 +1,28 @@
 package com.trials.modsquad.gui;
 
 import com.trials.modsquad.ModSquad;
-import com.trials.modsquad.block.TileEntities.TileGrinder;
-import com.trials.modsquad.block.containers.ContainerGrinder;
+import com.trials.modsquad.block.TileEntities.TileElectricFurnace;
+import com.trials.modsquad.block.containers.ContainerElectricFurnace;
 import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-public class GUIGrinder extends GuiContainer{
+public class GUIElectricFurnace extends GuiContainer {
 
-    private TileGrinder grinder;
+    private TileElectricFurnace furnace;
 
-    public GUIGrinder(InventoryPlayer player, TileGrinder grinder) {
-        super(new ContainerGrinder(player, grinder));
-        this.grinder = grinder;
+    public GUIElectricFurnace(InventoryPlayer player, TileElectricFurnace furnace) {
+        super(new ContainerElectricFurnace(player, furnace));
+        this.furnace = furnace;
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         fontRendererObj.drawString("Grinder", 8, 6, 4210751);
-        fontRendererObj.drawString("Power: "+ TeslaUtils.getDisplayableTeslaCount(grinder.getStoredPower()), 8, 18, 4210751);
+        fontRendererObj.drawString("Power: "+ TeslaUtils.getDisplayableTeslaCount(furnace.getStoredPower()), 8, 18, 4210751);
+
     }
 
     @Override
