@@ -20,7 +20,7 @@ public class GUIElectricFurnace extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRendererObj.drawString("Grinder", 8, 6, 4210751);
+        fontRendererObj.drawString("Electric Furnace", 8, 6, 4210751);
         fontRendererObj.drawString("Power: "+ TeslaUtils.getDisplayableTeslaCount(furnace.getStoredPower()), 8, 18, 4210751);
 
     }
