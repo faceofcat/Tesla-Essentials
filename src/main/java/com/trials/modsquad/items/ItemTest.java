@@ -5,8 +5,16 @@ import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.minecraft.item.Item;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemTest extends Item implements ITeslaHolder, ITeslaConsumer {
+import javax.annotation.Nullable;
+
+import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
+import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
+
+public class ItemTest extends Item implements ITeslaHolder, ITeslaConsumer, ICapabilityProvider {
 
     private BaseTeslaContainer container;
     private long stored;
@@ -32,7 +40,6 @@ public class ItemTest extends Item implements ITeslaHolder, ITeslaConsumer {
     public long getStoredPower() {
         return container.getStoredPower();
     }
-
     @Override
     public long getCapacity() {
         return container.getCapacity();
@@ -43,4 +50,13 @@ public class ItemTest extends Item implements ITeslaHolder, ITeslaConsumer {
         return container.givePower(power, simulated);
     }
 
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+        return capability == CAPABILITY_CONSUMER || capability == CAPABILITY_HOLDER;
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+        return null;
+    }
 }
