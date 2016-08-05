@@ -4,6 +4,7 @@ import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.block.TileEntities.TileFurnaceGenerator;
 import com.trials.modsquad.block.containers.ContainerFurnaceGenerator;
 import net.darkhax.tesla.lib.PowerBar;
+import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -23,6 +24,9 @@ public class GUIFurnaceGenerator extends GuiContainer {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         fontRendererObj.drawString("Furnace Generator", 8, 6, 4210751);
+        String power;
+        int count = (power = TeslaUtils.getDisplayableTeslaCount(generator.getStoredPower())).length();
+        fontRendererObj.drawString(power, xSize-25-count/2, 70, 4210751);
     }
 
     @Override

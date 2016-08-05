@@ -25,10 +25,10 @@ public class GUICharger extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        fontRendererObj.drawString("Charger", 8, 6, 4210751);
         String power;
         int count = (power = TeslaUtils.getDisplayableTeslaCount(charger.getStoredPower())).length();
-        fontRendererObj.drawString("Charger", 8, 6, 4210751);
-        fontRendererObj.drawString(power, xSize-24-count/2, 70, 4210751);
+        fontRendererObj.drawString(power, xSize-25-count/2, 70, 4210751);
     }
 
     @Override

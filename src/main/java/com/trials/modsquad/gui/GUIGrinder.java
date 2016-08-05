@@ -24,6 +24,9 @@ public class GUIGrinder extends GuiContainer{
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         fontRendererObj.drawString("Grinder", 8, 6, 4210751);
+        String power;
+        int count = (power = TeslaUtils.getDisplayableTeslaCount(grinder.getStoredPower())).length();
+        fontRendererObj.drawString(power, xSize-25-count/2, 70, 4210751);
     }
 
     @Override
