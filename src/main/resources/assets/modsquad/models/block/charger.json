@@ -2,12 +2,13 @@
     "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
     "parent": "block/block",
     "textures": {
-        "0": "blocks/leg_grinder",
-        "1": "blocks/charger_main",
-        "2": "blocks/Top",
-        "3": "blocks/solar_panael_side",
-        "4": "blocks/charger_face",
-        "5": "blocks/battery_andExtra"
+        "0": "modsquad:blocks/leg_grinder",
+        "1": "modsquad:blocks/charger_main",
+        "2": "modsquad:blocks/Top",
+        "3": "modsquad:blocks/solar_panael_side",
+        "4": "modsquad:blocks/charger_face",
+        "5": "modsquad:blocks/battery_andExtra",
+        "particle": "blocks/iron_block"
     },
     "elements": [
         {

@@ -9,7 +9,8 @@
         "4": "modsquad:blocks/back",
         "5": "modsquad:blocks/grinder_face",
         "6": "modsquad:blocks/side_grinder_west",
-        "7": "modsquad:blocks/pillar_bottom"
+        "7": "modsquad:blocks/pillar_bottom",
+      "particle": "blocks/iron_block"
     },
     "elements": [
         {

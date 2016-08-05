@@ -51,11 +51,6 @@ public class BlockGrinder extends Block {
     }
 
     @Override
-    public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn) {
-        super.onBlockClicked(worldIn, pos, playerIn);
-    }
-
-    @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) { // Drop items when block breaks
         ThreadLocalRandom rand = ThreadLocalRandom.current();
         TileEntity t = worldIn.getTileEntity(pos);

@@ -28,7 +28,6 @@ public class BlockFurnaceGenerator extends Block {
         setRegistryName(s1);
     }
 
-
     @Override
     public TileEntity createTileEntity(World worldIn, IBlockState state) {
         return new TileFurnaceGenerator();
