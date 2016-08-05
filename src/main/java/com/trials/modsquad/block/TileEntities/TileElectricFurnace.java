@@ -253,4 +253,5 @@ public class TileElectricFurnace extends TileEntityFurnace implements ITeslaCons
     public long getCapacity() {
         return container.getCapacity();
     }
+
 }

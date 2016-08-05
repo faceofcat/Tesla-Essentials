@@ -63,4 +63,8 @@ public class BlockGrinder extends BlockContainer {
         super.breakBlock(worldIn, pos, state);
     }
 
+    @Override
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
+    }
 }

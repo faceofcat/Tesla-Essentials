@@ -1,5 +1,6 @@
 package com.trials.modsquad;
 
+import com.trials.modsquad.Recipies.TeslaRegistry;
 import com.trials.modsquad.block.ModBlocks;
 import com.trials.modsquad.gui.GUIHandler;
 import com.trials.modsquad.items.ModItems;
@@ -61,6 +62,7 @@ public class ModSquad
     public void init(FMLInitializationEvent event) {
         // Recipes
         proxy.init();
+        TeslaRegistry.registerGrinderCrafting();
     }
 
     @EventHandler
