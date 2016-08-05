@@ -283,15 +283,18 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
 
         for(BlockPos bPos : sides){
             // Try to pull as much energy as possible
+            worldObj.loadedTileEntityList.forEach(te -> System.out.print(te.hasCapability(TeslaCapabilities.CAPABILITY_PRODUCER, getRelativeFace(pos).getOpposite())?te.toString()+"\n":""));
             worldObj.loadedTileEntityList.stream().filter(e -> e != null && e.hasCapability(TeslaCapabilities.CAPABILITY_PRODUCER,
-                    getRelativeFacing(e.getPos()))).forEach(e -> container.givePower(((ITeslaProducer) e).takePower(container.getCapacity() - container.getStoredPower(), false), false));
+                    getRelativeFace(e.getPos()).getOpposite())).forEach(e -> container.givePower(((ITeslaProducer) e).takePower(container.getCapacity() - container.getStoredPower(), false), false));
         }
     }
 
-    private EnumFacing getRelativeFacing(BlockPos pos){
-        EnumFacing face = EnumFacing.DOWN; // Default
-        //if(this.pos.getX()>pos.getX())
-
-        return face;
+    private EnumFacing getRelativeFace(BlockPos pos){
+        if(this.pos.getX()>pos.getX()) return EnumFacing.WEST;
+        if(this.pos.getX()<pos.getX()) return EnumFacing.EAST;
+        if(this.pos.getZ()>pos.getZ()) return EnumFacing.NORTH;
+        if(this.pos.getZ()<pos.getZ()) return EnumFacing.SOUTH;
+        if(this.pos.getY()>pos.getY()) return EnumFacing.DOWN;
+        return EnumFacing.UP; // Default
     }
 }

@@ -4,6 +4,7 @@ import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
+import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -200,5 +201,5 @@ public class TileFurnaceGenerator extends TileEntity implements IInventory, ITes
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) { return capability.getDefaultInstance().getClass().isAssignableFrom(this.getClass()); }
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) { return capability == TeslaCapabilities.CAPABILITY_PRODUCER || capability == TeslaCapabilities.CAPABILITY_HOLDER; }
 }
