@@ -1,6 +1,5 @@
 package com.trials.modsquad.gui;
 
-import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.TileEntities.TileCharger;
 import com.trials.modsquad.block.TileEntities.TileElectricFurnace;
 import com.trials.modsquad.block.TileEntities.TileFurnaceGenerator;
@@ -9,9 +8,7 @@ import com.trials.modsquad.block.containers.ContainerCharger;
 import com.trials.modsquad.block.containers.ContainerElectricFurnace;
 import com.trials.modsquad.block.containers.ContainerFurnaceGenerator;
 import com.trials.modsquad.block.containers.ContainerGrinder;
-import com.trials.modsquad.items.ModItems;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
