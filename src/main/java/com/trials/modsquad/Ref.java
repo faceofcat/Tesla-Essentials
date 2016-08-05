@@ -13,7 +13,7 @@ public class Ref {
 
 
     public enum ItemReference{
-        MODBOOK("modBook", "ItemModBook");
+        ;
 
         private String unlocalizedName, registryName;
         ItemReference(String unlocalizedName, String registryName){

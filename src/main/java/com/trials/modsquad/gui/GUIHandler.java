@@ -7,7 +7,9 @@ import com.trials.modsquad.block.TileEntities.TileGrinder;
 import com.trials.modsquad.block.containers.ContainerElectricFurnace;
 import com.trials.modsquad.block.containers.ContainerFurnaceGenerator;
 import com.trials.modsquad.block.containers.ContainerGrinder;
+import com.trials.modsquad.items.ModItems;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -43,8 +45,6 @@ public class GUIHandler implements IGuiHandler {
                 return new GUIGrinder(player.inventory, (TileGrinder) e);
             case GUI_ID_FURNACE_GEN:
                 return new GUIFurnaceGenerator(player.inventory, (TileFurnaceGenerator) e);
-            case GUI_ID_BOOK:
-                return new GUIBook();
             case GUI_ID_FURNACE:
                 return new GUIElectricFurnace(player.inventory, (TileElectricFurnace) e);
         }
