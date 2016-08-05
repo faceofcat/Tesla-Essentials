@@ -46,7 +46,6 @@ public class ContainerGrinder extends Container {
     @Nullable
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-        System.out.println("Transferring "+index);
         ItemStack i = null;
         Slot s = inventorySlots.get(index);
         if(s!=null && s.getHasStack()){

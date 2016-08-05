@@ -2,6 +2,7 @@ package com.trials.modsquad.block.machines;
 
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.block.TileEntities.TileFurnaceGenerator;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -19,7 +20,7 @@ import javax.annotation.Nullable;
 import java.util.concurrent.ThreadLocalRandom;
 import static com.trials.modsquad.Ref.GUI_ID_FURNACE_GEN;
 
-public class BlockFurnaceGenerator extends BlockContainer {
+public class BlockFurnaceGenerator extends Block {
 
     public BlockFurnaceGenerator(String s, String s1){
         super(Material.IRON);
@@ -27,8 +28,9 @@ public class BlockFurnaceGenerator extends BlockContainer {
         setRegistryName(s1);
     }
 
+
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
+    public TileEntity createTileEntity(World worldIn, IBlockState state) {
         return new TileFurnaceGenerator();
     }
 

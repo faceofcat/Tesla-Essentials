@@ -261,8 +261,6 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
                     }
             }catch(Exception e){} // Stupid exception that will never be thrown
         }
-
-
     }
 
     @Override

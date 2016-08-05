@@ -29,6 +29,7 @@ public class Ref {
         LEAD_CABLE("lcable","BlockLeadCable"),
         MACHINE_GRINDER("grinder", "BlockGrinder"),
         MACHINE_FURNACE("electricFurnace", "BlockElectricFurnace"),
+        MACHINE_CHARGER("charger", "BlockCharger"),
         GENERATOR_FURNACE("generatorFurnace", "FurnaceGenerator"),
         GENERATOR_SOALR("solarPanel", "SolarPanel");
 

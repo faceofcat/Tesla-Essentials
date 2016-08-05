@@ -4,7 +4,9 @@ import com.trials.modsquad.block.TileEntities.TileElectricFurnace;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
-import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nullable;
 
 public class ContainerElectricFurnace extends Container {
 
@@ -27,6 +29,26 @@ public class ContainerElectricFurnace extends Container {
         for (IContainerListener l : listeners) if (workTime != furnace.getField(0)) l.sendProgressBarUpdate(this, 0, furnace.getField(0));
 
         workTime = furnace.getField(0);
+    }
+
+    @Nullable
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+        ItemStack i = null;
+        Slot s = inventorySlots.get(index);
+        if(s!=null && s.getHasStack()){
+            ItemStack is = s.getStack();
+            i = is.copy();
+            if(index<furnace.getSizeInventory()){
+                if(!mergeItemStack(is, furnace.getSizeInventory(), 36+furnace.getSizeInventory(), true)) return null;
+            }
+            else if(!mergeItemStack(is, 0, furnace.getSizeInventory(), false)) return null;
+            if(is.stackSize == 0) s.putStack(null);
+            else s.onSlotChanged();
+            if(is.stackSize == i.stackSize) return null;
+            s.onPickupFromSlot(playerIn, is);
+        }
+        return i;
     }
 
     @Override
