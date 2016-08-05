@@ -28,7 +28,7 @@ public class GUICharger extends GuiContainer {
         fontRendererObj.drawString("Charger", 8, 6, 4210751);
         String power;
         int count = (power = TeslaUtils.getDisplayableTeslaCount(charger.getStoredPower())).length();
-        fontRendererObj.drawString(power, xSize-25-count/2, 70, 4210751);
+        fontRendererObj.drawString(power, xSize-45-count/2, 35, 4210751);
     }
 
     @Override
