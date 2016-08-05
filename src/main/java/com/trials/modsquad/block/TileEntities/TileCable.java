@@ -72,8 +72,9 @@ public class TileCable extends TileEntity implements ITickable {
                 x = this.getPos().getX();
                 y = this.getPos().getY();
                 z = this.getPos().getZ();
-                if(worldObj.getTileEntity(new BlockPos(x,y+1,z)).hasCapability(TeslaCapabilities.CAPABILITY_PRODUCER, EnumFacing.UP))
-                    worldObj.getTileEntity(new BlockPos(x,y+1,z));//takePower()
+                TileEntity e;
+                if((e=worldObj.getTileEntity(new BlockPos(x,y+1,z))).hasCapability(TeslaCapabilities.CAPABILITY_PRODUCER, EnumFacing.UP))
+                    capacity+=((ITeslaProducer) e).takePower(Math.min(inputRate, capacity-stored), false);
             }
 
         }
