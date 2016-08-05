@@ -67,4 +67,10 @@ public class BlockGrinder extends Block {
             }
         super.breakBlock(worldIn, pos, state);
     }
+    
+    //Don't remove this! It stops from looking into the world!
+    @Override
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
+    }
 }

@@ -159,9 +159,14 @@ public class TileCharger extends TileEntity implements IInventory, ITeslaProduce
 
     @Override
     public void update() {
-        System.out.println(item != null && item.getItem() instanceof ICapabilityProvider &&
-                ((ICapabilityProvider) item.getItem()).hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, EnumFacing.DOWN)?item+" has the capability!":item+" does not have the capability!");
-        container.takePower(((ITeslaConsumer) item.getItem()).givePower(Math.min(container.getOutputRate(), container.getStoredPower()), false), false);
+        if (item != null && item.getItem() instanceof ICapabilityProvider && ((ICapabilityProvider) item.getItem()).hasCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN)) {
+            //System.out.println("Power: " + ((ITeslaHolder) item.getItem()).getStoredPower());
+            long power = ((ITeslaHolder) item.getItem()).getStoredPower();
+            long capacity = ((ITeslaHolder) item.getItem()).getCapacity();
+            if (power < capacity) {
+                container.takePower(((ITeslaConsumer) item.getItem()).givePower(Math.min(container.getOutputRate(), container.getStoredPower()), false), false);
+            }
+        }
     }
 
     @Override

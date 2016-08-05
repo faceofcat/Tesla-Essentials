@@ -4,12 +4,16 @@ import com.trials.modsquad.Ref;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nullable;
+
+import java.util.List;
 
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
@@ -58,5 +62,11 @@ public class ItemTest extends Item implements ITeslaHolder, ITeslaConsumer, ICap
     @Override
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
         return null;
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        tooltip.add("Power: " + getStoredPower() + "/" + getCapacity());
+        super.addInformation(stack, playerIn, tooltip, advanced);
     }
 }
