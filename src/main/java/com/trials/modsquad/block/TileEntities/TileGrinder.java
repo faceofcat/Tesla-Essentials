@@ -219,7 +219,6 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
     @Override
     public void update() {
         if(container.getStoredPower()<container.getCapacity()){
-            System.out.println("Attempting draw");
             attemptDrawEnergy(); //Try to draw energy from adjacent blocks
         }
         if(isGrinding){

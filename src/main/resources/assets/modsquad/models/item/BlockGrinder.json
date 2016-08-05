@@ -1,13 +1,10 @@
 {
   "parent": "modsquad:block/grinder",
-  "textures": {
-    "0": "modsquad:blocks/leg_grinder",
-    "1": "modsquad:blocks/Top",
-    "2": "modsquad:blocks/bottom_top_grinder",
-    "3": "modsquad:blocks/side",
-    "4": "modsquad:blocks/back",
-    "5": "modsquad:blocks/grinder_face",
-    "6": "modsquad:blocks/side_grinder_west",
-    "7": "modsquad:blocks/pillar_bottom"
+  "display": {
+    "thirdperson": {
+      "rotation": [ 10, -45, 170 ],
+      "translation": [ 0, 1.5, -2.75 ],
+      "scale": [ 0.375, 0.375, 0.375 ]
+    }
   }
 }

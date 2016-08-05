@@ -3,6 +3,7 @@ package com.trials.modsquad.block.machines;
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.TileEntities.TileGrinder;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -21,7 +22,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static com.trials.modsquad.Ref.GUI_ID_GRINDER;
 
-public class BlockGrinder extends BlockContainer {
+public class BlockGrinder extends Block {
 
 
     public BlockGrinder(String s, String s1) {
@@ -31,16 +32,21 @@ public class BlockGrinder extends BlockContainer {
         setCreativeTab(Ref.tabModSquad);
     }
 
-    @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
         return new TileGrinder();
     }
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-        if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking()) return false;
-        playerIn.openGui(ModSquad.instance, GUI_ID_GRINDER, worldIn, pos.getX(), pos.getY(), pos.getZ());
+
         return true;
+    }
+
+    @Override
+    public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn) {
+        if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking()) return;
+        playerIn.openGui(ModSquad.instance, GUI_ID_GRINDER, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        super.onBlockClicked(worldIn, pos, playerIn);
     }
 
     @Override

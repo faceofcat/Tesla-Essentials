@@ -16,14 +16,10 @@ import static com.trials.modsquad.Ref.BlockReference.*;
 public class ModBlocks {
 
     //Ores
-    public static Block oreCopper;
-    public static Block oreTin;
-    public static Block oreLead;
+    public static Block oreCopper, oreTin, oreLead;
 
     //Machines
-    public static Block grinder;
-    public static Block electricFurnace;
-    public static Block furnaceGen;
+    public static Block grinder, electricFurnace, furnaceGen;
 
     public static void init() {
         //Ores
@@ -50,7 +46,7 @@ public class ModBlocks {
 
     private static void registerBlock(Block block) {
         GameRegistry.register(block);
-        ItemBlock item = new ItemBlock(block);
+        Item item = new ItemBlock(block);
         item.setRegistryName(block.getRegistryName());
         GameRegistry.register(item);
     }
