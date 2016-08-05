@@ -1,17 +1,20 @@
 package com.trials.modsquad.block.TileEntities;
 
 import com.trials.modsquad.block.ModBlocks;
+import net.darkhax.tesla.api.ITeslaConsumer;
+import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
 
 /**
  * Created by Tjeltigre on 8/5/2016.
  */
-public class TileCable extends TileEntity implements ITickable {
+public class TileCable extends TileEntity implements ITeslaHolder, ITeslaConsumer, ITickable {
     /**
      * The amount of stored Tesla power.
      */
@@ -66,6 +69,107 @@ public class TileCable extends TileEntity implements ITickable {
         this.inputRate = input;
         this.outputRate = output;
     }
+
+    @Override
+    public long getStoredPower () {
+
+        return this.stored;
+    }
+
+    @Override
+    public long givePower (long Tesla, boolean simulated) {
+
+        final long acceptedTesla = Math.min(this.getCapacity() - this.stored, Math.min(this.getInputRate(), Tesla));
+
+        if (!simulated)
+            this.stored += acceptedTesla;
+
+        return acceptedTesla;
+    }
+
+    @Override
+    public long getCapacity () {
+
+        return this.capacity;
+    }
+    /**
+     * Sets the capacity of the the container. If the existing stored power is more than the
+     * new capacity, the stored power will be decreased to match the new capacity.
+     *
+     * @param capacity The new capacity for the container.
+     * @return The instance of the container being updated.
+     */
+    public TileCable setCapacity (long capacity) {
+
+        this.capacity = capacity;
+
+        if (this.stored > capacity)
+            this.stored = capacity;
+
+        return this;
+    }
+
+    /**
+     * Gets the maximum amount of Tesla power that can be accepted by the container.
+     *
+     * @return The amount of Tesla power that can be accepted at any time.
+     */
+    public long getInputRate () {
+
+        return this.inputRate;
+    }
+
+    /**
+     * Sets the maximum amount of Tesla power that can be accepted by the container.
+     *
+     * @param rate The amount of Tesla power to accept at a time.
+     * @return The instance of the container being updated.
+     */
+    public TileCable setInputRate (long rate) {
+
+        this.inputRate = rate;
+        return this;
+    }
+
+    /**
+     * Gets the maximum amount of Tesla power that can be pulled from the container.
+     *
+     * @return The amount of Tesla power that can be extracted at any time.
+     */
+    public long getOutputRate () {
+
+        return this.outputRate;
+    }
+
+    /**
+     * Sets the maximum amount of Tesla power that can be pulled from the container.
+     *
+     * @param rate The amount of Tesla power that can be extracted.
+     * @return The instance of the container being updated.
+     */
+    public TileCable setOutputRate (long rate) {
+
+        this.outputRate = rate;
+        return this;
+    }
+
+    /**
+     * Sets both the input and output rates of the container at the same time. Both rates will
+     * be the same.
+     *
+     * @param rate The input/output rate for the Tesla container.
+     * @return The instance of the container being updated.
+     */
+    public TileCable setTransferRate (long rate) {
+
+        this.setInputRate(rate);
+        this.setOutputRate(rate);
+        return this;
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) { return capability == TeslaCapabilities.CAPABILITY_PRODUCER || capability == TeslaCapabilities.CAPABILITY_HOLDER; }
+
     @Override
     public void update() {
         if(!worldObj.isRemote){

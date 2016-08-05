@@ -99,39 +99,7 @@ public class BasicCable extends Block implements ITeslaConsumer, ITeslaHolder, I
         this.deserializeNBT(dataTag);
     }
 
-    @Override
-    public long getStoredPower () {
 
-        return this.stored;
-    }
-
-    @Override
-    public long givePower (long Tesla, boolean simulated) {
-
-        final long acceptedTesla = Math.min(this.getCapacity() - this.stored, Math.min(this.getInputRate(), Tesla));
-
-        if (!simulated)
-            this.stored += acceptedTesla;
-
-        return acceptedTesla;
-    }
-
-    @Override
-    public long takePower (long Tesla, boolean simulated) {
-
-        final long removedPower = Math.min(this.stored, Math.min(this.getOutputRate(), Tesla));
-
-        if (!simulated)
-            this.stored -= removedPower;
-
-        return removedPower;
-    }
-
-    @Override
-    public long getCapacity () {
-
-        return this.capacity;
-    }
 
     @Override
     public NBTTagCompound serializeNBT () {
@@ -163,80 +131,7 @@ public class BasicCable extends Block implements ITeslaConsumer, ITeslaHolder, I
             this.stored = this.getCapacity();
     }
 
-    /**
-     * Sets the capacity of the the container. If the existing stored power is more than the
-     * new capacity, the stored power will be decreased to match the new capacity.
-     *
-     * @param capacity The new capacity for the container.
-     * @return The instance of the container being updated.
-     */
-    public BasicCable setCapacity (long capacity) {
 
-        this.capacity = capacity;
-
-        if (this.stored > capacity)
-            this.stored = capacity;
-
-        return this;
-    }
-
-    /**
-     * Gets the maximum amount of Tesla power that can be accepted by the container.
-     *
-     * @return The amount of Tesla power that can be accepted at any time.
-     */
-    public long getInputRate () {
-
-        return this.inputRate;
-    }
-
-    /**
-     * Sets the maximum amount of Tesla power that can be accepted by the container.
-     *
-     * @param rate The amount of Tesla power to accept at a time.
-     * @return The instance of the container being updated.
-     */
-    public BasicCable setInputRate (long rate) {
-
-        this.inputRate = rate;
-        return this;
-    }
-
-    /**
-     * Gets the maximum amount of Tesla power that can be pulled from the container.
-     *
-     * @return The amount of Tesla power that can be extracted at any time.
-     */
-    public long getOutputRate () {
-
-        return this.outputRate;
-    }
-
-    /**
-     * Sets the maximum amount of Tesla power that can be pulled from the container.
-     *
-     * @param rate The amount of Tesla power that can be extracted.
-     * @return The instance of the container being updated.
-     */
-    public BasicCable setOutputRate (long rate) {
-
-        this.outputRate = rate;
-        return this;
-    }
-
-    /**
-     * Sets both the input and output rates of the container at the same time. Both rates will
-     * be the same.
-     *
-     * @param rate The input/output rate for the Tesla container.
-     * @return The instance of the container being updated.
-     */
-    public BasicCable setTransferRate (long rate) {
-
-        this.setInputRate(rate);
-        this.setOutputRate(rate);
-        return this;
-    }
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
     {
