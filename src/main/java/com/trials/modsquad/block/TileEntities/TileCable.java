@@ -168,7 +168,8 @@ public class TileCable extends TileEntity implements ITeslaHolder, ITeslaConsume
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) { return capability == TeslaCapabilities.CAPABILITY_PRODUCER || capability == TeslaCapabilities.CAPABILITY_HOLDER; }
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) { return capability == TeslaCapabilities.CAPABILITY_PRODUCER && capability != TeslaCapabilities.CAPABILITY_CONSUMER
+            || capability == TeslaCapabilities.CAPABILITY_HOLDER && capability != TeslaCapabilities.CAPABILITY_CONSUMER; }
 
     @Override
     public void update() {
