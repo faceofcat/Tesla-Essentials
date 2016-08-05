@@ -1,5 +1,6 @@
 package com.trials.modsquad.block.TileEntities;
 
+import com.trials.modsquad.block.ModBlocks;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.tileentity.TileEntity;
@@ -73,7 +74,7 @@ public class TileCable extends TileEntity implements ITickable {
                 y = this.getPos().getY();
                 z = this.getPos().getZ();
                 TileEntity e;
-                if((e=worldObj.getTileEntity(new BlockPos(x,y+1,z)))!=null && e.hasCapability(TeslaCapabilities.CAPABILITY_PRODUCER, EnumFacing.UP))
+                if((e=worldObj.getTileEntity(new BlockPos(x,y+1,z)))!=null && e.hasCapability(TeslaCapabilities.CAPABILITY_PRODUCER, ModBlocks.getRelativeFace(pos, e.getPos()).getOpposite()))
                     capacity+=((ITeslaProducer) e).takePower(Math.min(inputRate, capacity-stored), false);
             }
 
