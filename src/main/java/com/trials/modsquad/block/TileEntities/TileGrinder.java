@@ -4,16 +4,17 @@ import com.trials.modsquad.Recipies.GrinderRecipe;
 import com.trials.modsquad.Recipies.TeslaRegistry;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
+import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -30,10 +31,19 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
     private final ItemStack[] inventory; // I'm an idiot
     private BaseTeslaContainer container;
     private ThreadLocalRandom random = ThreadLocalRandom.current();
+    private BlockPos[] sides = new BlockPos[]{
+            new BlockPos(pos.getX()+1, pos.getY(), pos.getZ()),
+            new BlockPos(pos.getX()-1, pos.getY(), pos.getZ()),
+            new BlockPos(pos.getX(), pos.getY()+1, pos.getZ()),
+            new BlockPos(pos.getX(), pos.getY()-1, pos.getZ()),
+            new BlockPos(pos.getX(), pos.getY(), pos.getZ()+1),
+            new BlockPos(pos.getX(), pos.getY(), pos.getZ()-1)
+    };
 
     public TileGrinder(){
         inventory = new ItemStack[2];
         container = new BaseTeslaContainer();
+        container.setInputRate(100);
     }
 
     @Override
@@ -186,7 +196,10 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
     @Override
     public void update() {
         if(isGrinding){
-
+            worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, pos.getX(), pos.getY()+1, pos.getZ(),
+                    random.nextGaussian() * .05, random.nextGaussian() * .05+.2,random.nextGaussian() * .05);
+            worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, pos.getX(), pos.getY()+1, pos.getZ(),
+                    random.nextGaussian() * .05, random.nextGaussian() * .05+.2,random.nextGaussian() * .05);
             worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, pos.getX(), pos.getY()+1, pos.getZ(),
                     random.nextGaussian() * .05, random.nextGaussian() * .05+.2,random.nextGaussian() * .05);
             if(grindTime == 0){
@@ -212,6 +225,7 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
                 Field f = Class.forName("com.trials.modsquad.Recipes.TeslaRegistry.TeslaCraftingHandler").getDeclaredField("grinderRecipeList");
                 f.setAccessible(true);
                 List<GrinderRecipe> r = ((List<GrinderRecipe>) f.get(TeslaRegistry.teslaRegistry));
+                System.out.println("Raw tesla registry: "+r);
                 for(GrinderRecipe g : r)
                     if(g.getInput().getItem().equals(inventory[0].getItem())){
                         isGrinding = true;
@@ -238,5 +252,14 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
     @Override
     public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
         return index==1;
+    }
+
+    private void attemptDrawEnergy(){
+
+        TileEntity e;
+
+        for(BlockPos bPos : sides)
+            if((e=worldObj.getTileEntity(bPos))!=null && e instanceof ITeslaProducer)
+                container.givePower(((ITeslaProducer) e).takePower(container.getCapacity()-container.getStoredPower(), false), false); //Try to pull as much energy as possible
     }
 }
