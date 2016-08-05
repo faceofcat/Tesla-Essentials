@@ -39,7 +39,7 @@ public class BlockElectricFurnace extends BlockGrinder {
     }
 
     @Override
-    public int getMetaFromState(IBlockState state) { // Blynd3 IS THE STUPIDEST PERSON IN THE YOONEEVERSE
+    public int getMetaFromState(IBlockState state) { // Blynd3 IS STUPIDER THAN THE STUPIDEST PERSON IN THE UNIVERSE
         return ((ActiveState) state.getValue(ACTIVITY)).getID();
     }
 
