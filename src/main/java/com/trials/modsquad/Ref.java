@@ -8,7 +8,7 @@ public class Ref {
 
 
     public enum ItemReference{
-        ;
+        BATTERY("battery", "ItemBattery");
 
         private String unlocalizedName, registryName;
         ItemReference(String unlocalizedName, String registryName){
