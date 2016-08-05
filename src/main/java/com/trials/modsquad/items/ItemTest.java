@@ -5,10 +5,8 @@ import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.minecraft.item.Item;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.INBTSerializable;
 
-public class ItemTest extends Item implements ITeslaHolder, ITeslaConsumer, INBTSerializable<NBTTagCompound> {
+public class ItemTest extends Item implements ITeslaHolder, ITeslaConsumer {
 
     private BaseTeslaContainer container;
     private long stored;
@@ -30,10 +28,6 @@ public class ItemTest extends Item implements ITeslaHolder, ITeslaConsumer, INBT
 
     }
 
-    public ItemTest(NBTTagCompound dataTag) {
-        this.deserializeNBT(dataTag);
-    }
-
     @Override
     public long getStoredPower() {
         return container.getStoredPower();
@@ -49,19 +43,4 @@ public class ItemTest extends Item implements ITeslaHolder, ITeslaConsumer, INBT
         return container.givePower(power, simulated);
     }
 
-    @Override
-    public NBTTagCompound serializeNBT() {
-        final NBTTagCompound dataTag = new NBTTagCompound();
-        dataTag.setLong("TeslaPower", this.getStoredPower());
-        dataTag.setLong("TeslaCapacity", this.getCapacity());
-        dataTag.setBoolean("TeslaCapability", true);
-
-        return dataTag;
-    }
-
-    @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        this.stored = nbt.getLong("TeslaPower");
-
-    }
 }
