@@ -1,53 +1,38 @@
 package com.trials.modsquad.block.TileEntities;
 
-import com.trials.modsquad.Recipies.GrinderRecipe;
-import com.trials.modsquad.Recipies.TeslaRegistry;
-import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
+import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
+import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
-public class TileCharger extends TileEntity implements IInventory, ITeslaConsumer, ITeslaHolder, ITickable, ISidedInventory {
 
-    // Objects
-    private final ItemStack[] inventory; // I'm an idiot
+public class TileCharger extends TileEntity implements IInventory, ITeslaProducer, ITeslaHolder, ITickable {
+
+
+    private ItemStack item;
     private BaseTeslaContainer container;
-    private ThreadLocalRandom random = ThreadLocalRandom.current();
-    private BlockPos[] sides = new BlockPos[]{
-            new BlockPos(pos.getX()+1, pos.getY(), pos.getZ()),
-            new BlockPos(pos.getX()-1, pos.getY(), pos.getZ()),
-            new BlockPos(pos.getX(), pos.getY()+1, pos.getZ()),
-            new BlockPos(pos.getX(), pos.getY()-1, pos.getZ()),
-            new BlockPos(pos.getX(), pos.getY(), pos.getZ()+1),
-            new BlockPos(pos.getX(), pos.getY(), pos.getZ()-1)
-    };
 
     public TileCharger(){
-        inventory = new ItemStack[2];
         container = new BaseTeslaContainer();
-        container.setInputRate(100);
     }
 
     @Override
-    public long givePower(long power, boolean simulated) {
-        return container.givePower(power ,simulated);
+    public long takePower(long power, boolean simulated) {
+        return container.takePower(power, simulated);
     }
 
     @Override
@@ -62,19 +47,20 @@ public class TileCharger extends TileEntity implements IInventory, ITeslaConsume
 
     @Override
     public int getSizeInventory() {
-        return inventory.length;
+        return 1;
     }
 
     @Nullable
     @Override
     public ItemStack getStackInSlot(int index) {
-        return inventory[index];
+        return index==0?item:null;
     }
 
     @Nullable
     @Override
     public ItemStack decrStackSize(int index, int count) {
-        ItemStack s = inventory[index];
+        if(index!=0) return null;
+        ItemStack s = item;
         if(s!=null){
             if(s.stackSize <= count) setInventorySlotContents(index, null);
             else if((s = s.splitStack(count)).stackSize==0) setInventorySlotContents(index, null);
@@ -82,32 +68,19 @@ public class TileCharger extends TileEntity implements IInventory, ITeslaConsume
         return s;
     }
 
-    @Override
-    public void setField(int id, int value) {}
-
-    @Override
-    public int getField(int id) { return id; }
-
     @Nullable
     @Override
     public ItemStack removeStackFromSlot(int index) {
-        ItemStack s = inventory[index];
-        inventory[index] = null;
+        if(index!=0) return null;
+        ItemStack s = item;
+        item = null;
         return s;
     }
 
     @Override
     public void setInventorySlotContents(int index, @Nullable ItemStack stack) {
-        if(index == 1) return;
-        if(stack == null || inventory[index]==null){
-            inventory[index] = stack;
-            return;
-        }
-        if(stack.getItem().equals(inventory[index].getItem()) &&
-                (inventory[0]==null ||
-                        stack.stackSize+inventory[index].stackSize<=64)) {
-            inventory[index] = stack;
-        }
+        if(index!=0) return;
+        if(stack==null || item==null || (stack.getItem().equals(item.getItem()) && stack.stackSize+item.stackSize<=64)) item = stack;
 
     }
 
@@ -122,19 +95,21 @@ public class TileCharger extends TileEntity implements IInventory, ITeslaConsume
     }
 
     @Override
-    public void openInventory(EntityPlayer player) {
-        // NOP
-    }
+    public void openInventory(EntityPlayer player) {}
 
     @Override
-    public void closeInventory(EntityPlayer player) {
-        // NOP
-    }
+    public void closeInventory(EntityPlayer player) {}
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         return false;
     }
+
+    @Override
+    public int getField(int id) { return 0; }
+
+    @Override
+    public void setField(int id, int value) {}
 
     @Override
     public int getFieldCount() {
@@ -157,12 +132,16 @@ public class TileCharger extends TileEntity implements IInventory, ITeslaConsume
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound c = super.serializeNBT();
+        System.out.println("Serializing");
         try{
             Field f = NBTTagCompound.class.getDeclaredField("tagMap");
             f.setAccessible(true);
             Map<String, NBTBase> r = (Map<String, NBTBase>) f.get(c);
             Map<String, NBTBase> m = (Map<String, NBTBase>) f.get(container);
-            for(String s : m.keySet()) r.put(s, m.get(s)); // Move container tags to my tags
+            for(String s : m.keySet()){
+                System.out.println("Ser: "+s);
+                r.put(s, m.get(s)); // Move container tags to my tags
+            }
             f.set(c, r);
         }catch(Exception ignored){}
         return c;
@@ -170,8 +149,21 @@ public class TileCharger extends TileEntity implements IInventory, ITeslaConsume
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
+        System.out.println("Deserializing");
         super.deserializeNBT(nbt);
         container.deserializeNBT(nbt);
+        System.out.println(container.getStoredPower()+" "+nbt.toString());
+    }
+
+    @Override
+    public void update() {
+        if (item != null) {
+            if (item.hasCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN)) {
+                System.out.println("It has the capability!");
+            } else {
+                System.out.println("It does not have the capability!");
+            }
+        }
     }
 
     @Override
@@ -184,37 +176,4 @@ public class TileCharger extends TileEntity implements IInventory, ITeslaConsume
         return false;
     }
 
-    @Override
-    public void update() {
-        if(container.getStoredPower()<container.getCapacity()){
-            attemptDrawEnergy(); //Try to draw energy from adjacent blocks
-        }
-
-
-
-    }
-
-    @Override
-    public int[] getSlotsForFace(EnumFacing side) {
-        return new int[]{0, 1};
-    }
-
-    @Override
-    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
-        return index==0;
-    }
-
-    @Override
-    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-        return index==1;
-    }
-
-    private void attemptDrawEnergy(){
-
-        TileEntity e;
-
-        for(BlockPos bPos : sides)
-            if((e=worldObj.getTileEntity(bPos))!=null && e instanceof ITeslaProducer)
-                container.givePower(((ITeslaProducer) e).takePower(container.getCapacity()-container.getStoredPower(), false), false); //Try to pull as much energy as possible
-    }
 }
