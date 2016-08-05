@@ -157,8 +157,8 @@ public class TileCharger extends TileEntity implements IInventory, ITeslaProduce
 
     @Override
     public void update() {
-        if (item != null) {
-            if (item.hasCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN)) {
+        if (item != null || !item.hasTagCompound()) {
+            if (item.getTagCompound().getBoolean("TeslaCapability")) {
                 System.out.println("It has the capability!");
             } else {
                 System.out.println("It does not have the capability!");
