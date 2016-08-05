@@ -10,11 +10,14 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class TileGrinder extends TileEntity implements IInventory, ITeslaConsumer, ITeslaHolder, ITickable, ISidedInventory {
     // Primitives
@@ -26,6 +29,7 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
     // Objects
     private final ItemStack[] inventory; // I'm an idiot
     private BaseTeslaContainer container;
+    private ThreadLocalRandom random = ThreadLocalRandom.current();
 
     public TileGrinder(){
         inventory = new ItemStack[2];
@@ -79,8 +83,15 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
 
     @Override
     public void setInventorySlotContents(int index, @Nullable ItemStack stack) {
+        if(index == 1) return;
+        if(stack == null){
+            inventory[index] = null;
+            return;
+        }
+        if(stack.getItem().equals(inventory[index].getItem()) && (inventory[0]==null || stack.stackSize+inventory[index].stackSize<=64)) {
+            inventory[index] = new ItemStack(stack.getItem());
+        }
 
-        inventory[index] = stack;
     }
 
     @Override
@@ -113,14 +124,6 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
         switch (id){
             case 0:
                 return workTime;
-            case 1:
-                return (int) container.getStoredPower();
-            case 2:
-                return (int) container.getCapacity();
-            case 3:
-                return (int) container.getInputRate();
-            case 4:
-                return (int) container.getOutputRate();
         }
         return 0;
     }
@@ -180,9 +183,12 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
 
     @Override
     public void update() {
-        ItemStack s;
         if(isGrinding){
+
+            worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, pos.getX(), pos.getY()+1, pos.getZ(),
+                    random.nextGaussian() * .05, random.nextGaussian() * .05+.2,random.nextGaussian() * .05);
             if(grindTime == 0){
+                //TODO: Update texture
                 try{ //Troll tj
                     Field f = Class.forName("com.trials.modsquad.Recipes.TeslaRegistry.TeslaCraftingHandler").getDeclaredField("grinderRecipeList");
                     f.setAccessible(true);
@@ -194,11 +200,26 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
                             ItemStack i = new ItemStack(g.getOutput().getItem(), inventory[1].stackSize+g.getAmount());
                             if(g.getOutput().hasTagCompound() && g.getOutput().getTagCompound()!=null)
                                 i.setTagCompound(g.getOutput().getTagCompound());
+                            inventory[1] = i;
                         }else return;
 
                 }catch(Exception ignored){ System.out.println("SOMETHING WENT EXTREMELY WRONG! GO MAKE SURE YOUR HOUSE ISN'T ON FIRE!!!"); }
             }else --grindTime;
+        }else if(inventory[0]!=null){
+            try{
+                Field f = Class.forName("com.trials.modsquad.Recipes.TeslaRegistry.TeslaCraftingHandler").getDeclaredField("grinderRecipeList");
+                f.setAccessible(true);
+                List<GrinderRecipe> r = ((List<GrinderRecipe>) f.get(TeslaRegistry.teslaRegistry));
+                for(GrinderRecipe g : r)
+                    if(g.getInput().getItem().equals(inventory[0].getItem())){
+                        isGrinding = true;
+                        grindTime = DEFAULT_GRIND_TIME;
+                        System.out.println(pos+" started grinding!");
+                        //TODO: Update texture
+                    }
+            }catch(Exception e){} // Stupid exception that will never be thrown
         }
+
 
     }
 

@@ -15,6 +15,7 @@ public class TileGeneratorBase extends TileEntity implements ITeslaHolder,ITesla
     private long tickRate;
     private long production;
     private long temp;
+
     TileGeneratorBase(long storedPower,long capacity,long tickRate, long production)
     {
 

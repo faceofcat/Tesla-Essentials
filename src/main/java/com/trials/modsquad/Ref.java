@@ -6,6 +6,9 @@ import net.minecraft.item.Item;
 
 public class Ref {
 
+    public static final int GUI_ID_GRINDER = 0;
+    public static final int GUI_ID_FURNACE_GEN = 1;
+
 
     public enum ItemReference{
         BATTERY("battery", "ItemBattery");
@@ -23,7 +26,9 @@ public class Ref {
     public enum BlockReference {
         LEAD_CABLE("lcable","BlockLeadCable"),
         MACHINE_GRINDER("grinder", "BlockGrinder"),
-        MACHINE_FURNACE("electricFurnace", "BlockElectricFurnace");
+        MACHINE_FURNACE("electricFurnace", "BlockElectricFurnace"),
+        GENERATOR_FURNACE("generatorFurnace", "FurnaceGenerator"),
+        GENERATOR_SOALR("solarPanel", "SolarPanel");
 
         private String unlocalizedName, registryName;
         BlockReference(String unlocalizedName, String registryName) {

@@ -1,8 +1,7 @@
 package com.trials.modsquad.block.machines;
 
 import com.trials.modsquad.ModSquad;
-import com.trials.modsquad.Ref;
-import com.trials.modsquad.block.TileEntities.TileGrinder;
+import com.trials.modsquad.block.TileEntities.TileFurnaceGenerator;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -15,31 +14,27 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
 import javax.annotation.Nullable;
 import java.util.concurrent.ThreadLocalRandom;
+import static com.trials.modsquad.Ref.GUI_ID_FURNACE_GEN;
 
-import static com.trials.modsquad.Ref.GUI_ID_GRINDER;
+public class BlockFurnaceGenerator extends BlockContainer {
 
-public class BlockGrinder extends BlockContainer {
-
-
-    public BlockGrinder(String s, String s1) {
+    public BlockFurnaceGenerator(String s, String s1){
         super(Material.IRON);
         setUnlocalizedName(s);
         setRegistryName(s1);
-        setCreativeTab(Ref.tabModSquad);
     }
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileGrinder();
+        return new TileFurnaceGenerator();
     }
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking()) return false;
-        playerIn.openGui(ModSquad.instance, GUI_ID_GRINDER, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        playerIn.openGui(ModSquad.instance, GUI_ID_FURNACE_GEN, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
 
@@ -62,5 +57,4 @@ public class BlockGrinder extends BlockContainer {
             }
         super.breakBlock(worldIn, pos, state);
     }
-
 }

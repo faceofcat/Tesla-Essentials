@@ -18,9 +18,5 @@ public class BlockElectricFurnace extends BlockGrinder {
         return new TileFurnace();
     }
 
-    @Override
-    public boolean isOpaqueCube(IBlockState state) {
-        return false;
-    }
 
 }
