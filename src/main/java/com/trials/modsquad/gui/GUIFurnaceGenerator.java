@@ -17,7 +17,7 @@ public class GUIFurnaceGenerator extends GuiContainer {
     public GUIFurnaceGenerator(InventoryPlayer player, TileFurnaceGenerator generator) {
         super(new ContainerFurnaceGenerator(player, generator));
         this.generator = generator;
-        p = new PowerBar(this, width-20, 50, PowerBar.BackgroundType.LIGHT);
+        p = new PowerBar(this, xSize+100, 50, PowerBar.BackgroundType.LIGHT);
     }
 
     @Override

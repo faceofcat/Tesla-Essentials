@@ -1,8 +1,13 @@
 package com.trials.modsquad.block.machines;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.TileEntities.TileElectricFurnace;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -16,9 +21,21 @@ import static com.trials.modsquad.Ref.GUI_ID_FURNACE;
 
 public class BlockElectricFurnace extends BlockGrinder {
 
+    public static final PropertyEnum ACTIVE = PropertyEnum.create("active", ActiveState.class);
+
     public BlockElectricFurnace(String s, String s1) {
         super(s, s1);
         setCreativeTab(Ref.tabModSquad);
+    }
+
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, ACTIVE);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) { // Blynd3 IS THE STUPIDEST PERSON IN THE YOONEEVERSE
+        return ((ActiveState) state.getValue(ACTIVE)).getID();
     }
 
     @Override

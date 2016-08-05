@@ -3,6 +3,7 @@ package com.trials.modsquad.gui;
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.block.TileEntities.TileGrinder;
 import com.trials.modsquad.block.containers.ContainerGrinder;
+import net.darkhax.tesla.lib.PowerBar;
 import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -12,6 +13,7 @@ import org.lwjgl.opengl.GL11;
 public class GUIGrinder extends GuiContainer{
 
     private TileGrinder grinder;
+    private PowerBar p;
 
     public GUIGrinder(InventoryPlayer player, TileGrinder grinder) {
         super(new ContainerGrinder(player, grinder));
@@ -21,7 +23,7 @@ public class GUIGrinder extends GuiContainer{
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         fontRendererObj.drawString("Grinder", 8, 6, 4210751);
-        fontRendererObj.drawString("Power: "+ TeslaUtils.getDisplayableTeslaCount(grinder.getStoredPower()), 8, 18, 4210751);
+        p = new PowerBar(this, xSize+100, 50, PowerBar.BackgroundType.LIGHT);
     }
 
     @Override
@@ -31,5 +33,6 @@ public class GUIGrinder extends GuiContainer{
         GL11.glColor4f(1f, 1f, 1f, 1f);
         mc.renderEngine.bindTexture(l);
         drawTexturedModalRect((width - xSize)/2, (height-ySize)/2, 0, 0, xSize, ySize);
+        p.draw(grinder);
     }
 }
