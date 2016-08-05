@@ -1,5 +1,7 @@
 package com.trials.modsquad.block.TileEntities;
 
+import com.trials.modsquad.block.ModBlocks;
+import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
@@ -14,6 +16,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
@@ -21,14 +24,26 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Map;
 
+import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
+
 
 public class TileFurnaceGenerator extends TileEntity implements IInventory, ITeslaProducer, ITeslaHolder, ITickable, ICapabilityProvider{
 
 
+    private BlockPos[] MySidesAreInOrbitxDDDDDDDDTopKek = new BlockPos[]{
+            new BlockPos(pos.getX()+1, pos.getY(), pos.getZ()),
+            new BlockPos(pos.getX()-1, pos.getY(), pos.getZ()),
+            new BlockPos(pos.getX(), pos.getY()+1, pos.getZ()),
+            new BlockPos(pos.getX(), pos.getY()-1, pos.getZ()),
+            new BlockPos(pos.getX(), pos.getY(), pos.getZ()+1),
+            new BlockPos(pos.getX(), pos.getY(), pos.getZ()-1)
+    };
     private ItemStack fuel;
     private BaseTeslaContainer container;
+
     private int workTime;
     private boolean isBurning;
+
 
     public TileFurnaceGenerator(){
         container = new BaseTeslaContainer();
@@ -178,6 +193,7 @@ public class TileFurnaceGenerator extends TileEntity implements IInventory, ITes
 
     @Override
     public void update() {
+        TileEntity t;
         if(isBurning){
             container.givePower(20, false);
             if(workTime==0) isBurning = false;
@@ -185,9 +201,14 @@ public class TileFurnaceGenerator extends TileEntity implements IInventory, ITes
         }
         else if(fuel!=null && TileEntityFurnace.isItemFuel(fuel)){ // Fixes bug where generator tears through fuel supply
             isBurning = true;
-            workTime = TileEntityFurnace.getItemBurnTime(fuel);
+            workTime = TileEntityFurnace.getItemBurnTime(fuel)/2; // Automatically casts away eventual decimal points
             decrStackSize(0, 1);
         }
+        if(getStoredPower()>0)
+            for(BlockPos side : MySidesAreInOrbitxDDDDDDDDTopKek){
+                if((t=worldObj.getTileEntity(side))!=null && t.hasCapability(CAPABILITY_CONSUMER, ModBlocks.getRelativeFace(t.getPos(), pos)))
+                    container.takePower(((ITeslaConsumer) t).givePower(Math.min(container.getOutputRate(), container.getStoredPower()), false), false);
+            }
     }
 
     @Override

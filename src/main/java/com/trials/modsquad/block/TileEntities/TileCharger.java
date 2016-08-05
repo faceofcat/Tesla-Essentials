@@ -1,5 +1,6 @@
 package com.trials.modsquad.block.TileEntities;
 
+import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
@@ -159,7 +160,8 @@ public class TileCharger extends TileEntity implements IInventory, ITeslaProduce
     @Override
     public void update() {
         System.out.println(item != null && item.getItem() instanceof ICapabilityProvider &&
-                ((ICapabilityProvider) item.getItem()).hasCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN)?item+" has the capability!":item+" does not have the capability!");
+                ((ICapabilityProvider) item.getItem()).hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, EnumFacing.DOWN)?item+" has the capability!":item+" does not have the capability!");
+        container.takePower(((ITeslaConsumer) item.getItem()).givePower(Math.min(container.getOutputRate(), container.getStoredPower()), false), false);
     }
 
     @Override
