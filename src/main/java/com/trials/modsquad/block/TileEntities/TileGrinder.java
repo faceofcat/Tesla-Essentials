@@ -281,12 +281,10 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
 
     private void attemptDrawEnergy(){
 
-        TileEntity e;
-
         for(BlockPos bPos : sides){
-            System.out.println((e=worldObj.getTileEntity(bPos))+" "+(e!=null?e.getCapability(TeslaCapabilities.CAPABILITY_PRODUCER, EnumFacing.DOWN):""));
-            if((e=worldObj.getTileEntity(bPos))!=null && e instanceof ITeslaProducer)
-                container.givePower(((ITeslaProducer) e).takePower(container.getCapacity() - container.getStoredPower(), false), false); //Try to pull as much energy as possible
+            // Try to pull as much energy as possible
+            worldObj.loadedTileEntityList.stream().filter(e -> e != null && e.hasCapability(TeslaCapabilities.CAPABILITY_PRODUCER,
+                    getRelativeFacing(e.getPos()))).forEach(e -> container.givePower(((ITeslaProducer) e).takePower(container.getCapacity() - container.getStoredPower(), false), false));
         }
     }
 
