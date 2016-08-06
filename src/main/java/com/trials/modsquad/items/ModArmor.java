@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,43 +19,56 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.EnumHelper;
 
+import java.lang.reflect.Field;
 import java.util.List;
+
+import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 
 public class ModArmor extends ItemArmor {
 
     private static int[] armor = {3,8,6,3};
-    public static ItemArmor.ArmorMaterial electricArmor = EnumHelper.addArmorMaterial("electricalArmor", "modsquad:electricalArmor", 15, armor, 9, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 4F);
+    public static ItemArmor.ArmorMaterial electricArmor = EnumHelper.addArmorMaterial("electricalArmor", "modsquad:electricalArmor",
+            15, armor, 9, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 4F);
 
     private BaseTeslaContainer container;
+    private final Field itemDamage;
 
     public ModArmor(String name, String reg, ArmorMaterial material, int var1, EntityEquipmentSlot slot) {
         super(material, var1, slot);
         setUnlocalizedName(name);
         setRegistryName(reg);
         setCreativeTab(Ref.tabModSquad);
+        Field itemDamage = null;
+        try {
+            itemDamage = ItemStack.class.getDeclaredField("itemDamage");
+            itemDamage.setAccessible(true);
+        } catch (NoSuchFieldException e) {}
+        this.itemDamage = itemDamage;
+    }
+
+    @Override
+    public void onCreated(ItemStack stack, World worldIn, EntityPlayer playerIn) {
+        setDamage(stack, 0);
+        super.onCreated(stack, worldIn, playerIn);
     }
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        container = (BaseTeslaContainer) stack.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
+        container = (BaseTeslaContainer) stack.getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN);
 
         tooltip.add("Power: " + container.getStoredPower() + "/" + container.getCapacity());
+
+        setDamage(stack, 0);
     }
 
     @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        ITeslaHolder h = stack.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
-
-        int power = (int) h.getStoredPower();
-        int dam = Math.round(power / h.getCapacity());
-        setDamage(stack, dam);
     }
 
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
         ITeslaConsumer c = itemStack.getCapability(TeslaCapabilities.CAPABILITY_CONSUMER, EnumFacing.DOWN);
-        ITeslaHolder h = itemStack.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
 
         /*if (player.inventory.armorItemInSlot(3) != null && player.inventory.armorItemInSlot(3).getItem() == ModItems.electricHelmet) {
             if (h.getStoredPower() == 0) { armor[0] = 0; } else { armor[0] = 3; }
@@ -78,7 +92,26 @@ public class ModArmor extends ItemArmor {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-        return new BaseTeslaContainerProvider(new BaseTeslaContainer());
+        return new BaseTeslaContainerProvider(new BaseTeslaContainer(){
+            @Override
+            public long givePower(long Tesla, boolean simulated) {
+                setDamage(stack, 0);
+                return super.givePower(Tesla, simulated);
+            }
+        });
     }
 
+    @Override
+    public void setDamage(ItemStack stack, int damage) {
+        System.out.println("Setting: "+damage);
+        ITeslaHolder h=stack.getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN);
+        // As stored power increases, dam tends towards the value getMaxDamage()
+        int dam = h.getCapacity()>0?Math.round(h.getStoredPower()*(getMaxDamage()-1)/h.getCapacity()):0;
+        try{ itemDamage.setInt(stack, getMaxDamage()-dam); }catch(Exception e){}
+    }
+
+    @Override
+    public boolean isRepairable() {
+        return false;
+    }
 }

@@ -2,10 +2,6 @@
   "forge_marker": 1,
   "variants": {
     "active=inactive": { "model": "modsquad:electricFurnace" },
-    "active=active": { "model": "modsquad:electricFurnace", "textures": {
-        "5": "modsquad:blocks/door_on",
-        "6": "modsquad:blocks/side_on"
-     }
-    }
+    "active=active": { "model": "modsquad:electricFurnaceOn" }
   }
 }
