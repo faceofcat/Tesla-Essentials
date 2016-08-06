@@ -15,12 +15,12 @@ public class ModItems {
     public static Item ingotCopper, ingotTin, ingotLead;
 
     //Dusts
-    public static Item dustCopper, dustTin, dustLead;
+    public static Item dustCopper, dustTin, dustLead, dustIron, dustGold;
 
     public static Item test;
 
     //Armor
-    public static Item electricHelmet, electricChestplate, electricLeggings, electricBoots;
+    public static Item electricHelmet, electricChestplate, electricLeggings, electricBoots, jetChestplate;
 
     //Tools
     public static Item terraSmasher;
@@ -35,6 +35,8 @@ public class ModItems {
         dustCopper = new ModDust(Ref.DustReference.COPPER.getUnlocalizedName(), Ref.DustReference.COPPER.getRegistryName());
         dustTin = new ModDust(Ref.DustReference.TIN.getUnlocalizedName(), Ref.DustReference.TIN.getRegistryName());
         dustLead = new ModDust(Ref.DustReference.LEAD.getUnlocalizedName(), Ref.DustReference.LEAD.getRegistryName());
+        dustIron = new ModDust(Ref.DustReference.IRON.getUnlocalizedName(), Ref.DustReference.IRON.getRegistryName());
+        dustGold = new ModDust(Ref.DustReference.GOLD.getUnlocalizedName(), Ref.DustReference.IRON.getRegistryName());
 
         test = new ItemTest();
 
@@ -43,6 +45,8 @@ public class ModItems {
         electricChestplate = new ModArmor(Ref.ItemReference.ELECTRIC_CHESTPLATE.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_CHESTPLATE.getRegistryName(), electricArmor, 1, EntityEquipmentSlot.CHEST);
         electricLeggings = new ModArmor(Ref.ItemReference.ELECTRIC_LEGGINGS.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_LEGGINGS.getRegistryName(), electricArmor, 2, EntityEquipmentSlot.LEGS);
         electricBoots = new ModArmor(Ref.ItemReference.ELECTRIC_BOOTS.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_BOOTS.getRegistryName(), electricArmor, 1, EntityEquipmentSlot.FEET);
+
+        jetChestplate = new ModArmor(Ref.ItemReference.JET_CHESTPLATE.getUnlocalizedName(), Ref.ItemReference.JET_CHESTPLATE.getRegistryName(), electricArmor, 1, EntityEquipmentSlot.CHEST);
 
         //Tools
         terraSmasher = new TerraSmasher(Ref.ItemReference.TERRA_SMASHER.getUnlocalizedName(), Ref.ItemReference.TERRA_SMASHER.getRegistryName());
@@ -59,6 +63,8 @@ public class ModItems {
         GameRegistry.register(dustCopper);
         GameRegistry.register(dustTin);
         GameRegistry.register(dustLead);
+        GameRegistry.register(dustIron);
+        GameRegistry.register(dustGold);
 
         GameRegistry.register(test);
 
@@ -67,6 +73,8 @@ public class ModItems {
         GameRegistry.register(electricChestplate);
         GameRegistry.register(electricLeggings);
         GameRegistry.register(electricBoots);
+
+        GameRegistry.register(jetChestplate);
 
         //Tools
         GameRegistry.register(terraSmasher);
@@ -83,6 +91,8 @@ public class ModItems {
         registerRender(dustCopper);
         registerRender(dustTin);
         registerRender(dustLead);
+        registerRender(dustIron);
+        registerRender(dustGold);
 
         registerRender(test);
 
@@ -91,6 +101,8 @@ public class ModItems {
         registerRender(electricChestplate);
         registerRender(electricLeggings);
         registerRender(electricBoots);
+
+        registerRender(jetChestplate);
 
         //Tools
         registerRender(terraSmasher);

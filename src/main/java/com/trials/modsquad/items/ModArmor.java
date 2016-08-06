@@ -74,18 +74,16 @@ public class ModArmor extends ItemArmor {
 
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
-        ITeslaConsumer c = itemStack.getCapability(TeslaCapabilities.CAPABILITY_CONSUMER, EnumFacing.DOWN);
-
-        /*if (player.inventory.armorItemInSlot(3) != null && player.inventory.armorItemInSlot(3).getItem() == ModItems.electricHelmet) {
-            if (h.getStoredPower() == 0) { armor[0] = 0; } else { armor[0] = 3; }
-        } else if (player.inventory.armorItemInSlot(2) != null && player.inventory.armorItemInSlot(2).getItem() == ModItems.electricChestplate) {
-            if (h.getStoredPower() == 0) { armor[1] = 0; } else { armor[1] = 8; }
-        } else if (player.inventory.armorItemInSlot(1) != null && player.inventory.armorItemInSlot(1).getItem() == ModItems.electricLeggings) {
-            if (h.getStoredPower() == 0) { armor[2] = 0; } else { armor[2] = 6; }
-        } else if (player.inventory.armorItemInSlot(0) != null && player.inventory.armorItemInSlot(0).getItem() == ModItems.electricBoots) {
-            if (h.getStoredPower() == 0) { armor[3] = 0; } else { armor[3] = 3; }
-        }*/
-
+        if (player.inventory.armorItemInSlot(3) !=null && player.inventory.armorItemInSlot(3).getItem() == ModItems.electricHelmet
+                && player.inventory.armorItemInSlot(2) !=null && player.inventory.armorItemInSlot(2).getItem() == ModItems.jetChestplate
+                && player.inventory.armorItemInSlot(1) !=null && player.inventory.armorItemInSlot(1).getItem() == ModItems.electricLeggings
+                && player.inventory.armorItemInSlot(0) !=null && player.inventory.armorItemInSlot(0).getItem() == ModItems.electricBoots
+                && !player.capabilities.isCreativeMode) {
+                    player.capabilities.allowFlying = true;
+        } else {
+            player.capabilities.allowFlying = false;
+            player.capabilities.isFlying = false;
+        }
     }
 
     @Override

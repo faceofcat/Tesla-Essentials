@@ -20,7 +20,8 @@ public class Ref {
         ELECTRIC_CHESTPLATE("electricChestplate", "ItemElectricChestplate"),
         ELECTRIC_LEGGINGS("electricLeggings", "ItemElectricLeggings"),
         ELECTRIC_BOOTS("electricBoots", "ItemElectricBoots"),
-        TERRA_SMASHER("terraSmasher", "ItemTerraSmasher")
+        TERRA_SMASHER("terraSmasher", "ItemTerraSmasher"),
+        JET_CHESTPLATE("jetChestplate", "ItemJetChestplate")
         ;
 
         private String unlocalizedName, registryName;
@@ -103,7 +104,10 @@ public class Ref {
     public enum DustReference{
         COPPER("dustCopper", "ItemDustCopper"),
         TIN("dustTin", "ItemDustTin"),
-        LEAD("dustLead", "ItemDustLead");
+        LEAD("dustLead", "ItemDustLead"),
+        IRON("dustIron", "ItemDustIron"),
+        GOLD("dustGold", "ItemDustGold")
+        ;
 
         private String unlocalizedName, registryName;
         DustReference(String unlocalizedName, String registryName){
