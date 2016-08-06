@@ -3,13 +3,17 @@ package com.trials.modsquad.items;
 import com.trials.modsquad.Ref;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import static com.trials.modsquad.items.ModArmor.electricArmor;
-
 public class ModItems {
+
+    public static ItemArmor.ArmorMaterial electricArmor = EnumHelper.addArmorMaterial("electricalArmor", "modsquad:electricalArmor", 15, new int[]{3,8,6,3}, 9, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 4F);
+    public static Item.ToolMaterial electricTool = EnumHelper.addToolMaterial("electricalTool", 3, 512, 12F, 3F, 14);
 
     //Ingots
     public static Item ingotCopper, ingotTin, ingotLead, ingotElectricAlloy;
@@ -24,6 +28,7 @@ public class ModItems {
 
     //Tools
     public static Item terraSmasher;
+    public static Item electricPickaxe;
 
     public static void init() {
         //Ingots
@@ -53,6 +58,8 @@ public class ModItems {
 
         //Tools
         terraSmasher = new TerraSmasher(Ref.ItemReference.TERRA_SMASHER.getUnlocalizedName(), Ref.ItemReference.TERRA_SMASHER.getRegistryName());
+
+        electricPickaxe = new ModPickaxe(Ref.ItemReference.ELECTRIC_PICKAXE.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_PICKAXE.getRegistryName(), electricTool);
 
     }
 
@@ -84,6 +91,8 @@ public class ModItems {
         //Tools
         GameRegistry.register(terraSmasher);
 
+        GameRegistry.register(electricPickaxe);
+
     }
 
     public static void registerRenders() {
@@ -113,6 +122,8 @@ public class ModItems {
 
         //Tools
         registerRender(terraSmasher);
+
+        registerRender(electricPickaxe);
 
     }
 
