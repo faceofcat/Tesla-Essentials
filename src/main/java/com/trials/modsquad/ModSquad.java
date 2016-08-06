@@ -61,6 +61,8 @@ public class ModSquad
         OreDictionary.registerOre("dustCopper", ModItems.dustCopper);
         OreDictionary.registerOre("dustTin", ModItems.dustTin);
         OreDictionary.registerOre("dustLead", ModItems.dustLead);
+        OreDictionary.registerOre("dustIron", ModItems.dustIron);
+        OreDictionary.registerOre("dustGold", ModItems.dustGold);
     }
 
     @EventHandler
@@ -68,6 +70,7 @@ public class ModSquad
         // Recipes
         proxy.init();
         TeslaRegistry.registerGrinderCrafting();
+        TeslaRegistry.traditionalCraftingRegister();
     }
 
     @EventHandler
