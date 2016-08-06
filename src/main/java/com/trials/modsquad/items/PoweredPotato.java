@@ -29,7 +29,6 @@ import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER
 public class PoweredPotato extends ItemFood {
 
     private final Field itemDamage;
-    private BaseTeslaContainer container = new BaseTeslaContainer();
 
     public PoweredPotato(String unlocalizedName, String registryName) {
         super(4, 0.8F, false);
