@@ -31,6 +31,7 @@ public class ModArmor extends ItemArmor {
     private final Field damageReduce;
     public static final int powerDrawPerTickOnFlight = 1;
     public static final int damageMultiplier = 4;
+    private int ticks = 0;
 
     public ModArmor(String name, String reg, ArmorMaterial material, int var1, EntityEquipmentSlot slot) {
         super(material, var1, slot);
@@ -78,18 +79,29 @@ public class ModArmor extends ItemArmor {
 
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
+        BaseTeslaContainer container = (BaseTeslaContainer) itemStack.getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN);
+
         if (player.inventory.armorItemInSlot(3) !=null && player.inventory.armorItemInSlot(3).getItem() == ModItems.electricHelmet
                 && player.inventory.armorItemInSlot(2) !=null && player.inventory.armorItemInSlot(2).getItem() == ModItems.jetChestplate
                 && player.inventory.armorItemInSlot(1) !=null && player.inventory.armorItemInSlot(1).getItem() == ModItems.electricLeggings
                 && player.inventory.armorItemInSlot(0) !=null && player.inventory.armorItemInSlot(0).getItem() == ModItems.electricBoots
                 && player.inventory.armorItemInSlot(2).getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
+                && container.getStoredPower() > 0
                 && !player.capabilities.isCreativeMode) {
             player.capabilities.allowFlying = true;
+            if(player.capabilities.isFlying) {
+                if (ticks == 80) {
+                    player.inventory.armorItemInSlot(2).getCapability(TeslaCapabilities.CAPABILITY_PRODUCER, EnumFacing.DOWN).takePower(powerDrawPerTickOnFlight, false);
+                    ticks = 0;
+                } else {
+                    ticks++;
+                }
+            }
         } else {
             player.capabilities.allowFlying = false;
             player.capabilities.isFlying = false;
         }
-        if(player.capabilities.isFlying) player.inventory.armorItemInSlot(2).getCapability(TeslaCapabilities.CAPABILITY_PRODUCER, EnumFacing.DOWN).takePower(powerDrawPerTickOnFlight, false);
+
     }
 
     @Override
@@ -108,7 +120,6 @@ public class ModArmor extends ItemArmor {
             @Override
             public long givePower(long Tesla, boolean simulated) {
                 setDamage(stack, 0);
-                System.out.println(getCapacity());
                 return super.givePower(Tesla, simulated);
             }
 
