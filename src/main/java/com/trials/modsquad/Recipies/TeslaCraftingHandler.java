@@ -52,4 +52,6 @@ public class TeslaCraftingHandler {
             return grinderRecipeList.get(i);
         return null;
     }
+
+    public boolean hasRecipe(ItemStack input){ return getGrinderOutFromIn(input)!=null; }
 }

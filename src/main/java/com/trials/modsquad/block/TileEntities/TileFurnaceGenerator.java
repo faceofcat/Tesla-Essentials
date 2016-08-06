@@ -207,7 +207,8 @@ public class TileFurnaceGenerator extends TileEntity implements IInventory, ITes
         if(getStoredPower()>0)
             for(BlockPos side : MySidesAreInOrbitxDDDDDDDDTopKek){
                 if((t=worldObj.getTileEntity(side))!=null && t.hasCapability(CAPABILITY_CONSUMER, ModBlocks.getRelativeFace(t.getPos(), pos)))
-                    container.takePower(((ITeslaConsumer) t).givePower(Math.min(container.getOutputRate(), container.getStoredPower()), false), false);
+                    container.takePower(((ITeslaConsumer) t.getCapability(CAPABILITY_CONSUMER, ModBlocks.getRelativeFace(t.getPos(), pos)))
+                            .givePower(Math.min(container.getOutputRate(), container.getStoredPower()), false), false);
             }
     }
 

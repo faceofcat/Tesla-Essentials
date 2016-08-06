@@ -18,7 +18,7 @@ public class GUIFurnaceGenerator extends GuiContainer {
     public GUIFurnaceGenerator(InventoryPlayer player, TileFurnaceGenerator generator) {
         super(new ContainerFurnaceGenerator(player, generator));
         this.generator = generator;
-        p = new PowerBar(this, xSize+100, height / 2 + 50, PowerBar.BackgroundType.LIGHT);
+        p = new PowerBar(this, xSize-40, 70, PowerBar.BackgroundType.LIGHT);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class GUIFurnaceGenerator extends GuiContainer {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         ResourceLocation l;
-        mc.renderEngine.getTexture(l=new ResourceLocation(ModSquad.MODID, "/textures/gui/container/fgen.png"));
+        mc.renderEngine.getTexture(l=new ResourceLocation(ModSquad.MODID, "textures/gui/container/fgen.png"));
         GL11.glColor4f(1f, 1f, 1f, 1f);
         mc.renderEngine.bindTexture(l);
         drawTexturedModalRect((width - xSize)/2, (height-ySize)/2, 0, 0, xSize, ySize);

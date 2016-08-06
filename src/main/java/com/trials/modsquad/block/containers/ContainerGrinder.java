@@ -7,6 +7,9 @@ import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
+
 import javax.annotation.Nullable;
 
 public class ContainerGrinder extends Container {
@@ -16,8 +19,8 @@ public class ContainerGrinder extends Container {
 
     public ContainerGrinder(InventoryPlayer inv, TileGrinder grinder){
         this.grinder = grinder;
-        addSlotToContainer(new Slot(grinder, 0, 56, 35)); // Nice and centered :P
-        addSlotToContainer(new Slot(grinder, 1, 116, 35){
+        addSlotToContainer(new SlotItemHandler(grinder, 0, 56, 35)); // Nice and centered :P
+        addSlotToContainer(new SlotItemHandler(grinder, 1, 116, 35){
             @Override
             public boolean isItemValid(@Nullable ItemStack stack) {
                 return false;
@@ -31,16 +34,6 @@ public class ContainerGrinder extends Container {
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
-
-        for (IContainerListener l : listeners) if (workTime != grinder.getField(0)) l.sendProgressBarUpdate(this, 0, grinder.getField(0));
-
-        workTime = grinder.getField(0);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void updateProgressBar(int id, int data) {
-        grinder.setField(id, data);
     }
 
     @Nullable
@@ -51,10 +44,10 @@ public class ContainerGrinder extends Container {
         if(s!=null && s.getHasStack()){
             ItemStack is = s.getStack();
             i = is.copy();
-            if(index<grinder.getSizeInventory()){
-                if(!mergeItemStack(is, grinder.getSizeInventory(), 36+grinder.getSizeInventory(), true)) return null;
+            if(index<grinder.getSlots()){
+                if(!mergeItemStack(is, grinder.getSlots(), 36+grinder.getSlots(), true)) return null;
             }
-            else if(!mergeItemStack(is, 0, grinder.getSizeInventory(), false)) return null;
+            else if(!mergeItemStack(is, 0, grinder.getSlots(), false)) return null;
             if(is.stackSize == 0) s.putStack(null);
             else s.onSlotChanged();
             if(is.stackSize == i.stackSize) return null;
@@ -64,7 +57,5 @@ public class ContainerGrinder extends Container {
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer playerIn) {
-        return grinder.isUseableByPlayer(playerIn);
-    }
+    public boolean canInteractWith(EntityPlayer playerIn) { return grinder.getDistanceSq(playerIn.posX+.5, playerIn.posY+.5, playerIn.posZ+.5)<64; }
 }

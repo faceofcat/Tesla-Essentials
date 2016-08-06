@@ -8,10 +8,13 @@ import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -19,6 +22,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.IItemHandler;
+
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -26,13 +32,15 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static com.trials.modsquad.block.ModBlocks.getRelativeFace;
+import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
+import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
 
-public class TileGrinder extends TileEntity implements IInventory, ITeslaConsumer, ITeslaHolder, ITickable, ISidedInventory {
+public class TileGrinder extends TileEntity implements IItemHandler, ITickable {
     // Primitives
-    private int workTime = 0;
     private int grindTime;
     public static final int DEFAULT_GRIND_TIME = 60;
+    public static final int DRAW_PER_TICK = 10;
     private boolean isGrinding = false;
 
     // Objects
@@ -47,22 +55,7 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
     }
 
     @Override
-    public long givePower(long power, boolean simulated) {
-        return container.givePower(power ,simulated);
-    }
-
-    @Override
-    public long getStoredPower() {
-        return container.getStoredPower();
-    }
-
-    @Override
-    public long getCapacity() {
-        return container.getCapacity();
-    }
-
-    @Override
-    public int getSizeInventory() {
+    public int getSlots() {
         return inventory.length;
     }
 
@@ -72,115 +65,38 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
         return inventory[index];
     }
 
-    @Nullable
     @Override
-    public ItemStack decrStackSize(int index, int count) {
-        ItemStack s = inventory[index];
-        if(s!=null){
-            if(s.stackSize <= count) setInventorySlotContents(index, null);
-            else if((s = s.splitStack(count)).stackSize==0) setInventorySlotContents(index, null);
-        }
-        return s;
-    }
-
-    @Nullable
-    @Override
-    public ItemStack removeStackFromSlot(int index) {
-        ItemStack s = inventory[index];
-        inventory[index] = null;
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+        if(slot==1) return null;
+        ItemStack s = inventory[slot];
+        if(simulate) return s;
+        inventory[slot] = stack;
         return s;
     }
 
     @Override
-    public void setInventorySlotContents(int index, @Nullable ItemStack stack) {
-        if(index == 1) return;
-        if(stack == null || inventory[index]==null){
-            inventory[index] = stack;
-            return;
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        if(simulate) return inventory[slot];
+        ItemStack s = inventory[slot];
+        if(s.stackSize-amount<=0) inventory[slot]=null;
+        else inventory[slot] = s.splitStack(amount);
+        if(inventory[0]==null && isGrinding){
+            isGrinding = false;
+            grindTime = 0;
         }
-        if(stack.getItem().equals(inventory[index].getItem()) &&
-                (inventory[0]==null ||
-                        stack.stackSize+inventory[index].stackSize<=64)) {
-            inventory[index] = stack;
-        }
-
+        return s;
     }
 
     @Override
-    public int getInventoryStackLimit() {
-        return 64;
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capability==CAPABILITY_CONSUMER || capability==CAPABILITY_HOLDER || super.hasCapability(capability, facing);
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
-        return worldObj.getTileEntity(pos) == this && player.getDistanceSq(pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5) < 64;
-    }
-
-    @Override
-    public void openInventory(EntityPlayer player) {
-        // NOP
-    }
-
-    @Override
-    public void closeInventory(EntityPlayer player) {
-        // NOP
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return false;
-    }
-
-    @Override
-    public int getField(int id) {
-        switch (id){
-            case 0:
-                return workTime;
-        }
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value) {
-        switch (id){
-            case 0:
-                workTime = value;
-                break;
-            case 1:
-                try{
-                    Field f = BaseTeslaContainer.class.getDeclaredField("stored");
-                    f.setAccessible(true);
-                    f.setLong(container, value);
-                }catch(Exception e){}
-                break;
-            case 2:
-                container.setCapacity(value);
-                break;
-            case 3:
-                container.setInputRate(value);
-                break;
-            case 4:
-                container.setOutputRate(value);
-        }
-    }
-
-    @Override
-    public int getFieldCount() {
-        return 5; //TODO: Update if more stuff is added
-    }
-
-    @Override
-    public void clear() {
-        workTime = 0;
-        try{
-            Field f = BaseTeslaContainer.class.getDeclaredField("stored");
-            f.setAccessible(true);
-            f.setLong(container, 0);
-        }catch(Exception e){}
-        container.setCapacity(0);
-        container.setInputRate(0);
-        container.setOutputRate(0);
-
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if(capability==CAPABILITY_CONSUMER || capability==CAPABILITY_HOLDER)
+            return (T) container;
+        return super.getCapability(capability, facing);
     }
 
     @Override
@@ -204,71 +120,28 @@ public class TileGrinder extends TileEntity implements IInventory, ITeslaConsume
     }
 
     @Override
-    public String getName() {
-        return "modsquad.tilegrinder";
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        return false;
-    }
-
-    @Override
     public void update() {
         if(isGrinding){
-            worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, pos.getX(), pos.getY()+1, pos.getZ(),
-                    random.nextGaussian() * .05, random.nextGaussian() * .05+.2,random.nextGaussian() * .05);
-            worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, pos.getX(), pos.getY()+1, pos.getZ(),
-                    random.nextGaussian() * .05, random.nextGaussian() * .05+.2,random.nextGaussian() * .05);
-            worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, pos.getX(), pos.getY()+1, pos.getZ(),
-                    random.nextGaussian() * .05, random.nextGaussian() * .05+.2,random.nextGaussian() * .05);
-            if(grindTime == 0){
-                //TODO: Update texture
-                try{ //Troll tj
-                    Field f = Class.forName("com.trials.modsquad.Recipes.TeslaRegistry.TeslaCraftingHandler").getDeclaredField("grinderRecipeList");
-                    f.setAccessible(true);
-                    //noinspection unchecked
-                    for(GrinderRecipe g : (List<GrinderRecipe>) f.get(TeslaRegistry.teslaRegistry))
-                        if(g.getInput().getItem().equals(inventory[0].getItem()) &&
-                                (inventory[1]==null || (inventory[1].getItem().equals(g.getOutput()) &&
-                                        g.getAmount()+inventory[1].stackSize<=64))){
-                            ItemStack i = new ItemStack(g.getOutput().getItem(), inventory[1].stackSize+g.getAmount());
-                            if(g.getOutput().hasTagCompound() && g.getOutput().getTagCompound()!=null)
-                                i.setTagCompound(g.getOutput().getTagCompound());
-                            inventory[1] = i;
-                        }else return;
-
-                }catch(Exception ignored){ System.out.println("SOMETHING WENT EXTREMELY WRONG! GO MAKE SURE YOUR HOUSE ISN'T ON FIRE!!!"); }
-            }else --grindTime;
-        }else if(inventory[0]!=null){
-            try{
-                Field f = Class.forName("com.trials.modsquad.Recipes.TeslaRegistry.TeslaCraftingHandler").getDeclaredField("grinderRecipeList");
-                f.setAccessible(true);
-                List<GrinderRecipe> r = ((List<GrinderRecipe>) f.get(TeslaRegistry.teslaRegistry));
-                System.out.println("Raw tesla registry: "+r);
-                for(GrinderRecipe g : r)
-                    if(g.getInput().getItem().equals(inventory[0].getItem())){
-                        isGrinding = true;
-                        grindTime = DEFAULT_GRIND_TIME;
-                        System.out.println(pos+" started grinding!");
-                        //TODO: Update texture
-                    }
-            }catch(Exception e){} // Stupid exception that will never be thrown
+            if(grindTime==0){
+                ItemStack s = extractItem(0, 1, false);
+                if(inventory[1]==null){
+                    inventory[1] = TeslaRegistry.teslaRegistry.getGrinderOutFromIn(s);
+                    inventory[1].stackSize = TeslaRegistry.teslaRegistry.getGrinderRecipeFromIn(s).getAmount();
+                }else
+                    inventory[1].stackSize+=TeslaRegistry.teslaRegistry.getGrinderRecipeFromIn(s).getAmount();
+                isGrinding = false;
+            }
+            if(container.getStoredPower()>DRAW_PER_TICK){
+                container.takePower(DRAW_PER_TICK, false);
+                isGrinding = false;
+                grindTime = 0;
+                return;
+            }
+            --grindTime;
+        }else if(inventory[0]!=null && TeslaRegistry.teslaRegistry.hasRecipe(inventory[0]) && (inventory[1] == null ||
+                inventory[1] == TeslaRegistry.teslaRegistry.getGrinderOutFromIn(inventory[0])) && container.getStoredPower()>0 && inventory[1].stackSize<64){
+            isGrinding = true;
+            grindTime = DEFAULT_GRIND_TIME;
         }
-    }
-
-    @Override
-    public int[] getSlotsForFace(EnumFacing side) {
-        return new int[]{0, 1};
-    }
-
-    @Override
-    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
-        return index==0;
-    }
-
-    @Override
-    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-        return index==1;
     }
 }

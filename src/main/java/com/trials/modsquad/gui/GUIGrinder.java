@@ -3,21 +3,24 @@ package com.trials.modsquad.gui;
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.block.TileEntities.TileGrinder;
 import com.trials.modsquad.block.containers.ContainerGrinder;
+import net.darkhax.tesla.api.ITeslaHolder;
+import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.darkhax.tesla.lib.PowerBar;
 import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 public class GUIGrinder extends GuiContainer{
 
-    private TileGrinder grinder;
+    private ITeslaHolder grinder;
     private PowerBar p;
 
     public GUIGrinder(InventoryPlayer player, TileGrinder grinder) {
         super(new ContainerGrinder(player, grinder));
-        this.grinder = grinder;
+        this.grinder = grinder.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
         p = new PowerBar(this, xSize+100, 50, PowerBar.BackgroundType.LIGHT);
     }
 
@@ -32,7 +35,7 @@ public class GUIGrinder extends GuiContainer{
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         ResourceLocation l;
-        mc.renderEngine.getTexture(l=new ResourceLocation(ModSquad.MODID, "/textures/gui/container/grinder.png"));
+        mc.renderEngine.getTexture(l=new ResourceLocation(ModSquad.MODID, "textures/gui/container/grinder.png"));
         GL11.glColor4f(1f, 1f, 1f, 1f);
         mc.renderEngine.bindTexture(l);
         drawTexturedModalRect((width - xSize)/2, (height-ySize)/2, 0, 0, xSize, ySize);

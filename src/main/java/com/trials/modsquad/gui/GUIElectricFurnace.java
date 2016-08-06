@@ -18,7 +18,7 @@ public class GUIElectricFurnace extends GuiContainer {
     public GUIElectricFurnace(InventoryPlayer player, TileElectricFurnace furnace) {
         super(new ContainerElectricFurnace(player, furnace));
         this.furnace = furnace;
-        p = new PowerBar(this, xSize+100, 50, PowerBar.BackgroundType.LIGHT);
+        p = new PowerBar(this, xSize+100, 70, PowerBar.BackgroundType.LIGHT);
     }
 
     @Override
