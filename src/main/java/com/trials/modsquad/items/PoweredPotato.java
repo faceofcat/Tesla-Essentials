@@ -45,7 +45,6 @@ public class PoweredPotato extends ItemFood {
             f.setAccessible(true);
         } catch (NoSuchFieldException e) { }
         this.itemDamage = f;
-        setMaxDamage(1000);
     }
 
     @Override
