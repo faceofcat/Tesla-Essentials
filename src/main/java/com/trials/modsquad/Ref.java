@@ -89,8 +89,9 @@ public class Ref {
     public enum IngotReference{
         COPPER("ingotCopper", "ItemIngotCopper"),
         TIN("ingotTin", "ItemIngotTin"),
-        LEAD("ingotLead", "ItemIngotLead");
-
+        LEAD("ingotLead", "ItemIngotLead"),
+        ELECTRICALLOY("ingotElectricAlloy","ItemIngotElectricAlloy")
+        ;
         private String unlocalizedName, registryName;
         IngotReference(String unlocalizedName, String registryName){
             this.unlocalizedName = unlocalizedName;
@@ -106,7 +107,8 @@ public class Ref {
         TIN("dustTin", "ItemDustTin"),
         LEAD("dustLead", "ItemDustLead"),
         IRON("dustIron", "ItemDustIron"),
-        GOLD("dustGold", "ItemDustGold")
+        GOLD("dustGold", "ItemDustGold"),
+        ELECTRICALLOY("dustElectricAlloy","ItemDustElectricAlloy")
         ;
 
         private String unlocalizedName, registryName;

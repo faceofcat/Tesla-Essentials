@@ -23,6 +23,67 @@ public class TeslaRegistry{
         GameRegistry.addSmelting(ModItems.dustCopper, new ItemStack(ModItems.ingotCopper), 0F);
         GameRegistry.addSmelting(ModItems.dustLead, new ItemStack(ModItems.ingotLead), 0F);
         GameRegistry.addSmelting(ModItems.dustTin, new ItemStack(ModItems.ingotTin), 0F);
+        GameRegistry.addSmelting(ModItems.dustElectricAlloy, new ItemStack(ModItems.ingotElectricAlloy), 0F);
+        GameRegistry.addShapelessRecipe(new ItemStack(ModItems.dustElectricAlloy, 2), new ItemStack(ModItems.dustCopper), new ItemStack(ModItems.dustCopper),
+                new ItemStack(ModItems.dustTin), new ItemStack(Items.REDSTONE));
+        GameRegistry.addRecipe(new ItemStack(ModBlocks.blockCopper),
+                "III",
+                "III",
+                "III",
+                'I', ModItems.ingotCopper
+        );
+        GameRegistry.addRecipe(new ItemStack(ModBlocks.blockTin),
+                "III",
+                "III",
+                "III",
+                'I', ModItems.ingotTin
+        );
+        GameRegistry.addRecipe(new ItemStack(ModBlocks.blockLead),
+                "III",
+                "III",
+                "III",
+                'I', ModItems.ingotLead
+        );
+        GameRegistry.addRecipe(new ItemStack(ModItems.electricBoots),
+                "I I",
+                "I I",
+                'I', ModItems.ingotElectricAlloy
+        );
+        GameRegistry.addRecipe(new ItemStack(ModItems.electricHelmet),
+                "III",
+                "IGI",
+                'I', ModItems.ingotElectricAlloy, 'G', new ItemStack(Blocks.GLASS_PANE, 1, 13)
+        );
+        GameRegistry.addRecipe(new ItemStack(ModItems.electricLeggings),
+                "III",
+                "I I",
+                "I I",
+                'I', ModItems.ingotElectricAlloy
+        );
+        GameRegistry.addRecipe(new ItemStack(ModItems.electricChestplate),
+                "I I",
+                "ILI",
+                "III",
+                'I', ModItems.ingotElectricAlloy, 'L', ModItems.ingotLead
+        );
+        GameRegistry.addRecipe(new ItemStack(ModItems.terraSmasher),
+                "EEE",
+                "TLT",
+                " L ",
+                'E', ModItems.ingotElectricAlloy, 'L', ModItems.ingotLead, 'T', ModItems.ingotTin
+        );
+        GameRegistry.addRecipe(new ItemStack(ModBlocks.furnaceGen),
+                "  T",
+                "CLF",
+                "TTT",
+                'C', ModItems.ingotCopper, 'L', ModItems.ingotLead, 'T', ModItems.ingotTin, 'F', new ItemStack(Blocks.FURNACE)
+        );
+        GameRegistry.addRecipe(new ItemStack(ModBlocks.grinder),
+                "  T",
+                "TLT",
+                "I I",
+                'I', Items.IRON_INGOT, 'L', ModItems.ingotLead, 'T', ModItems.ingotTin
+        );
     }
 
     public static void registerGrinderCrafting()
@@ -39,5 +100,6 @@ public class TeslaRegistry{
         teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.LAPIS_ORE), new ItemStack(Items.DYE, 1, 4), 9);
         teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.WOOL), new ItemStack(Items.STRING), 2);
         teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.CARPET), new ItemStack(Items.STRING), 1);
+        teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.TALLGRASS), new ItemStack(Items.DYE, 1, 13), 1);
     }
 }

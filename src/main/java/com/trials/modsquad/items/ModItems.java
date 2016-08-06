@@ -12,10 +12,10 @@ import static com.trials.modsquad.items.ModArmor.electricArmor;
 public class ModItems {
 
     //Ingots
-    public static Item ingotCopper, ingotTin, ingotLead;
+    public static Item ingotCopper, ingotTin, ingotLead, ingotElectricAlloy;
 
     //Dusts
-    public static Item dustCopper, dustTin, dustLead, dustIron, dustGold;
+    public static Item dustCopper, dustTin, dustLead, dustIron, dustGold, dustElectricAlloy;
 
     public static Item test;
 
@@ -30,14 +30,17 @@ public class ModItems {
         ingotCopper = new ModIngot(Ref.IngotReference.COPPER.getUnlocalizedName(), Ref.IngotReference.COPPER.getRegistryName());
         ingotTin = new ModIngot(Ref.IngotReference.TIN.getUnlocalizedName(), Ref.IngotReference.TIN.getRegistryName());
         ingotLead = new ModIngot(Ref.IngotReference.LEAD.getUnlocalizedName(), Ref.IngotReference.LEAD.getRegistryName());
+        ingotElectricAlloy = new ModIngot(Ref.IngotReference.ELECTRICALLOY.getUnlocalizedName(), Ref.IngotReference.ELECTRICALLOY.getRegistryName());
 
         //Dusts
         dustCopper = new ModDust(Ref.DustReference.COPPER.getUnlocalizedName(), Ref.DustReference.COPPER.getRegistryName());
         dustTin = new ModDust(Ref.DustReference.TIN.getUnlocalizedName(), Ref.DustReference.TIN.getRegistryName());
         dustLead = new ModDust(Ref.DustReference.LEAD.getUnlocalizedName(), Ref.DustReference.LEAD.getRegistryName());
         dustIron = new ModDust(Ref.DustReference.IRON.getUnlocalizedName(), Ref.DustReference.IRON.getRegistryName());
-        dustGold = new ModDust(Ref.DustReference.GOLD.getUnlocalizedName(), Ref.DustReference.IRON.getRegistryName());
+        dustGold = new ModDust(Ref.DustReference.GOLD.getUnlocalizedName(), Ref.DustReference.GOLD.getRegistryName());
+        dustElectricAlloy = new ModDust(Ref.DustReference.ELECTRICALLOY.getUnlocalizedName(), Ref.DustReference.ELECTRICALLOY.getRegistryName());
 
+        //testItems
         test = new ItemTest();
 
         //Armor
@@ -58,6 +61,7 @@ public class ModItems {
         GameRegistry.register(ingotCopper);
         GameRegistry.register(ingotTin);
         GameRegistry.register(ingotLead);
+        GameRegistry.register(ingotElectricAlloy);
 
         //Dusts
         GameRegistry.register(dustCopper);
@@ -65,6 +69,7 @@ public class ModItems {
         GameRegistry.register(dustLead);
         GameRegistry.register(dustIron);
         GameRegistry.register(dustGold);
+        GameRegistry.register(dustElectricAlloy);
 
         GameRegistry.register(test);
 
@@ -86,6 +91,7 @@ public class ModItems {
         registerRender(ingotCopper);
         registerRender(ingotTin);
         registerRender(ingotLead);
+        registerRender(ingotElectricAlloy);
 
         //Dusts
         registerRender(dustCopper);
@@ -93,6 +99,7 @@ public class ModItems {
         registerRender(dustLead);
         registerRender(dustIron);
         registerRender(dustGold);
+        registerRender(dustElectricAlloy);
 
         registerRender(test);
 
