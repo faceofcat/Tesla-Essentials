@@ -121,6 +121,7 @@ public class ModArmor extends ItemArmor {
         int dam = h.getCapacity()>0?Math.round(h.getStoredPower()*(getMaxDamage()-1)/h.getCapacity()):0;
         try{ itemDamage.setInt(stack, getMaxDamage()-dam); }catch(Exception e){}
         ITeslaProducer p = stack.getCapability(CAPABILITY_PRODUCER, EnumFacing.DOWN);
+        p.takePower(2*damage, false);
         if(h.getStoredPower()==0)try{ damageReduce.setInt(this, 0); }catch(Exception e){}
     }
 
