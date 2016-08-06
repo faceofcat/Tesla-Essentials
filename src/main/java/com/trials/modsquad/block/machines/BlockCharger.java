@@ -70,7 +70,7 @@ public class BlockCharger extends Block {
     }
 
     @Override
-    public boolean isOpaqueCube(IBlockState state) {
-        return false;
+    public boolean isVisuallyOpaque() {
+        return super.isVisuallyOpaque();
     }
 }

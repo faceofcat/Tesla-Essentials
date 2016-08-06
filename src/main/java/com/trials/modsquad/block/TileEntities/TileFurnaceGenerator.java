@@ -97,7 +97,7 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
         }
         else if(fuel!=null && TileEntityFurnace.isItemFuel(fuel[0])){ // Fixes bug where generator tears through fuel supply
             isBurning = true;
-            workTime = TileEntityFurnace.getItemBurnTime(fuel[0])/2; // Automatically casts away eventual decimal points
+            workTime = (int) (TileEntityFurnace.getItemBurnTime(fuel[0])*0.625); // Automatically casts away eventual decimal points
             extractItem(0, 1, false);
         }
         if(container.getStoredPower()>0) {

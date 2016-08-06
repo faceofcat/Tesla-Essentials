@@ -1,252 +1,75 @@
 package com.trials.modsquad.block.TileEntities;
 
-import mcp.MethodsReturnNonnullByDefault;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
-import net.darkhax.tesla.capability.TeslaCapabilities;
-import net.minecraft.block.BlockFurnace;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerFurnace;
-import net.minecraft.item.*;
-import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.common.capabilities.Capability;
-import java.lang.reflect.Field;
-import java.util.Map;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ITickable;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
+public class TileElectricFurnace extends TileEntity implements IItemHandlerModifiable, ITickable{
 
-@SuppressWarnings({"unused", "unchecked"})
-public class TileElectricFurnace extends TileEntityFurnace {
+    private ItemStack[] inventory;
     private BaseTeslaContainer container;
-    /** The ItemStacks that hold the items currently being used in the furnace */
-    private ItemStack[] furnaceItemStacks = new ItemStack[3];
-    /** The number of ticks that the furnace will keep burning */
-    private int furnaceBurnTime;
-    /** The number of ticks that a fresh copy of the currently-burning item would keep the furnace burning for */
-    private int currentItemBurnTime;
-    private int cookTime;
-    private int totalCookTime;
-    @SuppressWarnings("unused")
+    private boolean isSmelting = false;
+    private int workTime = 0;
+
     public TileElectricFurnace(){
         container = new BaseTeslaContainer();
-    } //TODO: Redo
-
-
-    @Override
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound c = super.serializeNBT();
-        try{
-            Field f = NBTTagCompound.class.getDeclaredField("tagMap");
-            f.setAccessible(true);
-            Map<String, NBTBase> r = (Map<String, NBTBase>) f.get(c);
-            Map<String, NBTBase> m = (Map<String, NBTBase>) f.get(container);
-            for(String s : m.keySet()) r.put(s, m.get(s)); // Move container tags to my tags
-            f.set(c, r);
-        }catch(Exception ignored){}
-        return c;
+        inventory = new ItemStack[2];
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        super.deserializeNBT(nbt);
-        container.deserializeNBT(nbt);
-    }
+    public void update() {
 
-    /**
-     * Turn one item from the furnace source stack into the appropriate smelted item in the furnace result stack
-     */
-    @Override
-    public void update()
-    {
-        boolean flag = this.isBurning();
-        boolean flag1 = false;
-
-        if (flag)
-        {
-
-            --this.furnaceBurnTime;
-        }
-
-        if (!this.worldObj.isRemote)
-        {
-            if (this.isBurning() || this.furnaceItemStacks[1] != null && this.furnaceItemStacks[0] != null)
-            {
-                if (!this.isBurning() && this.canSmelt())
-                {
-                    this.furnaceBurnTime = this.getItemBurnTime();
-                    this.currentItemBurnTime = this.furnaceBurnTime;
-
-                    if (this.isBurning())
-                    {
-                        flag1 = true;
-                    }
-                }
-
-                if (this.isBurning() && this.canSmelt())
-                {
-                    ++this.cookTime;
-
-                    if (this.cookTime == this.totalCookTime)
-                    {
-                        this.cookTime = 0;
-                        this.totalCookTime = this.getCookTime(this.furnaceItemStacks[0]);
-                        this.smeltItem();
-                        flag1 = true;
-                    }
-                }
-                else
-                {
-                    this.cookTime = 0;
-                }
-            }
-            else if (!this.isBurning() && this.cookTime > 0)
-            {
-                this.cookTime = MathHelper.clamp_int(this.cookTime - 2, 0, this.totalCookTime);
-            }
-
-            if (flag != this.isBurning())
-            {
-                flag1 = true;
-                BlockFurnace.setState(this.isBurning(), this.worldObj, this.pos);
-            }
-        }
-
-        if (flag1)
-        {
-            this.markDirty();
-        }
     }
 
     @Override
-    public void smeltItem()
-    {
-        if (this.canSmelt())
-        {
-            ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(this.furnaceItemStacks[0]);
-
-            if (this.furnaceItemStacks[2] == null)
-            {
-                this.furnaceItemStacks[2] = itemstack!=null?itemstack.copy():null;
-            }
-            else if (itemstack!=null && this.furnaceItemStacks[2].getItem() == itemstack.getItem())
-            {
-                this.furnaceItemStacks[2].stackSize += itemstack.stackSize; // Forge BugFix: Results may have multiple items
-            }
-
-            --this.furnaceItemStacks[0].stackSize;
-
-            if (this.furnaceItemStacks[0].stackSize <= 0)
-            {
-                this.furnaceItemStacks[0] = null;
-            }
-        }
-    }
-
-    private boolean canSmelt()
-    {
-        if (this.furnaceItemStacks[0] == null)
-        {
-            return false;
-        }
-        else
-        {
-            ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(this.furnaceItemStacks[0]);
-            if (itemstack == null) return false;
-            if (this.furnaceItemStacks[2] == null) return true;
-            if (!this.furnaceItemStacks[2].isItemEqual(itemstack)) return false;
-            int result = furnaceItemStacks[2].stackSize + itemstack.stackSize;
-            return result <= getInventoryStackLimit() && result <= this.furnaceItemStacks[2].getMaxStackSize(); //Forge BugFix: Make it respect stack sizes properly.
-        }
-    }
-
-    public int getItemBurnTime()
-    {
-            if(container.getStoredPower() > 0) {
-                container.takePower(10, false);
-                return 1;
-            }
-        return 0;
-    }
-
-    public static boolean isItemFuel(ItemStack stack)
-    {
-        return true;
-    }
-
-    @MethodsReturnNonnullByDefault
-    @Override
-    public String getGuiID()
-    {
-        return "minecraft:furnace";
-    }
-
-    @MethodsReturnNonnullByDefault
-    public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn)
-    {
-        return new ContainerFurnace(playerInventory, this);
-    }
-
-    public int getField(int id)
-    {
-        switch (id)
-        {
-            case 0:
-                return this.furnaceBurnTime;
-            case 1:
-                return this.currentItemBurnTime;
-            case 2:
-                return this.cookTime;
-            case 3:
-                return this.totalCookTime;
-            default:
-                return 0;
-        }
-    }
-
-    public void setField(int id, int value)
-    {
-        switch (id)
-        {
-            case 0:
-                this.furnaceBurnTime = value;
-                break;
-            case 1:
-                this.currentItemBurnTime = value;
-                break;
-            case 2:
-                this.cookTime = value;
-                break;
-            case 3:
-                this.totalCookTime = value;
-        }
-    }
-
-    public int getFieldCount()
-    {
-        return 4;
-    }
-
-    public void clear()
-    {
-        for (int i = 0; i < this.furnaceItemStacks.length; ++i)
-        {
-            this.furnaceItemStacks[i] = null;
-        }
+    public void setStackInSlot(int slot, ItemStack stack) {
+        inventory[slot] = stack;
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return capability==TeslaCapabilities.CAPABILITY_HOLDER || capability==TeslaCapabilities.CAPABILITY_CONSUMER || super.hasCapability(capability, facing);
+    public int getSlots() {
+        return 2;
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if(capability==TeslaCapabilities.CAPABILITY_HOLDER || capability==TeslaCapabilities.CAPABILITY_CONSUMER) return (T) container;
-        return super.getCapability(capability, facing);
+    public ItemStack getStackInSlot(int slot) {
+        return inventory[slot];
+    }
+
+    @Override
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+        ItemStack tmp;
+        int val;
+        if(inventory[slot]==null || slot==1) return stack;
+        if(inventory[slot].isItemEqual(stack)){
+            if(inventory[slot].stackSize+stack.stackSize<=64 && inventory[slot].stackSize+stack.stackSize<=stack.getMaxStackSize()) {
+                if(!simulate) inventory[slot].stackSize += stack.stackSize;
+                return null;
+            }
+            tmp = stack.copy();
+            tmp.stackSize = stack.getMaxStackSize() - inventory[slot].stackSize - stack.stackSize;
+            if(!simulate) inventory[slot].stackSize = stack.getMaxStackSize();
+            return tmp;
+        }
+        if(simulate) return inventory[slot];
+        tmp = inventory[slot];
+        inventory[slot] = stack;
+        return tmp;
+    }
+
+    @Override
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        ItemStack split;
+        if(inventory[slot] == null || slot==0) return null;
+        if(amount>=inventory[slot].stackSize){
+            split = inventory[slot];
+            if(!simulate) inventory[slot] = null;
+            return split;
+        }
+        if(simulate) (split = inventory[slot].copy()).stackSize = amount;
+        else split = inventory[slot].splitStack(amount);
+        return split;
     }
 }

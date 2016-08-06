@@ -1,7 +1,7 @@
 package com.trials.modsquad.block.machines;
 
 import com.trials.modsquad.ModSquad;
-import com.trials.modsquad.block.TileEntities.TileFurnaceGenerator;
+import com.trials.modsquad.block.TileEntities.TileSolarPanel;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -15,30 +15,31 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
 import javax.annotation.Nullable;
 import java.util.concurrent.ThreadLocalRandom;
-import static com.trials.modsquad.Ref.GUI_ID_FURNACE;
 
-public class BlockElectricFurnace extends Block {
+import static com.trials.modsquad.Ref.GUI_ID_FURNACE_GEN;
 
-
-    public BlockElectricFurnace(Material blockMaterialIn, MapColor blockMapColorIn) {
+public class BlockSolarPanel extends Block {
+    public BlockSolarPanel(Material blockMaterialIn, MapColor blockMapColorIn) {
         super(blockMaterialIn, blockMapColorIn);
     }
 
-    public BlockElectricFurnace(Material materialIn) {
+    public BlockSolarPanel(Material materialIn) {
         super(materialIn);
+    }
+
+    @Override
+    public TileEntity createTileEntity(World world, IBlockState state) {
+        return new TileSolarPanel();
     }
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking()) return false;
-        playerIn.openGui(ModSquad.instance, GUI_ID_FURNACE, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        playerIn.openGui(ModSquad.instance, GUI_ID_FURNACE_GEN, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
-    }
-
-    @Override public TileEntity createTileEntity(World world, IBlockState state) {
-        return new TileFurnaceGenerator();
     }
 
     @Override
@@ -64,10 +65,5 @@ public class BlockElectricFurnace extends Block {
                 s.stackSize = 0;
             }
         super.breakBlock(worldIn, pos, state);
-    }
-
-    @Override
-    public boolean isVisuallyOpaque() {
-        return super.isVisuallyOpaque();
     }
 }

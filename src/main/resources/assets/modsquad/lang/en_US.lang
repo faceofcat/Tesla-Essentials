@@ -8,6 +8,11 @@ item.dustLead.name=Lead Dust
 
 item.terraSmasher.name=Terra Smasher
 
+item.electricHelmet.name=Electric Helmet
+item.electricChestplate.name=Electric Chestplate
+item.electricLeggings.name=Electric Leggings
+item.electricBoots.name=Electric Boots
+
 tile.oreCopper.name=Copper Ore
 tile.oreTin.name=Tin Ore
 tile.oreLead.name=Lead Ore

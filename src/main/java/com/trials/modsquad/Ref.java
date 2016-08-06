@@ -38,7 +38,7 @@ public class Ref {
         MACHINE_GRINDER("grinder", "BlockGrinder"),
         MACHINE_FURNACE("electricFurnace", "BlockElectricFurnace"),
         GENERATOR_FURNACE("generatorFurnace", "FurnaceGenerator"),
-        GENERATOR_SOALR("solarPanel", "SolarPanel"),
+        GENERATOR_SOLAR("solarPanel", "SolarPanel"),
         MACHINE_CAPACITOR("capacitor", "BlockCapacitor"),
         MACHINE_CHARGER("charger", "BlockCharger");
 
