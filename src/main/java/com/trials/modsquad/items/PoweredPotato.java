@@ -4,6 +4,7 @@ import com.trials.modsquad.Ref;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
+import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -22,8 +23,6 @@ import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 
 public class PoweredPotato extends ItemFood {
 
-    private BaseTeslaContainer container;
-
     public PoweredPotato(String unlocalizedName, String registryName) {
         super(4, 0.8F, false);
         setUnlocalizedName(unlocalizedName);
@@ -34,6 +33,7 @@ public class PoweredPotato extends ItemFood {
     @Nullable
     @Override
     public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityLivingBase entityLiving) {
+        BaseTeslaContainer container = (BaseTeslaContainer) stack.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
         if (entityLiving instanceof EntityPlayer && container.getStoredPower() > 49) {
             EntityPlayer entityplayer = (EntityPlayer)entityLiving;
             worldIn.playSound(null, entityplayer.posX, entityplayer.posY, entityplayer.posZ, SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 0.5F, worldIn.rand.nextFloat() * 0.1F + 0.9F);

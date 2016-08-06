@@ -17,6 +17,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
@@ -56,6 +59,49 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         container.setInputRate(100);
     }
 
+
+    @Nullable
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        NBTTagCompound t = new NBTTagCompound();
+        writeToNBT(t);
+        return new SPacketUpdateTileEntity(pos, 0, t);
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        NBTTagCompound c = container.serializeNBT();
+        for(String key : c.getKeySet()) compound.setTag(key, c.getTag(key));
+        NBTTagList list = new NBTTagList();
+        for(int i = 0; i<inventory.length; ++i)
+            if(inventory[i]!=null){
+                NBTTagCompound comp = new NBTTagCompound();
+                comp.setInteger("Slot", i);
+                inventory[i].writeToNBT(comp);
+                list.appendTag(comp);
+            }
+        compound.setTag("Inventory", list);
+        return super.writeToNBT(compound);
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        readFromNBT(pkt.getNbtCompound());
+        super.onDataPacket(net, pkt);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        container.deserializeNBT(compound);
+        super.readFromNBT(compound);
+        NBTTagList list = compound.getTagList("Inventory", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
+        for(int i = 0; i<list.tagCount(); ++i){
+            NBTTagCompound c = list.getCompoundTagAt(i);
+            int slot = c.getInteger("Slot");
+            if(slot>=0 && slot < inventory.length) inventory[slot] = ItemStack.loadItemStackFromNBT(c);
+        }
+
+    }
     @Override
     public int getSlots() {
         return inventory.length;
@@ -69,24 +115,37 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
 
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        if(slot==1) return null;
-        ItemStack s = inventory[slot];
-        if(simulate) return s;
+        ItemStack tmp;
+        int val;
+        if(inventory[slot]==null || slot==1) return stack;
+        if(inventory[slot].isItemEqual(stack)){
+            if(inventory[slot].stackSize+stack.stackSize<=64 && inventory[slot].stackSize+stack.stackSize<=stack.getMaxStackSize()) {
+                if(!simulate) inventory[slot].stackSize += stack.stackSize;
+                return null;
+            }
+            tmp = stack.copy();
+            tmp.stackSize = stack.getMaxStackSize() - inventory[slot].stackSize - stack.stackSize;
+            if(!simulate) inventory[slot].stackSize = stack.getMaxStackSize();
+            return tmp;
+        }
+        if(simulate) return inventory[slot];
+        tmp = inventory[slot];
         inventory[slot] = stack;
-        return s;
+        return tmp;
     }
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if(simulate) return inventory[slot];
-        ItemStack s = inventory[slot];
-        if(s.stackSize-amount<=0) inventory[slot]=null;
-        else inventory[slot] = s.splitStack(amount);
-        if(inventory[0]==null && isGrinding){
-            isGrinding = false;
-            grindTime = 0;
+        ItemStack split;
+        if(inventory[slot] == null || slot==0) return null;
+        if(amount>=inventory[slot].stackSize){
+            split = inventory[slot];
+            if(!simulate) inventory[slot] = null;
+            return split;
         }
-        return s;
+        if(simulate) (split = inventory[slot].copy()).stackSize = amount;
+        else split = inventory[slot].splitStack(amount);
+        return split;
     }
 
     @Override

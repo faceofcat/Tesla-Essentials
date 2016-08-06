@@ -3,14 +3,20 @@ package com.trials.modsquad.block;
 import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.Network.BasicCable;
 import com.trials.modsquad.block.TileEntities.*;
+import com.trials.modsquad.block.TileEntities.renderer.CableRenderer;
 import com.trials.modsquad.block.machines.*;
+import com.trials.modsquad.block.ores.OreCopper;
+import com.trials.modsquad.block.ores.OreLead;
+import com.trials.modsquad.block.ores.OreTin;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import static com.trials.modsquad.Ref.BlockReference.*;
 import static net.minecraftforge.fml.common.registry.GameRegistry.registerTileEntity;
@@ -29,9 +35,9 @@ public class ModBlocks {
 
     public static void init() {
         //Ores
-        oreCopper = new ModOre(Ref.OreReference.COPPER.getUnlocalizedName(), Ref.OreReference.COPPER.getRegistryName(), 1);
-        oreTin = new ModOre(Ref.OreReference.TIN.getUnlocalizedName(), Ref.OreReference.TIN.getRegistryName(), 1);
-        oreLead = new ModOre(Ref.OreReference.LEAD.getUnlocalizedName(), Ref.OreReference.LEAD.getRegistryName(), 2);
+        oreCopper = new OreCopper(Ref.OreReference.COPPER.getUnlocalizedName(), Ref.OreReference.COPPER.getRegistryName());
+        oreTin = new OreTin(Ref.OreReference.TIN.getUnlocalizedName(), Ref.OreReference.TIN.getRegistryName());
+        oreLead = new OreLead(Ref.OreReference.LEAD.getUnlocalizedName(), Ref.OreReference.LEAD.getRegistryName());
 
         blockCopper = new ModIngotBlock(Ref.OreBlockReference.COPPER.getUnlocalizedName(), Ref.OreBlockReference.COPPER.getRegistryName());
         blockTin = new ModIngotBlock(Ref.OreBlockReference.TIN.getUnlocalizedName(), Ref.OreBlockReference.TIN.getRegistryName());

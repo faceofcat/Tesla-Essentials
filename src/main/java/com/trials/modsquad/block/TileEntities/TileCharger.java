@@ -11,6 +11,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
@@ -38,6 +41,49 @@ public class TileCharger extends TileEntity implements IItemHandlerModifiable, I
     public TileCharger(){
         container = new BaseTeslaContainer();
         inventory = new ItemStack[1];
+    }
+
+    @Nullable
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        NBTTagCompound t = new NBTTagCompound();
+        writeToNBT(t);
+        return new SPacketUpdateTileEntity(pos, 0, t);
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        NBTTagCompound c = container.serializeNBT();
+        for(String key : c.getKeySet()) compound.setTag(key, c.getTag(key));
+        NBTTagList list = new NBTTagList();
+        for(int i = 0; i<inventory.length; ++i)
+            if(inventory[i]!=null){
+                NBTTagCompound comp = new NBTTagCompound();
+                comp.setInteger("Slot", i);
+                inventory[i].writeToNBT(comp);
+                list.appendTag(comp);
+            }
+        compound.setTag("Inventory", list);
+        return super.writeToNBT(compound);
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        readFromNBT(pkt.getNbtCompound());
+        super.onDataPacket(net, pkt);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        container.deserializeNBT(compound);
+        super.readFromNBT(compound);
+        NBTTagList list = compound.getTagList("Inventory", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
+        for(int i = 0; i<list.tagCount(); ++i){
+            NBTTagCompound c = list.getCompoundTagAt(i);
+            int slot = c.getInteger("Slot");
+            if(slot>=0 && slot < inventory.length) inventory[slot] = ItemStack.loadItemStackFromNBT(c);
+        }
+
     }
 
 

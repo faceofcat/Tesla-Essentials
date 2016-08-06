@@ -2,6 +2,7 @@ package com.trials.modsquad.block.machines;
 
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.Ref;
+import com.trials.modsquad.block.TileEntities.TileElectricFurnace;
 import com.trials.modsquad.block.TileEntities.TileFurnaceGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
@@ -38,7 +39,7 @@ public class BlockElectricFurnace extends Block {
     }
 
     @Override public TileEntity createTileEntity(World world, IBlockState state) {
-        return new TileFurnaceGenerator();
+        return new TileElectricFurnace();
     }
 
     @Override

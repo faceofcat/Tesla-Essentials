@@ -30,6 +30,8 @@ public class ModArmor extends ItemArmor {
     private BaseTeslaContainer container;
     private final Field itemDamage;
     private final Field damageReduce;
+    public static final int powerDrawPerTickOnFlight = 1;
+    public static final int damageMultiplier = 4;
 
     public ModArmor(String name, String reg, ArmorMaterial material, int var1, EntityEquipmentSlot slot) {
         super(material, var1, slot);
@@ -59,6 +61,12 @@ public class ModArmor extends ItemArmor {
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
         container = (BaseTeslaContainer) stack.getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN);
+        if(container.getCapacity()!=20000)
+            try{
+                Field f = BaseTeslaContainer.class.getDeclaredField("capacity");
+                f.setAccessible(true);
+                f.setLong(container, 20000);
+            }catch(Exception e){}
 
         tooltip.add("Power: " + container.getStoredPower() + "/" + container.getCapacity());
     }
@@ -74,12 +82,14 @@ public class ModArmor extends ItemArmor {
                 && player.inventory.armorItemInSlot(2) !=null && player.inventory.armorItemInSlot(2).getItem() == ModItems.jetChestplate
                 && player.inventory.armorItemInSlot(1) !=null && player.inventory.armorItemInSlot(1).getItem() == ModItems.electricLeggings
                 && player.inventory.armorItemInSlot(0) !=null && player.inventory.armorItemInSlot(0).getItem() == ModItems.electricBoots
+                && player.inventory.armorItemInSlot(2).getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
                 && !player.capabilities.isCreativeMode) {
-                    player.capabilities.allowFlying = true;
+            player.capabilities.allowFlying = true;
         } else {
             player.capabilities.allowFlying = false;
             player.capabilities.isFlying = false;
         }
+        if(player.capabilities.isFlying) player.inventory.armorItemInSlot(2).getCapability(TeslaCapabilities.CAPABILITY_PRODUCER, EnumFacing.DOWN).takePower(powerDrawPerTickOnFlight, false);
     }
 
     @Override
@@ -94,10 +104,11 @@ public class ModArmor extends ItemArmor {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-        return new BaseTeslaContainerProvider(new BaseTeslaContainer(){
+        return new BaseTeslaContainerProvider(new BaseTeslaContainer(20000, 40, 40){
             @Override
             public long givePower(long Tesla, boolean simulated) {
                 setDamage(stack, 0);
+                System.out.println(getCapacity());
                 return super.givePower(Tesla, simulated);
             }
 
@@ -113,7 +124,7 @@ public class ModArmor extends ItemArmor {
     public void setDamage(ItemStack stack, int damage) {
         ITeslaHolder h=stack.getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN);
         ITeslaProducer p = stack.getCapability(CAPABILITY_PRODUCER, EnumFacing.DOWN);
-        if(damage!=0) p.takePower(4*damage, false);
+        if(damage!=0) p.takePower(damageMultiplier*damage, false);
         if(h.getStoredPower()==0)try{ damageReduce.setInt(this, 0); }catch(Exception e){}
         // As stored power increases, dam tends towards the value getMaxDamage()
         int dam = h.getCapacity()>0?Math.round(h.getStoredPower()*(getMaxDamage()-1)/h.getCapacity()):0;

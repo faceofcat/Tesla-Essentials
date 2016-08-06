@@ -3,10 +3,14 @@ package com.trials.modsquad.block.TileEntities;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
+import net.darkhax.tesla.lib.Constants;
 import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
@@ -29,10 +33,52 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
     private int workTime;
     private boolean isBurning;
 
-
     public TileFurnaceGenerator(){
         container = new BaseTeslaContainer();
         fuel = new ItemStack[1];
+    }
+
+    @Nullable
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        NBTTagCompound t = new NBTTagCompound();
+        writeToNBT(t);
+        return new SPacketUpdateTileEntity(pos, 0, t);
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        NBTTagCompound c = container.serializeNBT();
+        for(String key : c.getKeySet()) compound.setTag(key, c.getTag(key));
+        NBTTagList list = new NBTTagList();
+        for(int i = 0; i<fuel.length; ++i)
+            if(fuel[i]!=null){
+                NBTTagCompound comp = new NBTTagCompound();
+                comp.setInteger("Slot", i);
+                fuel[i].writeToNBT(comp);
+                list.appendTag(comp);
+            }
+        compound.setTag("Inventory", list);
+        return super.writeToNBT(compound);
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        readFromNBT(pkt.getNbtCompound());
+        super.onDataPacket(net, pkt);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        container.deserializeNBT(compound);
+        super.readFromNBT(compound);
+        NBTTagList list = compound.getTagList("Inventory", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
+        for(int i = 0; i<list.tagCount(); ++i){
+            NBTTagCompound c = list.getCompoundTagAt(i);
+            int slot = c.getInteger("Slot");
+            if(slot>=0 && slot < fuel.length) fuel[slot] = ItemStack.loadItemStackFromNBT(c);
+        }
+
     }
 
     @Override
