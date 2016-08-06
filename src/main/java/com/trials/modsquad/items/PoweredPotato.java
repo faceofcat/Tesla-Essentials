@@ -1,5 +1,6 @@
 package com.trials.modsquad.items;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
 import com.trials.modsquad.Ref;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
@@ -15,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.world.BossInfo;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
@@ -43,12 +45,14 @@ public class PoweredPotato extends ItemFood {
             f.setAccessible(true);
         } catch (NoSuchFieldException e) { }
         this.itemDamage = f;
+        setMaxDamage(1000);
     }
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         BaseTeslaContainer container = (BaseTeslaContainer) stack.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
         tooltip.add("Power: " + container.getStoredPower() + "/" + container.getCapacity());
+        tooltip.add(ChatFormatting.BLUE+"Shocking taste!");
         super.addInformation(stack, playerIn, tooltip, advanced);
     }
 
