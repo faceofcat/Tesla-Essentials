@@ -1,6 +1,5 @@
 package com.trials.modsquad.block.containers;
 
-import com.trials.modsquad.block.TileEntities.TileCharger;
 import com.trials.modsquad.block.TileEntities.TileElectricFurnace;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

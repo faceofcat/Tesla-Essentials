@@ -74,8 +74,8 @@ public class BlockCharger extends Block {
     }
 
     @Override
-    public boolean isVisuallyOpaque() {
-        return super.isVisuallyOpaque();
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
+        return false;
     }
 
     private static final AxisAlignedBB BBOX = new AxisAlignedBB(0, 0, 0, 16, 13, 16);

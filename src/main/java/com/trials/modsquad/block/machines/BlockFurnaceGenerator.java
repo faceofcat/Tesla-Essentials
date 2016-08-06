@@ -6,7 +6,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -14,12 +13,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import static com.trials.modsquad.Ref.GUI_ID_FURNACE_GEN;
 
@@ -69,20 +65,7 @@ public class BlockFurnaceGenerator extends Block {
     }
 
     @Override
-    public boolean isVisuallyOpaque() {
+    public boolean isOpaqueCube(IBlockState state) {
         return false;
-    }
-
-    private static final AxisAlignedBB BBOX = new AxisAlignedBB(0, 0, 0, 16, 15, 16);
-    private static final AxisAlignedBB CBOX = new AxisAlignedBB(0, 0, 0, 16, 14, 16);
-
-    @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        return BBOX;
-    }
-
-    @Override
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entityIn) {
-        super.addCollisionBoxToList(pos, entityBox, collidingBoxes, CBOX);
     }
 }

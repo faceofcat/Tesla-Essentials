@@ -1,6 +1,7 @@
 package com.trials.modsquad.block.machines;
 
 import com.trials.modsquad.ModSquad;
+import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.TileEntities.TileFurnaceGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
@@ -22,12 +23,11 @@ import static com.trials.modsquad.Ref.GUI_ID_FURNACE;
 public class BlockElectricFurnace extends Block {
 
 
-    public BlockElectricFurnace(Material blockMaterialIn, MapColor blockMapColorIn) {
-        super(blockMaterialIn, blockMapColorIn);
-    }
-
-    public BlockElectricFurnace(Material materialIn) {
-        super(materialIn);
+    public BlockElectricFurnace(String s, String s1) {
+        super(Material.IRON);
+        setUnlocalizedName(s);
+        setRegistryName(s1);
+        setCreativeTab(Ref.tabModSquad);
     }
 
     @Override
