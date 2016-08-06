@@ -24,7 +24,8 @@ public class Ref {
         ELECTRIC_HELMET("electricHelmet", "ItemElectricHelmet"),
         ELECTRIC_CHESTPLATE("electricChestplate", "ItemElectricChestplate"),
         ELECTRIC_LEGGINGS("electricLeggings", "ItemElectricLeggings"),
-        ELECTRIC_BOOTS("electricBoots", "ItemElectricBoots")
+        ELECTRIC_BOOTS("electricBoots", "ItemElectricBoots"),
+        TERRA_SMASHER("terraSmasher", "ItemTerraSmasher")
         ;
 
         private String unlocalizedName, registryName;

@@ -6,6 +6,8 @@ item.dustCopper.name=Copper Dust
 item.dustTin.name=Tin Dust
 item.dustLead.name=Lead Dust
 
+item.terraSmasher.name=Terra Smasher
+
 tile.oreCopper.name=Copper Ore
 tile.oreTin.name=Tin Ore
 tile.oreLead.name=Lead Ore

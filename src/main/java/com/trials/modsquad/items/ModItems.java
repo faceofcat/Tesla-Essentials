@@ -22,6 +22,9 @@ public class ModItems {
     //Armor
     public static Item electricHelmet, electricChestplate, electricLeggings, electricBoots;
 
+    //Tools
+    public static Item terraSmasher;
+
     public static void init() {
         //Ingots
         ingotCopper = new ModIngot(Ref.IngotReference.COPPER.getUnlocalizedName(), Ref.IngotReference.COPPER.getRegistryName());
@@ -40,6 +43,9 @@ public class ModItems {
         electricChestplate = new ModArmor(Ref.ItemReference.ELECTRIC_CHESTPLATE.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_CHESTPLATE.getRegistryName(), electricArmor, 1, EntityEquipmentSlot.CHEST);
         electricLeggings = new ModArmor(Ref.ItemReference.ELECTRIC_LEGGINGS.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_LEGGINGS.getRegistryName(), electricArmor, 1, EntityEquipmentSlot.LEGS);
         electricBoots = new ModArmor(Ref.ItemReference.ELECTRIC_BOOTS.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_BOOTS.getRegistryName(), electricArmor, 1, EntityEquipmentSlot.FEET);
+
+        //Tools
+        terraSmasher = new TerraSmasher(Ref.ItemReference.TERRA_SMASHER.getUnlocalizedName(), Ref.ItemReference.TERRA_SMASHER.getRegistryName());
 
     }
 
@@ -62,6 +68,9 @@ public class ModItems {
         GameRegistry.register(electricLeggings);
         GameRegistry.register(electricBoots);
 
+        //Tools
+        GameRegistry.register(terraSmasher);
+
     }
 
     public static void registerRenders() {
@@ -77,10 +86,14 @@ public class ModItems {
 
         registerRender(test);
 
+        //Armor
         registerRender(electricHelmet);
         registerRender(electricChestplate);
         registerRender(electricLeggings);
         registerRender(electricBoots);
+
+        //Tools
+        registerRender(terraSmasher);
 
     }
 
