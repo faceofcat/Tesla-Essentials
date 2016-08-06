@@ -84,6 +84,12 @@ public class TeslaRegistry{
                 "I I",
                 'I', Items.IRON_INGOT, 'L', ModItems.ingotLead, 'T', ModItems.ingotTin
         );
+        GameRegistry.addRecipe(new ItemStack(ModBlocks.charger),
+                "TLL",
+                "TLT",
+                "TTT",
+                'L', ModItems.ingotLead, 'T', ModItems.ingotTin
+        );
     }
 
     public static void registerGrinderCrafting()
