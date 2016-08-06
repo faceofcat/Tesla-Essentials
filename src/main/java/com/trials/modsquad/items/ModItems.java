@@ -3,8 +3,11 @@ package com.trials.modsquad.items;
 import com.trials.modsquad.Ref;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+
+import static com.trials.modsquad.Ref.electricArmor;
 
 public class ModItems {
 
@@ -20,6 +23,9 @@ public class ModItems {
 
     public static Item test;
 
+    //Armor
+    public static Item electricHelmet, electricChestplate, electricLeggings, electricBoots;
+
     public static void init() {
         //Ingots
         ingotCopper = new ModIngot(Ref.IngotReference.COPPER.getUnlocalizedName(), Ref.IngotReference.COPPER.getRegistryName());
@@ -32,6 +38,12 @@ public class ModItems {
         dustLead = new ModDust(Ref.DustReference.LEAD.getUnlocalizedName(), Ref.DustReference.LEAD.getRegistryName());
 
         test = new ItemTest();
+
+        //Armor
+        electricHelmet = new ModArmor(Ref.ItemReference.ELECTRIC_HELMET.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_HELMET.getRegistryName(), electricArmor, 1, EntityEquipmentSlot.HEAD);
+        electricChestplate = new ModArmor(Ref.ItemReference.ELECTRIC_CHESTPLATE.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_CHESTPLATE.getRegistryName(), electricArmor, 1, EntityEquipmentSlot.CHEST);
+        electricLeggings = new ModArmor(Ref.ItemReference.ELECTRIC_LEGGINGS.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_LEGGINGS.getRegistryName(), electricArmor, 1, EntityEquipmentSlot.LEGS);
+        electricBoots = new ModArmor(Ref.ItemReference.ELECTRIC_BOOTS.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_BOOTS.getRegistryName(), electricArmor, 1, EntityEquipmentSlot.FEET);
 
     }
 
@@ -48,6 +60,12 @@ public class ModItems {
 
         GameRegistry.register(test);
 
+        //Armor
+        GameRegistry.register(electricHelmet);
+        GameRegistry.register(electricChestplate);
+        GameRegistry.register(electricLeggings);
+        GameRegistry.register(electricBoots);
+
     }
 
     public static void registerRenders() {
@@ -62,6 +80,11 @@ public class ModItems {
         registerRender(dustLead);
 
         registerRender(test);
+
+        registerRender(electricHelmet);
+        registerRender(electricChestplate);
+        registerRender(electricLeggings);
+        registerRender(electricBoots);
 
     }
 

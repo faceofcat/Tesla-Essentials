@@ -46,4 +46,5 @@ public class GUICharger extends GuiContainer {
         p.draw(charger);
         super.updateScreen();
     }
+
 }
