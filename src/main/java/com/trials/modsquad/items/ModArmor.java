@@ -98,12 +98,17 @@ public class ModArmor extends ItemArmor {
                 setDamage(stack, 0);
                 return super.givePower(Tesla, simulated);
             }
+
+            @Override
+            public long takePower(long Tesla, boolean simulated) {
+                setDamage(stack, 0);
+                return super.takePower(Tesla, simulated);
+            }
         });
     }
 
     @Override
     public void setDamage(ItemStack stack, int damage) {
-        System.out.println("Setting: "+damage);
         ITeslaHolder h=stack.getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN);
         // As stored power increases, dam tends towards the value getMaxDamage()
         int dam = h.getCapacity()>0?Math.round(h.getStoredPower()*(getMaxDamage()-1)/h.getCapacity()):0;
