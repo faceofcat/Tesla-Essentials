@@ -14,9 +14,6 @@ public class Ref {
     public static final int GUI_ID_FURNACE = 2;
     public static final int GUI_ID_CHARGER = 3;
 
-    public static ItemArmor.ArmorMaterial electricArmor = EnumHelper.addArmorMaterial("electricalArmor", "modsquad:electricalArmor", 15, new int[]{3,8,6,3}, 9, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 4F);
-    public static ItemArmor.ArmorMaterial deadArmor = EnumHelper.addArmorMaterial("deadArmor", "modsquad:deadArmor", 0, new int[]{0,0,0,0}, 0, null, 0F);
-
     public enum ItemReference{
         ELECTRIC_HELMET("electricHelmet", "ItemElectricHelmet"),
         ELECTRIC_CHESTPLATE("electricChestplate", "ItemElectricChestplate"),

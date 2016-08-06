@@ -7,7 +7,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import static com.trials.modsquad.Ref.electricArmor;
+import static com.trials.modsquad.items.ModArmor.electricArmor;
 
 public class ModItems {
 
