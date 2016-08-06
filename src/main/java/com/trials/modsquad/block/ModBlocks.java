@@ -19,6 +19,7 @@ public class ModBlocks {
 
     //Ores
     public static Block oreCopper, oreTin, oreLead;
+    public static Block blockCopper, blockTin, blockLead;
 
     //Machines
     public static Block grinder, electricFurnace, furnaceGen, charger, capacitor;
@@ -31,6 +32,10 @@ public class ModBlocks {
         oreCopper = new ModOre(Ref.OreReference.COPPER.getUnlocalizedName(), Ref.OreReference.COPPER.getRegistryName(), 1);
         oreTin = new ModOre(Ref.OreReference.TIN.getUnlocalizedName(), Ref.OreReference.TIN.getRegistryName(), 1);
         oreLead = new ModOre(Ref.OreReference.LEAD.getUnlocalizedName(), Ref.OreReference.LEAD.getRegistryName(), 2);
+
+        blockCopper = new ModIngotBlock(Ref.OreBlockReference.COPPER.getUnlocalizedName(), Ref.OreBlockReference.COPPER.getRegistryName());
+        blockTin = new ModIngotBlock(Ref.OreBlockReference.TIN.getUnlocalizedName(), Ref.OreBlockReference.TIN.getRegistryName());
+        blockLead = new ModIngotBlock(Ref.OreBlockReference.LEAD.getUnlocalizedName(), Ref.OreBlockReference.LEAD.getRegistryName());
 
         //Machines
         grinder = new BlockGrinder(MACHINE_GRINDER.getUnlocalizedName(), MACHINE_GRINDER.getRegistryName());
@@ -49,6 +54,10 @@ public class ModBlocks {
         registerBlock(oreCopper);
         registerBlock(oreTin);
         registerBlock(oreLead);
+
+        registerBlock(blockCopper);
+        registerBlock(blockTin);
+        registerBlock(blockLead);
 
         //Machines
         registerBlock(grinder);
@@ -85,6 +94,10 @@ public class ModBlocks {
         registerRender(oreCopper);
         registerRender(oreTin);
         registerRender(oreLead);
+
+        registerRender(blockCopper);
+        registerRender(blockTin);
+        registerRender(blockLead);
 
         //Machines
         registerRender(grinder);

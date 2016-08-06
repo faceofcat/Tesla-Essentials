@@ -69,6 +69,22 @@ public class Ref {
         public String getRegistryName() { return registryName; }
     }
 
+    public enum OreBlockReference {
+        COPPER("blockCopper", "BlockCopper"),
+        TIN("blockTin", "BlockTin"),
+        LEAD("blockLead", "BlockLead");
+
+        private String unlocalizedName, registryName;
+        OreBlockReference (String unlocalizedName, String registryName) {
+            this.unlocalizedName = unlocalizedName;
+            this.registryName = registryName;
+        }
+
+        public String getUnlocalizedName() { return unlocalizedName; }
+
+        public String getRegistryName() { return registryName; }
+    }
+
     public enum IngotReference{
         COPPER("ingotCopper", "ItemIngotCopper"),
         TIN("ingotTin", "ItemIngotTin"),

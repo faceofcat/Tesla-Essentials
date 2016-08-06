@@ -90,4 +90,9 @@ public class BlockCharger extends Block {
     public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entityIn) {
         super.addCollisionBoxToList(pos, entityBox, collidingBoxes, CBOX);
     }
+
+    @Override
+    public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) {
+        return false;
+    }
 }
