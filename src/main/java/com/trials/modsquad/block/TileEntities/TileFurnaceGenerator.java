@@ -120,7 +120,7 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
             workTime = TileEntityFurnace.getItemBurnTime(fuel[0])/2; // Automatically casts away eventual decimal points
             extractItem(0, 1, false);
         }
-        if(container.getStoredPower()>0)
+        if(!worldObj.isRemote && container.getStoredPower()>0)
             for(BlockPos side : MySidesAreInOrbitxDDDDDDDDTopKek){
                 if((t=worldObj.getTileEntity(side))!=null && t.hasCapability(CAPABILITY_CONSUMER, ModBlocks.getRelativeFace(t.getPos(), pos)))
                     container.takePower((t.getCapability(CAPABILITY_CONSUMER, ModBlocks.getRelativeFace(t.getPos(), pos)))
