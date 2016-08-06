@@ -15,120 +15,71 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.TabCompleter;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Map;
 
+import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
+import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 
-public class TileCharger extends TileEntity implements IInventory, ITeslaProducer, ITeslaHolder, ITickable {
+
+public class TileCharger extends TileEntity implements IItemHandlerModifiable, ITickable {
 
 
-    private ItemStack item;
+    private ItemStack[] inventory;
     private BaseTeslaContainer container;
 
     public TileCharger(){
         container = new BaseTeslaContainer();
+        inventory = new ItemStack[1];
     }
 
-    @Override
-    public long takePower(long power, boolean simulated) {
-        return container.takePower(power, simulated);
-    }
 
     @Override
-    public long getStoredPower() {
-        return container.getStoredPower();
-    }
-
-    @Override
-    public long getCapacity() {
-        return container.getCapacity();
-    }
-
-    @Override
-    public int getSizeInventory() {
-        return 1;
+    public int getSlots() {
+        return inventory.length;
     }
 
     @Nullable
     @Override
     public ItemStack getStackInSlot(int index) {
-        return index==0?item:null;
+        return inventory[index];
     }
 
-    @Nullable
     @Override
-    public ItemStack decrStackSize(int index, int count) {
-        if(index!=0) return null;
-        ItemStack s = item;
-        if(s!=null){
-            if(s.stackSize <= count) setInventorySlotContents(index, null);
-            else if((s = s.splitStack(count)).stackSize==0) setInventorySlotContents(index, null);
-        }
-        return s;
-    }
-
-    @Nullable
-    @Override
-    public ItemStack removeStackFromSlot(int index) {
-        if(index!=0) return null;
-        ItemStack s = item;
-        item = null;
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+        ItemStack s = inventory[slot];
+        if(simulate) return s;
+        inventory[slot] = stack;
         return s;
     }
 
     @Override
-    public void setInventorySlotContents(int index, @Nullable ItemStack stack) {
-        if(index!=0) return;
-        if(stack==null || item==null || (stack.getItem().equals(item.getItem()) && stack.stackSize+item.stackSize<=64)) item = stack;
-
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        if(simulate) return inventory[slot];
+        ItemStack s = inventory[slot];
+        if(s.stackSize-amount<=0) inventory[slot]=null;
+        else inventory[slot] = s.splitStack(amount);
+        return s;
     }
 
     @Override
-    public int getInventoryStackLimit() {
-        return 64;
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capability==CAPABILITY_CONSUMER || capability==CAPABILITY_HOLDER || capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ||
+                super.hasCapability(capability, facing);
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
-        return worldObj.getTileEntity(pos) == this && player.getDistanceSq(pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5) < 64;
-    }
-
-    @Override
-    public void openInventory(EntityPlayer player) {}
-
-    @Override
-    public void closeInventory(EntityPlayer player) {}
-
-    @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return false;
-    }
-
-    @Override
-    public int getField(int id) { return 0; }
-
-    @Override
-    public void setField(int id, int value) {}
-
-    @Override
-    public int getFieldCount() {
-        return 5; //TODO: Update if more stuff is added
-    }
-
-    @Override
-    public void clear() {
-        try{
-            Field f = BaseTeslaContainer.class.getDeclaredField("stored");
-            f.setAccessible(true);
-            f.setLong(container, 0);
-        }catch(Exception e){}
-        container.setCapacity(0);
-        container.setInputRate(0);
-        container.setOutputRate(0);
-
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if(capability==CAPABILITY_CONSUMER || capability==CAPABILITY_HOLDER) return (T) container; // Not picky
+        if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return (T) this; // Not picky
+        return super.getCapability(capability, facing); // Possibly picky
     }
 
     @Override
@@ -159,24 +110,16 @@ public class TileCharger extends TileEntity implements IInventory, ITeslaProduce
 
     @Override
     public void update() {
-        if (item != null && item.getItem() instanceof ICapabilityProvider && ((ICapabilityProvider) item.getItem()).hasCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN)) {
-            //System.out.println("Power: " + ((ITeslaHolder) item.getItem()).getStoredPower());
-            long power = ((ITeslaHolder) item.getItem()).getStoredPower();
-            long capacity = ((ITeslaHolder) item.getItem()).getCapacity();
-            if (power < capacity) {
-                container.takePower(((ITeslaConsumer) item.getItem()).givePower(Math.min(container.getOutputRate(), container.getStoredPower()), false), false);
-            }
+        if (inventory[0] != null && inventory[0].hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, EnumFacing.DOWN) &&
+                inventory[0].hasCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN)) {
+            ITeslaConsumer c = inventory[0].getCapability(TeslaCapabilities.CAPABILITY_CONSUMER, EnumFacing.DOWN);
+            ITeslaHolder h = inventory[0].getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
+            if (h.getStoredPower() < h.getCapacity()) container.takePower(c.givePower(Math.min(container.getOutputRate(), container.getStoredPower()), false), false);
         }
     }
 
     @Override
-    public String getName() {
-        return "modsquad.charger";
+    public void setStackInSlot(int slot, ItemStack stack) {
+        inventory[slot] = stack!=null?stack.copy():null;
     }
-
-    @Override
-    public boolean hasCustomName() {
-        return false;
-    }
-
 }

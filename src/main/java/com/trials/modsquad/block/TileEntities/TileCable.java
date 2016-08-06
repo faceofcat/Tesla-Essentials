@@ -5,116 +5,63 @@ import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
+import net.darkhax.tesla.capability.TeslaCapabilities;
+import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
 
-public class TileCable extends TileEntity implements ITeslaHolder, ITeslaConsumer, ITickable {
-
-    private BlockPos[] MySidesAreInOrbitxDDDDDDDDTopKek = new BlockPos[]{
-            new BlockPos(pos.getX()+1, pos.getY(), pos.getZ()),
-            new BlockPos(pos.getX()-1, pos.getY(), pos.getZ()),
-            new BlockPos(pos.getX(), pos.getY()+1, pos.getZ()),
-            new BlockPos(pos.getX(), pos.getY()-1, pos.getZ()),
-            new BlockPos(pos.getX(), pos.getY(), pos.getZ()+1),
-            new BlockPos(pos.getX(), pos.getY(), pos.getZ()-1)
-    };
+@SuppressWarnings("unchecked")
+public class TileCable extends TileEntity implements ITickable{
 
     private BaseTeslaContainer container;
+    private List<ITeslaConsumer> gaveTo = new ArrayList<>();
 
-    int x;
-    int y;
-    int z;
-
-    public TileCable() {
-
-        this(5000, 50, 50);
-    }
-
-    public TileCable(long capacity, long input, long output) {
-
-        this(0, capacity, input, output);
-    }
-
-    public TileCable(long power, long capacity, long input, long output) {
-        container = new BaseTeslaContainer(power, capacity, input, output);
-    }
-
-    @Override
-    public long getStoredPower () {
-
-        return container.getStoredPower();
-    }
-
-    @Override
-    public long givePower (long Tesla, boolean simulated) {
-        return container.givePower(Tesla, simulated);
-    }
-
-    @Override
-    public long getCapacity () {
-
-        return container.getCapacity();
-    }
-
-    public TileCable setCapacity (long capacity) {
-        container.setCapacity(capacity);
-        return this;
-    }
-
-    public long getInputRate () {
-
-        return container.getInputRate();
-    }
-
-    public TileCable setInputRate (long rate) {
-
-        container.setInputRate(rate);
-        return this;
-    }
-
-    public long getOutputRate () {
-
-        return container.getOutputRate();
-    }
-
-    public TileCable setOutputRate (long rate) {
-
-        container.setOutputRate(rate);
-        return this;
-    }
-
-    public TileCable setTransferRate (long rate) {
-
-        container.setTransferRate(rate);
-        return this;
+    public TileCable(long input, long output) {
+        container = new BaseTeslaContainer(0, 0, input, output){
+            @Override
+            public long givePower (long in, boolean simulated) {
+                System.out.println("Given "+in+" tesla");
+                long Tesla = Math.min(in, getOutputRate());
+                List<ITeslaConsumer> avail = TeslaUtils.getConnectedCapabilities(TeslaCapabilities.CAPABILITY_CONSUMER, worldObj, pos);
+                System.out.println("Available sides "+Arrays.toString(avail.toArray()));
+                long tmp, requested = 0;
+                for(ITeslaConsumer c : avail) requested+=c.givePower(Tesla, true);
+                if(simulated) return Math.min(Tesla, requested);
+                long returnVal, value = returnVal = requested<=Tesla?requested:Tesla;
+                for (ITeslaConsumer c : avail) {
+                    returnVal -= tmp = givePower(returnVal, false);
+                    if (tmp != 0 && !gaveTo.contains(c)) gaveTo.add(c);
+                    if (returnVal == 0) return value;
+                }
+                return 0;
+            }
+        };
     }
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return capability == CAPABILITY_PRODUCER || capability == CAPABILITY_HOLDER;
+        TileEntity e;
+        return (capability==CAPABILITY_PRODUCER || capability==CAPABILITY_CONSUMER) || super.hasCapability(capability, facing);
     }
 
     @Override
-    public void update() {
-        if(!worldObj.isRemote){
-            TileEntity e;
-            if(getStoredPower() < getCapacity()){
-                x = this.getPos().getX();
-                y = this.getPos().getY();
-                z = this.getPos().getZ();
-                if((e=worldObj.getTileEntity(new BlockPos(x,y+1,z)))!=null && e.hasCapability(CAPABILITY_PRODUCER, ModBlocks.getRelativeFace(e.getPos(), pos)))
-                    givePower(((ITeslaProducer) e).takePower(Math.min(getInputRate(), getCapacity()-getStoredPower()), false), false);
-            }
-            for(BlockPos side : MySidesAreInOrbitxDDDDDDDDTopKek)
-                if((e=worldObj.getTileEntity(side))!=null && e.hasCapability(CAPABILITY_CONSUMER, ModBlocks.getRelativeFace(e.getPos(), pos)))
-                    container.takePower(((ITeslaConsumer) e).givePower(Math.min(getStoredPower(), getOutputRate()), false), false);
-        }
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        TileEntity e;
+        if(capability==CAPABILITY_PRODUCER || capability==CAPABILITY_CONSUMER) return (T) container;
+        return super.getCapability(capability, facing);
     }
+
+    @Override
+    public void update() { gaveTo = new ArrayList<>(); } //Clear disallow-list
 }

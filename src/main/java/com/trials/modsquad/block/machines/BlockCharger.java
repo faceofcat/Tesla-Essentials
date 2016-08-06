@@ -25,8 +25,6 @@ import static com.trials.modsquad.Ref.GUI_ID_GRINDER;
 
 public class BlockCharger extends Block {
 
-    private TileEntity charger;
-
     public BlockCharger(String s, String s1) {
         super(Material.IRON);
         setUnlocalizedName(s);
@@ -69,10 +67,5 @@ public class BlockCharger extends Block {
                 s.stackSize = 0;
             }
         super.breakBlock(worldIn, pos, state);
-    }
-
-    @Override
-    public boolean isOpaqueCube(IBlockState state) {
-        return false;
     }
 }

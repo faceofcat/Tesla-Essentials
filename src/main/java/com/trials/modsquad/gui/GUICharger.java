@@ -5,21 +5,24 @@ import com.trials.modsquad.block.TileEntities.TileCharger;
 import com.trials.modsquad.block.TileEntities.TileFurnaceGenerator;
 import com.trials.modsquad.block.containers.ContainerCharger;
 import com.trials.modsquad.block.containers.ContainerFurnaceGenerator;
+import net.darkhax.tesla.api.ITeslaHolder;
+import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.darkhax.tesla.lib.PowerBar;
 import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 public class GUICharger extends GuiContainer {
 
-    private TileCharger charger;
+    private ITeslaHolder charger;
     private PowerBar p;
 
     public GUICharger(InventoryPlayer player, TileCharger charger) {
         super(new ContainerCharger(player, charger));
-        this.charger = charger;
+        this.charger = charger.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
         p = new PowerBar(this, xSize+100, 50, PowerBar.BackgroundType.LIGHT);
     }
 

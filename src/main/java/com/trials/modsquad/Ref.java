@@ -1,9 +1,6 @@
 package com.trials.modsquad;
 
 import com.trials.modsquad.items.ModItems;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.Sound;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;

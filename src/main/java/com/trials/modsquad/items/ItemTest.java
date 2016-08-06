@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 
 import java.util.List;
 

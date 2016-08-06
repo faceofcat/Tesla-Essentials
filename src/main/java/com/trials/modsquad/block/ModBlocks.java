@@ -2,6 +2,7 @@ package com.trials.modsquad.block;
 
 import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.Network.BasicCable;
+import com.trials.modsquad.block.TileEntities.*;
 import com.trials.modsquad.block.machines.BlockCharger;
 import com.trials.modsquad.block.machines.BlockElectricFurnace;
 import com.trials.modsquad.block.machines.BlockFurnaceGenerator;
@@ -15,6 +16,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import static com.trials.modsquad.Ref.BlockReference.*;
+import static net.minecraftforge.fml.common.registry.GameRegistry.registerTileEntity;
 
 public class ModBlocks {
 
@@ -44,6 +46,7 @@ public class ModBlocks {
     }
 
     public static void register() {
+        // ---- Blocks ----
         //Ores
         registerBlock(oreCopper);
         registerBlock(oreTin);
@@ -57,6 +60,17 @@ public class ModBlocks {
 
         //Cables
         registerBlock(leadCable);
+
+
+        // ---- TileEntities ----
+        //Machines
+        registerTileEntity(TileGrinder.class, "Grinder");
+        registerTileEntity(TileElectricFurnace.class, "Electric Furnace");
+        registerTileEntity(TileFurnaceGenerator.class, "Furnace Generator");
+        registerTileEntity(TileCharger.class, "Charger");
+
+        //Cables
+        registerTileEntity(TileCable.class, "Cable");
     }
 
     private static void registerBlock(Block block) {

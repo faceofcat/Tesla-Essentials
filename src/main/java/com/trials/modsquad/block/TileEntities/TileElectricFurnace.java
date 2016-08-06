@@ -1,9 +1,8 @@
 package com.trials.modsquad.block.TileEntities;
 
 import mcp.MethodsReturnNonnullByDefault;
-import net.darkhax.tesla.api.ITeslaConsumer;
-import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
+import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.block.BlockFurnace;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -17,13 +16,12 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
-
 import java.lang.reflect.Field;
 import java.util.Map;
 
 
-@SuppressWarnings("unused")
-public class TileElectricFurnace extends TileEntityFurnace implements ITeslaConsumer, ITeslaHolder {
+@SuppressWarnings({"unused", "unchecked"})
+public class TileElectricFurnace extends TileEntityFurnace {
     private BaseTeslaContainer container;
     /** The ItemStacks that hold the items currently being used in the furnace */
     private ItemStack[] furnaceItemStacks = new ItemStack[3];
@@ -36,7 +34,7 @@ public class TileElectricFurnace extends TileEntityFurnace implements ITeslaCons
     @SuppressWarnings("unused")
     public TileElectricFurnace(){
         container = new BaseTeslaContainer();
-    }
+    } //TODO: Redo
 
 
     @Override
@@ -68,8 +66,9 @@ public class TileElectricFurnace extends TileEntityFurnace implements ITeslaCons
         boolean flag = this.isBurning();
         boolean flag1 = false;
 
-        if (this.isBurning())
+        if (flag)
         {
+
             --this.furnaceBurnTime;
         }
 
@@ -132,9 +131,9 @@ public class TileElectricFurnace extends TileEntityFurnace implements ITeslaCons
 
             if (this.furnaceItemStacks[2] == null)
             {
-                this.furnaceItemStacks[2] = itemstack.copy();
+                this.furnaceItemStacks[2] = itemstack!=null?itemstack.copy():null;
             }
-            else if (this.furnaceItemStacks[2].getItem() == itemstack.getItem())
+            else if (itemstack!=null && this.furnaceItemStacks[2].getItem() == itemstack.getItem())
             {
                 this.furnaceItemStacks[2].stackSize += itemstack.stackSize; // Forge BugFix: Results may have multiple items
             }
@@ -240,20 +239,14 @@ public class TileElectricFurnace extends TileEntityFurnace implements ITeslaCons
         }
     }
 
-
     @Override
-    public long givePower(long power, boolean simulated) {
-        return container.givePower(power ,simulated);
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capability==TeslaCapabilities.CAPABILITY_HOLDER || capability==TeslaCapabilities.CAPABILITY_CONSUMER || super.hasCapability(capability, facing);
     }
 
     @Override
-    public long getStoredPower() {
-        return container.getStoredPower();
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if(capability==TeslaCapabilities.CAPABILITY_HOLDER || capability==TeslaCapabilities.CAPABILITY_CONSUMER) return (T) container;
+        return super.getCapability(capability, facing);
     }
-
-    @Override
-    public long getCapacity() {
-        return container.getCapacity();
-    }
-
 }

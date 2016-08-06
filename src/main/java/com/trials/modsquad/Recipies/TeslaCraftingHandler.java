@@ -53,5 +53,5 @@ public class TeslaCraftingHandler {
         return null;
     }
 
-    public boolean hasRecipe(ItemStack input){ return getGrinderOutFromIn(input)!=null; }
+    public boolean hasRecipe(ItemStack input){ return input!=null && getGrinderOutFromIn(input)!=null; }
 }

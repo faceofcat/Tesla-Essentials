@@ -40,7 +40,7 @@ public class ModArmor extends ItemArmor {
 
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
-        getArmorMaterial();
+
     }
 
     @Override

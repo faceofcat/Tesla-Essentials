@@ -3,21 +3,25 @@ package com.trials.modsquad.gui;
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.block.TileEntities.TileElectricFurnace;
 import com.trials.modsquad.block.containers.ContainerElectricFurnace;
+import net.darkhax.tesla.Tesla;
+import net.darkhax.tesla.api.ITeslaHolder;
+import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.darkhax.tesla.lib.PowerBar;
 import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 public class GUIElectricFurnace extends GuiContainer {
 
-    private TileElectricFurnace furnace;
+    private ITeslaHolder furnace;
     private PowerBar p;
 
     public GUIElectricFurnace(InventoryPlayer player, TileElectricFurnace furnace) {
         super(new ContainerElectricFurnace(player, furnace));
-        this.furnace = furnace;
+        this.furnace = furnace.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
         p = new PowerBar(this, xSize+100, 50, PowerBar.BackgroundType.LIGHT);
     }
 

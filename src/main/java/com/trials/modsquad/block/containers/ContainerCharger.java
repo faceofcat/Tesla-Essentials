@@ -11,6 +11,7 @@ import net.minecraft.inventory.SlotFurnaceFuel;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nullable;
 
@@ -20,16 +21,10 @@ public class ContainerCharger extends Container {
 
     public ContainerCharger(InventoryPlayer inv, TileCharger charger){
         this.charger = charger;
-        addSlotToContainer(new Slot(charger, 0, 80, 34)); // Nice and centered :P
+        addSlotToContainer(new SlotItemHandler(charger, 0, 80, 34)); // Nice and centered :P
 
         for(int i = 0; i<3; ++i) for(int j = 0; j<9; ++j) addSlotToContainer(new Slot(inv, j+i*9+9, 8+j*18, 84+i*18));
         for(int i = 0; i<9; ++i) addSlotToContainer(new Slot(inv, i, 8+i*18, 142));
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void updateProgressBar(int id, int data) {
-        charger.setField(id, data);
     }
 
     @Nullable
@@ -42,10 +37,10 @@ public class ContainerCharger extends Container {
             ItemStack is = s.getStack();
             assert is!=null;
             i = is.copy();
-            if(index<charger.getSizeInventory()){
-                if(!mergeItemStack(is, charger.getSizeInventory(), 36+charger.getSizeInventory(), true)) return null;
+            if(index<charger.getSlots()){
+                if(!mergeItemStack(is, charger.getSlots(), 36+charger.getSlots(), true)) return null;
             }
-            else if(!mergeItemStack(is, 0, charger.getSizeInventory(), false)) return null;
+            else if(!mergeItemStack(is, 0, charger.getSlots(), false)) return null;
             if(is.stackSize == 0) s.putStack(null);
             else s.onSlotChanged();
             if(is.stackSize == i.stackSize) return null;
@@ -56,6 +51,6 @@ public class ContainerCharger extends Container {
 
     @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
-        return charger.isUseableByPlayer(playerIn);
+        return charger.getDistanceSq(playerIn.posX+.5, playerIn.posY+.5, playerIn.posZ+.5)<64;
     }
 }

@@ -1,5 +1,10 @@
 {
   "variants": {
-    "normal": { "model": "modsquad:electricFurnace" }
+    "active=inactive": { "model": "modsquad:electricFurnace" },
+    "active=active": { "model": "modsquad:electricFurnace", "textures": {
+        "5": "modsquad:blocks/door_on",
+        "6": "modsquad:blocks/side_on"
+     }
+    }
   }
 }

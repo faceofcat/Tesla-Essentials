@@ -23,6 +23,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -90,7 +91,8 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return capability==CAPABILITY_CONSUMER || capability==CAPABILITY_HOLDER || super.hasCapability(capability, facing);
+        return capability==CAPABILITY_CONSUMER || capability==CAPABILITY_HOLDER || capability== CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ||
+                super.hasCapability(capability, facing);
     }
 
     @Override
@@ -132,15 +134,16 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
                     inventory[1].stackSize+=TeslaRegistry.teslaRegistry.getGrinderRecipeFromIn(s).getAmount();
                 isGrinding = false;
             }
-            if(container.getStoredPower()>DRAW_PER_TICK){
-                container.takePower(DRAW_PER_TICK, false);
+            if(container.getStoredPower()<DRAW_PER_TICK){
                 isGrinding = false;
                 grindTime = 0;
                 return;
             }
+            container.takePower(DRAW_PER_TICK, false);
             --grindTime;
         }else if(inventory[0]!=null && TeslaRegistry.teslaRegistry.hasRecipe(inventory[0]) && (inventory[1] == null ||
-                inventory[1] == TeslaRegistry.teslaRegistry.getGrinderOutFromIn(inventory[0])) && container.getStoredPower()>0 && inventory[1].stackSize<64){
+                inventory[1] == TeslaRegistry.teslaRegistry.getGrinderOutFromIn(inventory[0])) && container.getStoredPower()>0 &&
+                (inventory[1]==null || inventory[1].stackSize<64)){
             isGrinding = true;
             grindTime = DEFAULT_GRIND_TIME;
         }
@@ -148,6 +151,6 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
 
     @Override
     public void setStackInSlot(int slot, ItemStack stack) {
-        inventory[slot] = stack;
+        inventory[slot] = stack!=null?stack.copy():null;
     }
 }

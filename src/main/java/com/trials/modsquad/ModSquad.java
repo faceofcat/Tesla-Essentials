@@ -6,10 +6,15 @@ import com.trials.modsquad.gui.GUIHandler;
 import com.trials.modsquad.items.ModItems;
 import com.trials.modsquad.proxy.CommonProxy;
 import com.trials.modsquad.world.ModWorldGen;
+import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
+import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
@@ -69,5 +74,11 @@ public class ModSquad
     public void postInit(FMLInitializationEvent e){
         // Inter-mod interaction
         proxy.postInit();
+    }
+
+    @SubscribeEvent
+    public void onItemLoad(AttachCapabilitiesEvent.Item event){
+        if(event.getItem() == ModItems.test)
+            event.addCapability(new ResourceLocation(MODID, "power"), new BaseTeslaContainerProvider(new BaseTeslaContainer(5000, 20, 20)));
     }
 }
