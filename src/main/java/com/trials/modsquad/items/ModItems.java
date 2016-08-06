@@ -12,14 +12,10 @@ import static com.trials.modsquad.Ref.electricArmor;
 public class ModItems {
 
     //Ingots
-    public static Item ingotCopper;
-    public static Item ingotTin;
-    public static Item ingotLead;
+    public static Item ingotCopper, ingotTin, ingotLead;
 
     //Dusts
-    public static Item dustCopper;
-    public static Item dustTin;
-    public static Item dustLead;
+    public static Item dustCopper, dustTin, dustLead;
 
     public static Item test;
 
