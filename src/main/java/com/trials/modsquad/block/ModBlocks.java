@@ -2,7 +2,6 @@ package com.trials.modsquad.block;
 
 import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.Network.BasicCable;
-import com.trials.modsquad.block.TileEntities.TileGrinder;
 import com.trials.modsquad.block.machines.BlockCharger;
 import com.trials.modsquad.block.machines.BlockElectricFurnace;
 import com.trials.modsquad.block.machines.BlockFurnaceGenerator;
