@@ -16,7 +16,12 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import java.util.List;
 
+import static com.trials.modsquad.Ref.deadArmor;
+import static com.trials.modsquad.Ref.electricArmor;
+
 public class ModArmor extends ItemArmor {
+
+    private BaseTeslaContainer container;
 
     public ModArmor(String name, String reg, ArmorMaterial material, int var1, EntityEquipmentSlot slot) {
         super(material, var1, slot);
@@ -28,13 +33,27 @@ public class ModArmor extends ItemArmor {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        final BaseTeslaContainer container = (BaseTeslaContainer) stack.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
+        container = (BaseTeslaContainer) stack.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
 
         tooltip.add("Power: " + container.getStoredPower() + "/" + container.getCapacity());
     }
 
     @Override
+    public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
+        getArmorMaterial();
+    }
+
+    @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
         return new BaseTeslaContainerProvider(new BaseTeslaContainer());
+    }
+
+    @Override
+    public ArmorMaterial getArmorMaterial() {
+        if (container.getStoredPower() == 0) {
+            return deadArmor;
+        } else {
+            return electricArmor;
+        }
     }
 }
