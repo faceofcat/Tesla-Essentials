@@ -4,22 +4,25 @@ import com.trials.modsquad.Ref;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
 import net.darkhax.tesla.capability.TeslaCapabilities;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import java.util.List;
 
-public class ItemTest extends Item {
+public class ModArmor extends ItemArmor {
 
-    public ItemTest() {
-        setUnlocalizedName("itemTest");
+    public ModArmor(String name, String reg, ArmorMaterial material, int var1, EntityEquipmentSlot slot) {
+        super(material, var1, slot);
+        setUnlocalizedName(name);
+        setRegistryName(reg);
         setCreativeTab(Ref.tabModSquad);
-        setRegistryName("ItemTest");
-        setMaxStackSize(1);
     }
 
     @Override
