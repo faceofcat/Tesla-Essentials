@@ -68,4 +68,9 @@ public class BlockCharger extends Block {
             }
         super.breakBlock(worldIn, pos, state);
     }
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
+    }
 }

@@ -41,7 +41,7 @@ public class ModItems {
         //Armor
         electricHelmet = new ModArmor(Ref.ItemReference.ELECTRIC_HELMET.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_HELMET.getRegistryName(), electricArmor, 1, EntityEquipmentSlot.HEAD);
         electricChestplate = new ModArmor(Ref.ItemReference.ELECTRIC_CHESTPLATE.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_CHESTPLATE.getRegistryName(), electricArmor, 1, EntityEquipmentSlot.CHEST);
-        electricLeggings = new ModArmor(Ref.ItemReference.ELECTRIC_LEGGINGS.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_LEGGINGS.getRegistryName(), electricArmor, 1, EntityEquipmentSlot.LEGS);
+        electricLeggings = new ModArmor(Ref.ItemReference.ELECTRIC_LEGGINGS.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_LEGGINGS.getRegistryName(), electricArmor, 2, EntityEquipmentSlot.LEGS);
         electricBoots = new ModArmor(Ref.ItemReference.ELECTRIC_BOOTS.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_BOOTS.getRegistryName(), electricArmor, 1, EntityEquipmentSlot.FEET);
 
         //Tools

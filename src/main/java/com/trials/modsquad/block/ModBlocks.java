@@ -3,10 +3,7 @@ package com.trials.modsquad.block;
 import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.Network.BasicCable;
 import com.trials.modsquad.block.TileEntities.*;
-import com.trials.modsquad.block.machines.BlockCharger;
-import com.trials.modsquad.block.machines.BlockElectricFurnace;
-import com.trials.modsquad.block.machines.BlockFurnaceGenerator;
-import com.trials.modsquad.block.machines.BlockGrinder;
+import com.trials.modsquad.block.machines.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -24,7 +21,7 @@ public class ModBlocks {
     public static Block oreCopper, oreTin, oreLead;
 
     //Machines
-    public static Block grinder, electricFurnace, furnaceGen, charger;
+    public static Block grinder, electricFurnace, furnaceGen, charger, capacitor;
 
     //Cables
     public static Block leadCable;
@@ -40,6 +37,7 @@ public class ModBlocks {
         electricFurnace = new BlockElectricFurnace(MACHINE_FURNACE.getUnlocalizedName(), MACHINE_FURNACE.getRegistryName());
         furnaceGen = new BlockFurnaceGenerator(GENERATOR_FURNACE.getUnlocalizedName(), GENERATOR_FURNACE.getRegistryName());
         charger = new BlockCharger(MACHINE_CHARGER.getUnlocalizedName(), MACHINE_CHARGER.getRegistryName());
+        capacitor = new BlockCapacitor(MACHINE_CAPACITOR.getUnlocalizedName(), MACHINE_CAPACITOR.getRegistryName());
 
         //Cables
         leadCable = new BasicCable(LEAD_CABLE.getUnlocalizedName(), LEAD_CABLE.getRegistryName());
@@ -57,6 +55,7 @@ public class ModBlocks {
         registerBlock(electricFurnace);
         registerBlock(furnaceGen);
         registerBlock(charger);
+        registerBlock(capacitor);
 
         //Cables
         registerBlock(leadCable);
@@ -68,6 +67,7 @@ public class ModBlocks {
         registerTileEntity(TileElectricFurnace.class, "Electric Furnace");
         registerTileEntity(TileFurnaceGenerator.class, "Furnace Generator");
         registerTileEntity(TileCharger.class, "Charger");
+        registerTileEntity(TileCapacitor.class, "Capacitor");
 
         //Cables
         registerTileEntity(TileCable.class, "Cable");
@@ -91,6 +91,7 @@ public class ModBlocks {
         registerRender(electricFurnace);
         registerRender(furnaceGen);
         registerRender(charger);
+        registerRender(capacitor);
 
         //Cables
         registerRender(leadCable);

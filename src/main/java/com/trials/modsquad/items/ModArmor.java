@@ -11,7 +11,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -91,10 +90,12 @@ public class ModArmor extends ItemArmor {
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
-        if (armorType == EntityEquipmentSlot.LEGS) {
-            return "modsquad:textures/models/armor/electricalArmor_layer_2";
+        if (slot == EntityEquipmentSlot.LEGS) {
+            return "modsquad:textures/models/armor/electricArmor_layer_2";
+        } else {
+            return "modsquad:textures/models/armor/electricArmor_layer_1";
         }
-        return "modsquad:textures/models/armor/electricalArmor_layer_1";
+
     }
 
     @Override
