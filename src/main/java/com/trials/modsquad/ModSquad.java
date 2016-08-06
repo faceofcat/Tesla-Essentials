@@ -14,6 +14,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -32,7 +34,7 @@ public class ModSquad
     public static CommonProxy proxy;
 
     @EventHandler
-    public void preInit(FMLInitializationEvent e){
+    public void preInit(FMLPreInitializationEvent e){
         // Item init and registration
         ModBlocks.init();
         ModBlocks.register();
@@ -74,7 +76,7 @@ public class ModSquad
     }
 
     @EventHandler
-    public void postInit(FMLInitializationEvent e){
+    public void postInit(FMLPostInitializationEvent e){
         // Inter-mod interaction
         proxy.postInit();
     }

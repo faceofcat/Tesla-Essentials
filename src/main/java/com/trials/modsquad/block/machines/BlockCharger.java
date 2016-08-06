@@ -78,21 +78,4 @@ public class BlockCharger extends Block {
         return false;
     }
 
-    private static final AxisAlignedBB BBOX = new AxisAlignedBB(0, 0, 0, 16 * 0.625, 13* 0.625, 16* 0.625);
-    private static final AxisAlignedBB CBOX = new AxisAlignedBB(0, 0, 0, 16* 0.625, 12* 0.625, 16* 0.625);
-
-    @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        return BBOX;
-    }
-
-    @Override
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entityIn) {
-        super.addCollisionBoxToList(pos, entityBox, collidingBoxes, CBOX);
-    }
-
-    @Override
-    public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) {
-        return false;
-    }
 }

@@ -27,10 +27,6 @@ import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER
 
 public class ModArmor extends ItemArmor {
 
-    private static int[] armor = {3,8,6,3};
-    public static ItemArmor.ArmorMaterial electricArmor = EnumHelper.addArmorMaterial("electricalArmor", "modsquad:electricalArmor",
-            15, armor, 9, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 4F);
-
     private BaseTeslaContainer container;
     private final Field itemDamage;
     private final Field damageReduce;

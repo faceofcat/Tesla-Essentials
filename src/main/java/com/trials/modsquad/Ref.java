@@ -21,6 +21,7 @@ public class Ref {
         ELECTRIC_LEGGINGS("electricLeggings", "ItemElectricLeggings"),
         ELECTRIC_BOOTS("electricBoots", "ItemElectricBoots"),
         TERRA_SMASHER("terraSmasher", "ItemTerraSmasher"),
+        ELECTRIC_PICKAXE("electricPickaxe", "ItemElectricPickaxe"),
         JET_CHESTPLATE("jetChestplate", "ItemJetChestplate")
         ;
 
