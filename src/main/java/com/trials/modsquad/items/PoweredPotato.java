@@ -50,8 +50,8 @@ public class PoweredPotato extends ItemFood {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         BaseTeslaContainer container = (BaseTeslaContainer) stack.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
-        tooltip.add("Power: " + container.getStoredPower() + "/" + container.getCapacity());
         tooltip.add(ChatFormatting.BLUE+"Shocking taste!");
+        tooltip.add("Power: " + container.getStoredPower() + "/" + container.getCapacity());
         super.addInformation(stack, playerIn, tooltip, advanced);
     }
 
