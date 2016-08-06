@@ -78,8 +78,8 @@ public class BlockCharger extends Block {
         return false;
     }
 
-    private static final AxisAlignedBB BBOX = new AxisAlignedBB(0, 0, 0, 16, 13, 16);
-    private static final AxisAlignedBB CBOX = new AxisAlignedBB(0, 0, 0, 16, 12, 16);
+    private static final AxisAlignedBB BBOX = new AxisAlignedBB(0, 0, 0, 16 * 0.625, 13* 0.625, 16* 0.625);
+    private static final AxisAlignedBB CBOX = new AxisAlignedBB(0, 0, 0, 16* 0.625, 12* 0.625, 16* 0.625);
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
