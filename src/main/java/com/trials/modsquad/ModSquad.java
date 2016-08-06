@@ -80,10 +80,4 @@ public class ModSquad
         // Inter-mod interaction
         proxy.postInit();
     }
-
-    @SubscribeEvent
-    public void onItemLoad(AttachCapabilitiesEvent.Item event){
-        if(event.getItem() == ModItems.test)
-            event.addCapability(new ResourceLocation(MODID, "power"), new BaseTeslaContainerProvider(new BaseTeslaContainer(5000, 20, 20)));
-    }
 }

@@ -27,7 +27,6 @@ import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER
 
 public class ModArmor extends ItemArmor {
 
-    private BaseTeslaContainer container;
     private final Field itemDamage;
     private final Field damageReduce;
     public static final int powerDrawPerTickOnFlight = 1;
@@ -60,9 +59,10 @@ public class ModArmor extends ItemArmor {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        container = (BaseTeslaContainer) stack.getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN);
+        BaseTeslaContainer container = (BaseTeslaContainer) stack.getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN);
         if(container.getCapacity()!=20000)
             try{
+            System.out.println("Not 20k!");
                 Field f = BaseTeslaContainer.class.getDeclaredField("capacity");
                 f.setAccessible(true);
                 f.setLong(container, 20000);

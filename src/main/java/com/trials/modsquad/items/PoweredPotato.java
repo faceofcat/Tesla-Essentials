@@ -2,6 +2,7 @@ package com.trials.modsquad.items;
 
 import com.trials.modsquad.Ref;
 import net.darkhax.tesla.api.ITeslaHolder;
+import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
 import net.darkhax.tesla.capability.TeslaCapabilities;
@@ -19,15 +20,26 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nullable;
 
+import java.lang.reflect.Field;
+
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
+import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
 
 public class PoweredPotato extends ItemFood {
+
+    private final Field itemDamage;
 
     public PoweredPotato(String unlocalizedName, String registryName) {
         super(4, 0.8F, false);
         setUnlocalizedName(unlocalizedName);
         setRegistryName(registryName);
         setCreativeTab(Ref.tabModSquad);
+        Field f = null;
+        try {
+            f = ItemStack.class.getDeclaredField("itemDamage");
+            f.setAccessible(true);
+        } catch (NoSuchFieldException e) { }
+        this.itemDamage = f;
     }
 
     @Nullable
@@ -63,7 +75,9 @@ public class PoweredPotato extends ItemFood {
     @Override
     public void setDamage(ItemStack stack, int damage) {
         ITeslaHolder h=stack.getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN);
-        stack.setItemDamage((int) h.getStoredPower() / stack.getMaxDamage());
+        // As stored power increases, dam tends towards the value getMaxDamage()
+        int dam = h.getCapacity()>0?Math.round(h.getStoredPower()*(getMaxDamage()-1)/h.getCapacity()):1;
+        try{ itemDamage.setInt(stack, getMaxDamage()-dam); }catch(Exception e){}
     }
 
     @Override
