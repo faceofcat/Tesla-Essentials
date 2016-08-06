@@ -1,4 +1,5 @@
 {
+  "forge_marker": 1,
   "variants": {
     "active=inactive": { "model": "modsquad:electricFurnace" },
     "active=active": { "model": "modsquad:electricFurnace", "textures": {
