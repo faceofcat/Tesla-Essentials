@@ -35,7 +35,6 @@ public class GUIGrinder extends GuiContainer{
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        ResourceLocation l;
         mc.renderEngine.getTexture(grinderGUI);
         mc.renderEngine.bindTexture(grinderGUI);
         GL11.glColor4f(1f, 1f, 1f, 1f);

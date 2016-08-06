@@ -27,6 +27,8 @@ import java.lang.reflect.Field;
 import java.util.Map;
 
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
+import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
+import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
 
 
 public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModifiable, ITickable, ICapabilityProvider{
@@ -49,6 +51,7 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
 
     public TileFurnaceGenerator(){
         container = new BaseTeslaContainer();
+        fuel = new ItemStack[1];
     }
 
     @Override
@@ -64,14 +67,20 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
 
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        return null;
+        ItemStack s = fuel[slot];
+        if(simulate) return s;
+        fuel[slot] = stack;
+        return s;
     }
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        return null;
+        if(simulate) return fuel[slot];
+        ItemStack s = fuel[slot];
+        if(s.stackSize-amount<=0) fuel[slot]=null;
+        else fuel[slot] = s.splitStack(amount);
+        return s;
     }
-
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound c = super.serializeNBT();
@@ -109,18 +118,24 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
         else if(fuel!=null && TileEntityFurnace.isItemFuel(fuel[0])){ // Fixes bug where generator tears through fuel supply
             isBurning = true;
             workTime = TileEntityFurnace.getItemBurnTime(fuel[0])/2; // Automatically casts away eventual decimal points
-            decrStackSize(0, 1);
+            extractItem(0, 1, false);
         }
-        if(getStoredPower()>0)
+        if(container.getStoredPower()>0)
             for(BlockPos side : MySidesAreInOrbitxDDDDDDDDTopKek){
                 if((t=worldObj.getTileEntity(side))!=null && t.hasCapability(CAPABILITY_CONSUMER, ModBlocks.getRelativeFace(t.getPos(), pos)))
-                    container.takePower(((ITeslaConsumer) t.getCapability(CAPABILITY_CONSUMER, ModBlocks.getRelativeFace(t.getPos(), pos)))
+                    container.takePower((t.getCapability(CAPABILITY_CONSUMER, ModBlocks.getRelativeFace(t.getPos(), pos)))
                             .givePower(Math.min(container.getOutputRate(), container.getStoredPower()), false), false);
             }
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) { return capability == TeslaCapabilities.CAPABILITY_PRODUCER || capability == TeslaCapabilities.CAPABILITY_HOLDER; }
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) { return capability == TeslaCapabilities.CAPABILITY_PRODUCER || capability == CAPABILITY_HOLDER; }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if(capability==CAPABILITY_HOLDER || capability==CAPABILITY_PRODUCER) return (T) container;
+        return super.getCapability(capability, facing);
+    }
 
     @Override
     public void setStackInSlot(int slot, ItemStack stack) {

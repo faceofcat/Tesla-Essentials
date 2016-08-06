@@ -8,8 +8,11 @@ import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnaceFuel;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.SlotItemHandler;
+
 import javax.annotation.Nullable;
 
 public class ContainerFurnaceGenerator extends Container {
@@ -19,25 +22,15 @@ public class ContainerFurnaceGenerator extends Container {
 
     public ContainerFurnaceGenerator(InventoryPlayer inv, TileFurnaceGenerator generator){
         this.generator = generator;
-        addSlotToContainer(new SlotFurnaceFuel(generator, 0, 80, 34)); // Nice and centered :P
+        addSlotToContainer(new SlotItemHandler(generator, 0, 80, 34){
+            @Override
+            public boolean isItemValid(ItemStack stack) {
+                return SlotFurnaceFuel.isBucket(stack) || TileEntityFurnace.isItemFuel(stack);
+            }
+        }); // Nice and centered :P
 
         for(int i = 0; i<3; ++i) for(int j = 0; j<9; ++j) addSlotToContainer(new Slot(inv, j+i*9+9, 8+j*18, 84+i*18));
         for(int i = 0; i<9; ++i) addSlotToContainer(new Slot(inv, i, 8+i*18, 142));
-    }
-
-    @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
-
-        for (IContainerListener l : listeners) if (workTime != generator.getField(0)) l.sendProgressBarUpdate(this, 0, generator.getField(0));
-
-        workTime = generator.getField(0);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void updateProgressBar(int id, int data) {
-        generator.setField(id, data);
     }
 
     @Nullable
@@ -50,10 +43,10 @@ public class ContainerFurnaceGenerator extends Container {
             ItemStack is = s.getStack();
             assert is!=null;
             i = is.copy();
-            if(index<generator.getSizeInventory()){
-                if(!mergeItemStack(is, generator.getSizeInventory(), 36+generator.getSizeInventory(), true)) return null;
+            if(index<generator.getSlots()){
+                if(!mergeItemStack(is, generator.getSlots(), 36+generator.getSlots(), true)) return null;
             }
-            else if(!mergeItemStack(is, 0, generator.getSizeInventory(), false)) return null;
+            else if(!mergeItemStack(is, 0, generator.getSlots(), false)) return null;
             if(is.stackSize == 0) s.putStack(null);
             else s.onSlotChanged();
             if(is.stackSize == i.stackSize) return null;
@@ -64,6 +57,6 @@ public class ContainerFurnaceGenerator extends Container {
 
     @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
-        return generator.isUseableByPlayer(playerIn);
+        return generator.getDistanceSq(playerIn.posX+.5, playerIn.posY+.5, playerIn.posZ+.5)<64;
     }
 }
