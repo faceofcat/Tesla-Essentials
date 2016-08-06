@@ -45,7 +45,7 @@ public class GUIHandler implements IGuiHandler {
             case GUI_ID_CHARGER:
                 return new GUICharger(player.inventory, (TileCharger) e);
             case GUI_ID_CAPACITOR:
-                return new GUICapacitor(player.inventory  (TileCapacitor) e);
+                return new GUICapacitor(player.inventory, (TileCapacitor) e);
         }
         return null;
     }
