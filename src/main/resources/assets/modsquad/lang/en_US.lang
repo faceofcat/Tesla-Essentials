@@ -18,5 +18,6 @@ tile.lcable.name=Lead Cable
 tile.generatorFurnace.name=Furnace Generator
 tile.charger.name=Charger
 
+tooltip.modsquad.terrasmasher.normal=Contains §e%dT/§e%dT
 
 itemGroup.modSquad=ModSquad
