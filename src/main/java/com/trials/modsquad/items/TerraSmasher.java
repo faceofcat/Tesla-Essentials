@@ -2,6 +2,7 @@ package com.trials.modsquad.items;
 
 import com.google.common.collect.Sets;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
+import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -12,7 +13,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.EnumHelper;
 
 import java.lang.reflect.Field;
@@ -107,5 +110,10 @@ public class TerraSmasher extends ItemTool {
         final BaseTeslaContainer container = (BaseTeslaContainer) stack.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
             stack.setItemDamage(((int) (container.getStoredPower()/drain)));
         tooltip.add(I18n.format("tooltip.modsquad.terrasmasher.normal", container.getStoredPower(), container.getCapacity()));
+    }
+
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+        return new BaseTeslaContainerProvider(new BaseTeslaContainer());
     }
 }
