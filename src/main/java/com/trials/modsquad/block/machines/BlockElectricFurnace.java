@@ -68,6 +68,6 @@ public class BlockElectricFurnace extends Block {
 
     @Override
     public boolean isVisuallyOpaque() {
-        return super.isVisuallyOpaque();
+        return false;
     }
 }
