@@ -24,6 +24,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -36,7 +37,7 @@ import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
 
-public class TileGrinder extends TileEntity implements IItemHandler, ITickable {
+public class TileGrinder extends TileEntity implements IItemHandlerModifiable, ITickable {
     // Primitives
     private int grindTime;
     public static final int DEFAULT_GRIND_TIME = 60;
@@ -143,5 +144,10 @@ public class TileGrinder extends TileEntity implements IItemHandler, ITickable {
             isGrinding = true;
             grindTime = DEFAULT_GRIND_TIME;
         }
+    }
+
+    @Override
+    public void setStackInSlot(int slot, ItemStack stack) {
+        inventory[slot] = stack;
     }
 }

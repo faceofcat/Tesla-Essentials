@@ -19,6 +19,8 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -27,7 +29,7 @@ import java.util.Map;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
 
 
-public class TileFurnaceGenerator extends TileEntity implements IInventory, ITeslaProducer, ITeslaHolder, ITickable, ICapabilityProvider{
+public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModifiable, ITickable, ICapabilityProvider{
 
 
     private BlockPos[] MySidesAreInOrbitxDDDDDDDDTopKek = new BlockPos[]{
@@ -38,7 +40,7 @@ public class TileFurnaceGenerator extends TileEntity implements IInventory, ITes
             new BlockPos(pos.getX(), pos.getY(), pos.getZ()+1),
             new BlockPos(pos.getX(), pos.getY(), pos.getZ()-1)
     };
-    private ItemStack fuel;
+    private ItemStack[] fuel;
     private BaseTeslaContainer container;
 
     private int workTime;
@@ -50,119 +52,24 @@ public class TileFurnaceGenerator extends TileEntity implements IInventory, ITes
     }
 
     @Override
-    public long takePower(long power, boolean simulated) {
-        return container.takePower(power, simulated);
-    }
-
-    @Override
-    public long getStoredPower() {
-        return container.getStoredPower();
-    }
-
-    @Override
-    public long getCapacity() {
-        return container.getCapacity();
-    }
-
-    @Override
-    public int getSizeInventory() {
+    public int getSlots() {
         return 1;
     }
 
     @Nullable
     @Override
     public ItemStack getStackInSlot(int index) {
-        return index==0?fuel:null;
-    }
-
-    @Nullable
-    @Override
-    public ItemStack decrStackSize(int index, int count) {
-        if(index!=0) return null;
-        ItemStack s = fuel;
-        if(s!=null){
-            if(s.stackSize <= count) setInventorySlotContents(index, null);
-            else if((s = s.splitStack(count)).stackSize==0) setInventorySlotContents(index, null);
-        }
-        return s;
-    }
-
-    @Nullable
-    @Override
-    public ItemStack removeStackFromSlot(int index) {
-        if(index!=0) return null;
-        ItemStack s = fuel;
-        fuel = null;
-        return s;
+        return fuel[index];
     }
 
     @Override
-    public void setInventorySlotContents(int index, @Nullable ItemStack stack) {
-        if(index!=0) return;
-        if(stack==null || fuel==null || (stack.getItem().equals(fuel.getItem()) && stack.stackSize+fuel.stackSize<=64)) fuel = stack;
-
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+        return null;
     }
 
     @Override
-    public int getInventoryStackLimit() {
-        return 64;
-    }
-
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
-        return worldObj.getTileEntity(pos) == this && player.getDistanceSq(pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5) < 64;
-    }
-
-    @Override
-    public void openInventory(EntityPlayer player) {
-
-    }
-
-    @Override
-    public void closeInventory(EntityPlayer player) {
-
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return false;
-    }
-
-    @Override
-    public int getField(int id) {
-        switch (id){
-            case 0:
-                return workTime;
-        }
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value) {
-        switch (id){
-            case 0:
-                workTime = value;
-                break;
-        }
-    }
-
-    @Override
-    public int getFieldCount() {
-        return 5; //TODO: Update if more stuff is added
-    }
-
-    @Override
-    public void clear() {
-        workTime = 0;
-        try{
-            Field f = BaseTeslaContainer.class.getDeclaredField("stored");
-            f.setAccessible(true);
-            f.setLong(container, 0);
-        }catch(Exception e){}
-        container.setCapacity(0);
-        container.setInputRate(0);
-        container.setOutputRate(0);
-
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        return null;
     }
 
     @Override
@@ -199,9 +106,9 @@ public class TileFurnaceGenerator extends TileEntity implements IInventory, ITes
             if(workTime==0) isBurning = false;
             else --workTime;
         }
-        else if(fuel!=null && TileEntityFurnace.isItemFuel(fuel)){ // Fixes bug where generator tears through fuel supply
+        else if(fuel!=null && TileEntityFurnace.isItemFuel(fuel[0])){ // Fixes bug where generator tears through fuel supply
             isBurning = true;
-            workTime = TileEntityFurnace.getItemBurnTime(fuel)/2; // Automatically casts away eventual decimal points
+            workTime = TileEntityFurnace.getItemBurnTime(fuel[0])/2; // Automatically casts away eventual decimal points
             decrStackSize(0, 1);
         }
         if(getStoredPower()>0)
@@ -213,15 +120,10 @@ public class TileFurnaceGenerator extends TileEntity implements IInventory, ITes
     }
 
     @Override
-    public String getName() {
-        return "modsquad.furnacegen";
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        return false;
-    }
-
-    @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) { return capability == TeslaCapabilities.CAPABILITY_PRODUCER || capability == TeslaCapabilities.CAPABILITY_HOLDER; }
+
+    @Override
+    public void setStackInSlot(int slot, ItemStack stack) {
+        fuel[slot] = stack;
+    }
 }

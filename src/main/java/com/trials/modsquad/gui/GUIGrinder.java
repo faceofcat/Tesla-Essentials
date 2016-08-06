@@ -29,15 +29,15 @@ public class GUIGrinder extends GuiContainer{
         fontRendererObj.drawString("Grinder", 8, 6, 4210751);
         String power;
         int count = (power = TeslaUtils.getDisplayableTeslaCount(grinder.getStoredPower())).length();
-        fontRendererObj.drawString(power, xSize-25-count/2, 70, 4210751);
+        fontRendererObj.drawString(power, xSize-45-count/2, 35, 4210751);
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         ResourceLocation l;
         mc.renderEngine.getTexture(l=new ResourceLocation(ModSquad.MODID, "textures/gui/container/grinder.png"));
-        GL11.glColor4f(1f, 1f, 1f, 1f);
         mc.renderEngine.bindTexture(l);
+        GL11.glColor4f(1f, 1f, 1f, 1f);
         drawTexturedModalRect((width - xSize)/2, (height-ySize)/2, 0, 0, xSize, ySize);
         p.draw(grinder);
     }

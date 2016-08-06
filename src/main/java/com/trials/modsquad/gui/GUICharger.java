@@ -34,9 +34,9 @@ public class GUICharger extends GuiContainer {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         ResourceLocation l;
-        mc.renderEngine.getTexture(l=new ResourceLocation(ModSquad.MODID + "/textures/gui/container/fgen"));
-        GL11.glColor4f(1f, 1f, 1f, 1f);
+        mc.renderEngine.getTexture(l=new ResourceLocation(ModSquad.MODID, "textures/gui/container/fgen.png"));
         mc.renderEngine.bindTexture(l);
+        GL11.glColor4f(1f, 1f, 1f, 1f);
         drawTexturedModalRect((width - xSize)/2, (height-ySize)/2, 0, 0, xSize, ySize);
         p.draw(charger);
     }

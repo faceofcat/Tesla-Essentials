@@ -18,7 +18,7 @@ public class GUIElectricFurnace extends GuiContainer {
     public GUIElectricFurnace(InventoryPlayer player, TileElectricFurnace furnace) {
         super(new ContainerElectricFurnace(player, furnace));
         this.furnace = furnace;
-        p = new PowerBar(this, xSize+100, 70, PowerBar.BackgroundType.LIGHT);
+        p = new PowerBar(this, xSize+100, 50, PowerBar.BackgroundType.LIGHT);
     }
 
     @Override
@@ -26,16 +26,16 @@ public class GUIElectricFurnace extends GuiContainer {
         fontRendererObj.drawString("Electric Furnace", 8, 6, 4210751);
         String power;
         int count = (power = TeslaUtils.getDisplayableTeslaCount(furnace.getStoredPower())).length();
-        fontRendererObj.drawString(power, xSize-25-count/2, 70, 4210751);
+        fontRendererObj.drawString(power, xSize-45-count/2, 35, 4210751);
 
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         ResourceLocation l;
-        mc.renderEngine.getTexture(l=new ResourceLocation(ModSquad.MODID, "/textures/gui/container/grinder.png"));
-        GL11.glColor4f(1f, 1f, 1f, 1f);
+        mc.renderEngine.getTexture(l=new ResourceLocation(ModSquad.MODID, "textures/gui/container/grinder.png"));
         mc.renderEngine.bindTexture(l);
+        GL11.glColor4f(1f, 1f, 1f, 1f);
         drawTexturedModalRect((width - xSize)/2, (height-ySize)/2, 0, 0, xSize, ySize);
     }
 }
