@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GUIGrinder extends GuiContainer{
 
+    public static ResourceLocation grinderGUI = new ResourceLocation(ModSquad.MODID, "textures/gui/container/grinder.png");
     private ITeslaHolder grinder;
     private PowerBar p;
 
@@ -35,8 +36,8 @@ public class GUIGrinder extends GuiContainer{
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         ResourceLocation l;
-        mc.renderEngine.getTexture(l=new ResourceLocation(ModSquad.MODID, "textures/gui/container/grinder.png"));
-        mc.renderEngine.bindTexture(l);
+        mc.renderEngine.getTexture(grinderGUI);
+        mc.renderEngine.bindTexture(grinderGUI);
         GL11.glColor4f(1f, 1f, 1f, 1f);
         drawTexturedModalRect((width - xSize)/2, (height-ySize)/2, 0, 0, xSize, ySize);
         p.draw(grinder);
