@@ -22,7 +22,7 @@ public class GUIGrinder extends GuiContainer{
     public GUIGrinder(InventoryPlayer player, TileGrinder grinder) {
         super(new ContainerGrinder(player, grinder));
         this.grinder = grinder.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
-        p = new PowerBar(this, xSize+100, 50, PowerBar.BackgroundType.LIGHT);
+        p = new PowerBar(this, (width - xSize)/2+20, (height-ySize)/2+50, PowerBar.BackgroundType.LIGHT);
     }
 
     @Override
