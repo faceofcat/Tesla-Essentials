@@ -7,13 +7,13 @@ public class ClientProxy implements CommonProxy {
 
     @Override
     public void preInit() {
-        ModBlocks.registerRenders();
-        ModItems.registerRenders();
+
     }
 
     @Override
     public void init() {
-
+        ModBlocks.registerRenders();
+        ModItems.registerRenders();
     }
 
     @Override
