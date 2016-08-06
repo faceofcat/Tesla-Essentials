@@ -13,7 +13,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class ModItems {
 
     public static ItemArmor.ArmorMaterial electricArmor = EnumHelper.addArmorMaterial("electricalArmor", "modsquad:electricalArmor", 15, new int[]{3,8,6,3}, 9, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 4F);
-    public static Item.ToolMaterial electricTool = EnumHelper.addToolMaterial("electricalTool", 3, 512, 12F, 3F, 14);
 
     //Ingots
     public static Item ingotCopper, ingotTin, ingotLead, ingotElectricAlloy;
@@ -21,14 +20,11 @@ public class ModItems {
     //Dusts
     public static Item dustCopper, dustTin, dustLead, dustIron, dustGold, dustElectricAlloy;
 
-    public static Item test;
-
     //Armor
     public static Item electricHelmet, electricChestplate, electricLeggings, electricBoots, jetChestplate;
 
     //Tools
-    public static Item terraSmasher;
-    public static Item electricPickaxe;
+    public static Item terraSmasher, poweredPotato;
 
     public static void init() {
         //Ingots
@@ -45,9 +41,6 @@ public class ModItems {
         dustGold = new ModDust(Ref.DustReference.GOLD.getUnlocalizedName(), Ref.DustReference.GOLD.getRegistryName());
         dustElectricAlloy = new ModDust(Ref.DustReference.ELECTRICALLOY.getUnlocalizedName(), Ref.DustReference.ELECTRICALLOY.getRegistryName());
 
-        //testItems
-        test = new ItemTest();
-
         //Armor
         electricHelmet = new ModArmor(Ref.ItemReference.ELECTRIC_HELMET.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_HELMET.getRegistryName(), electricArmor, 1, EntityEquipmentSlot.HEAD);
         electricChestplate = new ModArmor(Ref.ItemReference.ELECTRIC_CHESTPLATE.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_CHESTPLATE.getRegistryName(), electricArmor, 1, EntityEquipmentSlot.CHEST);
@@ -58,8 +51,7 @@ public class ModItems {
 
         //Tools
         terraSmasher = new TerraSmasher(Ref.ItemReference.TERRA_SMASHER.getUnlocalizedName(), Ref.ItemReference.TERRA_SMASHER.getRegistryName());
-
-        electricPickaxe = new ModPickaxe(Ref.ItemReference.ELECTRIC_PICKAXE.getUnlocalizedName(), Ref.ItemReference.ELECTRIC_PICKAXE.getRegistryName(), electricTool);
+        poweredPotato = new PoweredPotato(Ref.ItemReference.POWERED_POTATO.getUnlocalizedName(), Ref.ItemReference.POWERED_POTATO.getRegistryName());
 
     }
 
@@ -78,8 +70,6 @@ public class ModItems {
         GameRegistry.register(dustGold);
         GameRegistry.register(dustElectricAlloy);
 
-        GameRegistry.register(test);
-
         //Armor
         GameRegistry.register(electricHelmet);
         GameRegistry.register(electricChestplate);
@@ -90,8 +80,7 @@ public class ModItems {
 
         //Tools
         GameRegistry.register(terraSmasher);
-
-        GameRegistry.register(electricPickaxe);
+        GameRegistry.register(poweredPotato);
 
     }
 
@@ -110,8 +99,6 @@ public class ModItems {
         registerRender(dustGold);
         registerRender(dustElectricAlloy);
 
-        registerRender(test);
-
         //Armor
         registerRender(electricHelmet);
         registerRender(electricChestplate);
@@ -122,8 +109,7 @@ public class ModItems {
 
         //Tools
         registerRender(terraSmasher);
-
-        registerRender(electricPickaxe);
+        registerRender(poweredPotato);
 
     }
 
