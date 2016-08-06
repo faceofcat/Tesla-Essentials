@@ -3,6 +3,7 @@ package com.trials.modsquad.items;
 import com.trials.modsquad.Ref;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
+import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
 import net.darkhax.tesla.capability.TeslaCapabilities;
@@ -23,6 +24,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
+import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
 
 public class ModArmor extends ItemArmor {
 
@@ -32,18 +34,24 @@ public class ModArmor extends ItemArmor {
 
     private BaseTeslaContainer container;
     private final Field itemDamage;
+    private final Field damageReduce;
 
     public ModArmor(String name, String reg, ArmorMaterial material, int var1, EntityEquipmentSlot slot) {
         super(material, var1, slot);
         setUnlocalizedName(name);
         setRegistryName(reg);
         setCreativeTab(Ref.tabModSquad);
-        Field itemDamage = null;
+        Field f = null;
         try {
-            itemDamage = ItemStack.class.getDeclaredField("itemDamage");
-            itemDamage.setAccessible(true);
-        } catch (NoSuchFieldException e) {}
-        this.itemDamage = itemDamage;
+            f = ItemStack.class.getDeclaredField("itemDamage");
+            f.setAccessible(true);
+        } catch (NoSuchFieldException e) { }
+        this.itemDamage = f;
+        try{
+            f = ItemArmor.class.getDeclaredField("damageReduceAmount");
+            f.setAccessible(true);
+        } catch (Exception e){ }
+        this.damageReduce = f;
     }
 
     @Override
@@ -58,12 +66,11 @@ public class ModArmor extends ItemArmor {
         container = (BaseTeslaContainer) stack.getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN);
 
         tooltip.add("Power: " + container.getStoredPower() + "/" + container.getCapacity());
-
-        setDamage(stack, 0);
     }
 
     @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+        super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
     }
 
     @Override
@@ -113,6 +120,8 @@ public class ModArmor extends ItemArmor {
         // As stored power increases, dam tends towards the value getMaxDamage()
         int dam = h.getCapacity()>0?Math.round(h.getStoredPower()*(getMaxDamage()-1)/h.getCapacity()):0;
         try{ itemDamage.setInt(stack, getMaxDamage()-dam); }catch(Exception e){}
+        ITeslaProducer p = stack.getCapability(CAPABILITY_PRODUCER, EnumFacing.DOWN);
+        if(h.getStoredPower()==0)try{ damageReduce.setInt(this, 0); }catch(Exception e){}
     }
 
     @Override
