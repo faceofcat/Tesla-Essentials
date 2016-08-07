@@ -31,7 +31,6 @@ public class TileCapacitor extends TileEntity implements ITickable {
     public void update() {
         if(container.getStoredPower()>0) {
             int i = TeslaUtils.getConnectedCapabilities(CAPABILITY_CONSUMER, worldObj, pos).size();
-            System.out.println(this+" found "+i+" capable side"+(i>1||i==0?"s.":"."));
             if(i==0) return;
             container.takePower(TeslaUtils.distributePowerToAllFaces(worldObj, pos, Math.min(container.getStoredPower() / i, container.getOutputRate()), false), false);
         }

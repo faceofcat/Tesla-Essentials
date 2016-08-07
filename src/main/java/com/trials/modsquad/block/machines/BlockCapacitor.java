@@ -46,6 +46,9 @@ public class BlockCapacitor extends Block {
     }
 
     @Override
+    public boolean hasTileEntity(IBlockState state) { return true; }
+
+    @Override
     public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
         return false;
     }

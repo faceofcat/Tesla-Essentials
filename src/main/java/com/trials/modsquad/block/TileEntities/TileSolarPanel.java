@@ -29,21 +29,12 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
             if(i==0) return;
             solarContainer.takePower(TeslaUtils.distributePowerToAllFaces(worldObj, pos, Math.min(solarContainer.getStoredPower() / i, solarContainer.getOutputRate()), false), false);
         }
-        if (worldObj.getTopSolidOrLiquidBlock(pos).getY() >= pos.getY()) {
-            if (solarContainer.getStoredPower() < solarContainer.getCapacity() -5 ) {
-                if (worldObj.isDaytime()) {
-                    solarContainer.givePower(5, false);
-                    System.out.println("power!");
-                } else {
-                    System.out.println("not day");
-                }
-            } else {
-                System.out.println("no room");
-            }
-        } else {
-            System.out.println("dark");
+        if (worldObj.getTopSolidOrLiquidBlock(pos).getY() >= pos.getY() &&
+                solarContainer.getStoredPower() < solarContainer.getCapacity() -5 &&
+                worldObj.isDaytime()) {
+            solarContainer.givePower(5, false);
         }
-        System.out.println("should havae run");
+
     }
 
     @Override

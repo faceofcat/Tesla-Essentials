@@ -5,7 +5,8 @@
         "0": "modsquad:blocks/solar_panel_side",
         "1": "modsquad:blocks/Top",
         "2": "modsquad:blocks/solar_panel_top",
-        "3": "modsquad:blocks/side"
+        "3": "modsquad:blocks/side",
+      "particle": "blocks/iron_block"
     },
     "elements": [
         {
