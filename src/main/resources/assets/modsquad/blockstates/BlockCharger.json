@@ -1,5 +1,6 @@
 {
   "variants": {
+    "normal": { "model": "modsquad:charger" },
     "facing=north":  { "model": "modsquad:charger" },
     "facing=south":  { "model": "modsquad:charger", "y": 180, "uvlock": false },
     "facing=east": { "model": "modsquad:charger", "y": 90, "uvlock": false },
