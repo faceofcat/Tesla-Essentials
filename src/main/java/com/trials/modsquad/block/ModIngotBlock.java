@@ -11,7 +11,7 @@ public class ModIngotBlock extends Block {
         this.setCreativeTab(Ref.tabModSquad);
         setUnlocalizedName(unlocalizedName);
         setRegistryName(registryName);
-        setHarvestLevel("pickaxe", 2);
+        setHarvestLevel("pickaxe", 1);
         setResistance(15F);
         setHardness(3);
     }
