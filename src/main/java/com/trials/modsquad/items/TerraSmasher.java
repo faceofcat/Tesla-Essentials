@@ -3,6 +3,7 @@ package com.trials.modsquad.items;
 import com.google.common.collect.Sets;
 import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.ModBlocks;
+import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
 import net.darkhax.tesla.capability.TeslaCapabilities;
@@ -29,6 +30,8 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Set;
 
+import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
+
 public class TerraSmasher extends ItemTool {
     public static final Set<Block> EFFECTIVE_ON = Sets.newHashSet(new Block[] {Blocks.ACTIVATOR_RAIL, Blocks.COAL_ORE, Blocks.COBBLESTONE, Blocks.DETECTOR_RAIL, Blocks.DIAMOND_BLOCK, Blocks.DIAMOND_ORE,
             Blocks.DOUBLE_STONE_SLAB, Blocks.GOLDEN_RAIL, Blocks.GOLD_BLOCK, Blocks.GOLD_ORE, Blocks.ICE, Blocks.IRON_BLOCK, Blocks.IRON_ORE, Blocks.LAPIS_BLOCK, Blocks.LAPIS_ORE, Blocks.LIT_REDSTONE_ORE,
@@ -38,17 +41,21 @@ public class TerraSmasher extends ItemTool {
             ModBlocks.grinder, ModBlocks.leadCable, ModBlocks.oreCopper, ModBlocks.oreTin, ModBlocks.oreLead});
     public static final Item.ToolMaterial TERRA_SMASHER = EnumHelper.addToolMaterial("TERRA_SMASHER", 3, 2000, 15.0F, 3.0F, 25);
     public static final long drain = 10;
+    private final Field itemDamage;
+
     public TerraSmasher(String name, String reg) {
         super(1.0F, -2.8F, TERRA_SMASHER, EFFECTIVE_ON);
         setUnlocalizedName(name);
         setRegistryName(reg);
         setCreativeTab(Ref.tabModSquad);
-
-        try{
-            Field f = ItemTool.class.getDeclaredField("toolClass");
+        setMaxStackSize(1);
+        setMaxDamage(2000);
+        Field f = null;
+        try {
+            f = ItemStack.class.getDeclaredField("itemDamage");
             f.setAccessible(true);
-            f.set(this, new String("pickaxe"));
-        }catch(Exception e){}
+        } catch (NoSuchFieldException e) { }
+        this.itemDamage = f;
     }
 
     @Override
@@ -84,6 +91,34 @@ public class TerraSmasher extends ItemTool {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-        return new BaseTeslaContainerProvider(new BaseTeslaContainer(20000, 20, 20));
+        return new BaseTeslaContainerProvider(new BaseTeslaContainer(20000, 20, 20){
+            @Override
+            public long givePower(long Tesla, boolean simulated) {
+                setDamage(stack, 0);
+                return super.givePower(Tesla, simulated);
+            }
+
+            @Override
+            public long takePower(long Tesla, boolean simulated) {
+                setDamage(stack, 0);
+                return super.takePower(Tesla, simulated);
+            }
+        });
     }
+
+    @Override
+    public void setDamage(ItemStack stack, int damage) {
+        ITeslaHolder h=stack.getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN);
+        // As stored power increases, dam tends towards the value getMaxDamage()
+        //int dam = h.getCapacity()>0?Math.round(h.getStoredPower()*(getMaxDamage()-1)/h.getCapacity()):1;
+        int dam = Math.round(h.getStoredPower()/stack.getMaxDamage());
+        //try{ itemDamage.setInt(stack, getMaxDamage()-dam); }catch(Exception e){}
+        try{ itemDamage.setInt(stack, dam); }catch(Exception e){}
+    }
+
+    @Override
+    public boolean isRepairable() {
+        return false;
+    }
+
 }

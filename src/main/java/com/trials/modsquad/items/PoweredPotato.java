@@ -31,6 +31,7 @@ import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER
 public class PoweredPotato extends ItemFood {
 
     private final Field itemDamage;
+    private long drain = 400;
 
     public PoweredPotato(String unlocalizedName, String registryName) {
         super(4, 0.8F, false);
@@ -59,10 +60,10 @@ public class PoweredPotato extends ItemFood {
     @Override
     public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityLivingBase entityLiving) {
         BaseTeslaContainer container = (BaseTeslaContainer) stack.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
-        if (entityLiving instanceof EntityPlayer && container.getStoredPower() > 49) {
+        if (entityLiving instanceof EntityPlayer && container.getStoredPower() > 400) {
             EntityPlayer entityplayer = (EntityPlayer)entityLiving;
             worldIn.playSound(null, entityplayer.posX, entityplayer.posY, entityplayer.posZ, SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 0.5F, worldIn.rand.nextFloat() * 0.1F + 0.9F);
-            container.takePower(400, false);
+            container.takePower(drain, false);
             entityplayer.getFoodStats().setFoodLevel(entityplayer.getFoodStats().getFoodLevel() + 4);
             entityplayer.getFoodStats().setFoodSaturationLevel(entityplayer.getFoodStats().getSaturationLevel() + 0.8F);
             this.onFoodEaten(stack, worldIn, entityplayer);
@@ -72,7 +73,7 @@ public class PoweredPotato extends ItemFood {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-        return new BaseTeslaContainerProvider(new BaseTeslaContainer(80000, 20, 20){
+        return new BaseTeslaContainerProvider(new BaseTeslaContainer(80000, 20, drain){
             @Override
             public long givePower(long Tesla, boolean simulated) {
                 setDamage(stack, 0);
