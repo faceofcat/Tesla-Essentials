@@ -10,6 +10,7 @@ import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;

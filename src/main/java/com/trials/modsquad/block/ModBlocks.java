@@ -28,7 +28,7 @@ public class ModBlocks {
     public static Block blockCopper, blockTin, blockLead;
 
     //Machines
-    public static Block grinder, electricFurnace, furnaceGen, charger, capacitor;
+    public static Block grinder, electricFurnace, furnaceGen, charger, capacitor, solarPanel;
 
     //Cables
     public static Block leadCable;
@@ -49,6 +49,7 @@ public class ModBlocks {
         furnaceGen = new BlockFurnaceGenerator(GENERATOR_FURNACE.getUnlocalizedName(), GENERATOR_FURNACE.getRegistryName());
         charger = new BlockCharger(MACHINE_CHARGER.getUnlocalizedName(), MACHINE_CHARGER.getRegistryName());
         capacitor = new BlockCapacitor(MACHINE_CAPACITOR.getUnlocalizedName(), MACHINE_CAPACITOR.getRegistryName());
+        solarPanel = new BlockSolarPanel(GENERATOR_SOLAR.getUnlocalizedName(), GENERATOR_SOLAR.getRegistryName());
 
         //Cables
         leadCable = new BasicCable(LEAD_CABLE.getUnlocalizedName(), LEAD_CABLE.getRegistryName());
@@ -71,6 +72,7 @@ public class ModBlocks {
         registerBlock(furnaceGen);
         registerBlock(charger);
         registerBlock(capacitor);
+        registerBlock(solarPanel);
 
         //Cables
         registerBlock(leadCable);
@@ -83,6 +85,7 @@ public class ModBlocks {
         registerTileEntity(TileFurnaceGenerator.class, "Furnace Generator");
         registerTileEntity(TileCharger.class, "Charger");
         registerTileEntity(TileCapacitor.class, "Capacitor");
+        registerTileEntity(TileSolarPanel.class, "Solar Panel");
 
         //Cables
         registerTileEntity(TileCable.class, "Cable");
@@ -111,6 +114,7 @@ public class ModBlocks {
         registerRender(furnaceGen);
         registerRender(charger);
         registerRender(capacitor);
+        registerRender(solarPanel);
 
         //Cables
         registerRender(leadCable);

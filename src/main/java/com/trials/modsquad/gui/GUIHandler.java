@@ -26,6 +26,8 @@ public class GUIHandler implements IGuiHandler {
                 return new ContainerCharger(player.inventory, (TileCharger) e);
             case GUI_ID_CAPACITOR:
                 return new ContainerCapacitor(player.inventory, (TileCapacitor) e);
+            case GUI_ID_SOLAR_GEN:
+                return new ContainerSolarGenerator(player.inventory, (TileSolarPanel) e);
         }
         return null;
     }
@@ -44,6 +46,8 @@ public class GUIHandler implements IGuiHandler {
                 return new GUICharger(player.inventory, (TileCharger) e);
             case GUI_ID_CAPACITOR:
                 return new GUICapacitor(player.inventory, (TileCapacitor) e);
+            case GUI_ID_SOLAR_GEN:
+                return new GUISolarGenerator(player.inventory, (TileSolarPanel) e);
         }
         return null;
     }

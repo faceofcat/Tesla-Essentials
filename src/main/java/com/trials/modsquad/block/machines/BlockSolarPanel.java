@@ -1,6 +1,7 @@
 package com.trials.modsquad.block.machines;
 
 import com.trials.modsquad.ModSquad;
+import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.TileEntities.TileSolarPanel;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
@@ -21,14 +22,14 @@ import javax.annotation.Nullable;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static com.trials.modsquad.Ref.GUI_ID_FURNACE_GEN;
+import static com.trials.modsquad.Ref.GUI_ID_SOLAR_GEN;
 
 public class BlockSolarPanel extends Block {
-    public BlockSolarPanel(Material blockMaterialIn, MapColor blockMapColorIn) {
-        super(blockMaterialIn, blockMapColorIn);
-    }
-
-    public BlockSolarPanel(Material materialIn) {
-        super(materialIn);
+    public BlockSolarPanel(String name, String reg) {
+        super(Material.IRON);
+        setUnlocalizedName(name);
+        setRegistryName(reg);
+        setCreativeTab(Ref.tabModSquad);
     }
 
     @Override
@@ -39,7 +40,7 @@ public class BlockSolarPanel extends Block {
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking()) return false;
-        playerIn.openGui(ModSquad.instance, GUI_ID_FURNACE_GEN, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        playerIn.openGui(ModSquad.instance, GUI_ID_SOLAR_GEN, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
 

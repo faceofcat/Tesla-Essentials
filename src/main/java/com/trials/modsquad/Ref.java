@@ -14,6 +14,7 @@ public class Ref {
     public static final int GUI_ID_FURNACE = 2;
     public static final int GUI_ID_CHARGER = 3;
     public static final int GUI_ID_CAPACITOR = 4;
+    public static final int GUI_ID_SOLAR_GEN = 5;
 
     public enum ItemReference{
         ELECTRIC_HELMET("electricHelmet", "ItemElectricHelmet"),
