@@ -1,13 +1,11 @@
 package com.trials.modsquad.block.machines;
 
-import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.TileEntities.TileSolarPanel;
+import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -17,15 +15,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-
-import static com.trials.modsquad.Ref.GUI_ID_FURNACE_GEN;
-import static com.trials.modsquad.Ref.GUI_ID_SOLAR_GEN;
 
 public class BlockSolarPanel extends Block {
     public BlockSolarPanel(String name, String reg) {
@@ -46,7 +41,10 @@ public class BlockSolarPanel extends Block {
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking()) return false;
-        playerIn.openGui(ModSquad.instance, GUI_ID_SOLAR_GEN, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        TileEntity tileentity = worldIn.getTileEntity(pos);
+        long power = tileentity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower();
+        long cap = tileentity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getCapacity();
+        playerIn.addChatMessage(new TextComponentString("Power: " + power + "/" + cap));
         return true;
     }
 

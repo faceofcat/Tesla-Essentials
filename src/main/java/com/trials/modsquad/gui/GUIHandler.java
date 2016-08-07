@@ -24,10 +24,6 @@ public class GUIHandler implements IGuiHandler {
                 return new ContainerElectricFurnace(player.inventory, (TileElectricFurnace) e);
             case GUI_ID_CHARGER:
                 return new ContainerCharger(player.inventory, (TileCharger) e);
-            case GUI_ID_CAPACITOR:
-                return null;
-            case GUI_ID_SOLAR_GEN:
-                return null;
         }
         return null;
     }
@@ -44,10 +40,6 @@ public class GUIHandler implements IGuiHandler {
                 return new GUIElectricFurnace(player.inventory, (TileElectricFurnace) e);
             case GUI_ID_CHARGER:
                 return new GUICharger(player.inventory, (TileCharger) e);
-            case GUI_ID_CAPACITOR:
-                return new GUICapacitor(player.inventory, (TileCapacitor) e);
-            case GUI_ID_SOLAR_GEN:
-                return new GUISolarGenerator((TileSolarPanel) e);
         }
         return null;
     }
