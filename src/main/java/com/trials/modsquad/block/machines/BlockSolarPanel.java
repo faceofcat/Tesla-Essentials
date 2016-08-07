@@ -20,6 +20,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class BlockSolarPanel extends Block {

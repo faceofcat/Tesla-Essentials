@@ -1,10 +1,12 @@
 package com.trials.modsquad.block.TileEntities;
 
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
+import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 
 import java.lang.reflect.Field;
@@ -14,7 +16,7 @@ import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
 
-public class TileCapacitor extends TileEntity {
+public class TileCapacitor extends TileEntity implements ITickable {
 
     private BaseTeslaContainer container;
 
@@ -23,6 +25,16 @@ public class TileCapacitor extends TileEntity {
         container.setCapacity(200000);
         container.setInputRate(80);
         container.setOutputRate(80);
+    }
+
+    @Override
+    public void update() {
+        if(container.getStoredPower()>0) {
+            int i = TeslaUtils.getConnectedCapabilities(CAPABILITY_CONSUMER, worldObj, pos).size();
+            System.out.println(this+" found "+i+" capable side"+(i>1||i==0?"s.":"."));
+            if(i==0) return;
+            container.takePower(TeslaUtils.distributePowerToAllFaces(worldObj, pos, Math.min(container.getStoredPower() / i, container.getOutputRate()), false), false);
+        }
     }
 
     @Override
