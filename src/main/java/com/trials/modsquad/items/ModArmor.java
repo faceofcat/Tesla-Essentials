@@ -1,5 +1,6 @@
 package com.trials.modsquad.items;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
 import com.trials.modsquad.Ref;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
@@ -68,7 +69,10 @@ public class ModArmor extends ItemArmor {
                 f.setAccessible(true);
                 f.setLong(container, 20000);
             }catch(Exception e){}
-
+        if (stack.getItem() == ModItems.jetChestplate) {
+            tooltip.add(ChatFormatting.BLUE + "Requires power and all");
+            tooltip.add(ChatFormatting.BLUE + "other electric armor!");
+        }
         tooltip.add("Power: " + container.getStoredPower() + "/" + container.getCapacity());
     }
 
@@ -86,10 +90,9 @@ public class ModArmor extends ItemArmor {
                 && player.inventory.armorItemInSlot(1) !=null && player.inventory.armorItemInSlot(1).getItem() == ModItems.electricLeggings
                 && player.inventory.armorItemInSlot(0) !=null && player.inventory.armorItemInSlot(0).getItem() == ModItems.electricBoots
                 && player.inventory.armorItemInSlot(2).getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
-                && container.getStoredPower() > 0
-                && !player.capabilities.isCreativeMode) {
+                || player.isCreative()) {
             player.capabilities.allowFlying = true;
-            if(player.capabilities.isFlying) {
+            if(player.capabilities.isFlying && !player.isCreative()) {
                 if (ticks == 80) {
                     player.inventory.armorItemInSlot(2).getCapability(TeslaCapabilities.CAPABILITY_PRODUCER, EnumFacing.DOWN).takePower(powerDrawPerTickOnFlight, false);
                     ticks = 0;
