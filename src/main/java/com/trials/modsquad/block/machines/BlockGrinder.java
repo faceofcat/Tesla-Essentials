@@ -5,6 +5,9 @@ import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.TileEntities.TileGrinder;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -70,6 +73,13 @@ public class BlockGrinder extends Block {
                 s.stackSize = 0;
             }
         super.breakBlock(worldIn, pos, state);
+    }
+
+    public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+    @Override
+    protected BlockStateContainer createBlockState()
+    {
+        return new BlockStateContainer(this, new IProperty[]{PROPERTYFACING});
     }
 
     @Override
