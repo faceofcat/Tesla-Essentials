@@ -1,4 +1,4 @@
-package com.trials.modsquad.block.TileEntities;
+package com.trials.modsquad.block;
 
 import com.trials.modsquad.Ref;
 import net.minecraft.block.Block;
