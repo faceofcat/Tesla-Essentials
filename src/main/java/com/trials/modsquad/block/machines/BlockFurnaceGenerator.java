@@ -1,6 +1,7 @@
 package com.trials.modsquad.block.machines;
 
 import com.trials.modsquad.ModSquad;
+import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.TileEntities.TileFurnaceGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -26,6 +27,7 @@ public class BlockFurnaceGenerator extends Block {
         super(Material.IRON);
         setUnlocalizedName(s);
         setRegistryName(s1);
+        setCreativeTab(Ref.tabModSquad);
     }
 
     @Override
