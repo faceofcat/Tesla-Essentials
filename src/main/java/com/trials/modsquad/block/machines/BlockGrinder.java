@@ -37,6 +37,7 @@ public class BlockGrinder extends Block {
         setHarvestLevel("pickaxe", 1);
         setResistance(30F);
         setHardness(5F);
+        setDefaultState(blockState.getBaseState().withProperty(PROPERTYFACING, EnumFacing.NORTH));
     }
 
     @Override
@@ -76,21 +77,31 @@ public class BlockGrinder extends Block {
         super.breakBlock(worldIn, pos, state);
     }
 
-    /**
+
     public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[]{PROPERTYFACING});
+        return new BlockStateContainer(this, PROPERTYFACING);
     }
-     */
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        System.out.println(state+" : "+state.getValue(PROPERTYFACING).ordinal());
+        return state.getValue(PROPERTYFACING).ordinal();
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return getDefaultState().withProperty(PROPERTYFACING, EnumFacing.EAST);
+    }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase user, ItemStack stack)
     {
         super.onBlockPlacedBy(world, pos, state, user,stack);
-        int dir = user.getHorizontalFacing().getHorizontalIndex();
-        world.setBlockState(pos, getStateFromMeta(dir), 2);
+        world.setBlockState(pos, state.withProperty(PROPERTYFACING, EnumFacing.NORTH));
     }
 
     @Override
