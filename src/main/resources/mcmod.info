@@ -2,13 +2,13 @@
 {
   "modid": "modsquad",
   "name": "Tesla Essentials",
-  "description": "Basic machines that use Tesla power.",
+  "description": "Basic machines & Tools that use Tesla power.",
   "version": "1.0",
   "mcversion": "1.10.2",
   "url": "https://github.com/tjkenmate/TheModdingTrialsMod",
   "updateUrl": "",
   "authorList": ["Blynd3", "tjkenmate", "Bread10", "Tacomundu12"],
-  "logoFile": "",
+  "logoFile": "modsquad:icon.png",
   "screenshots": [],
   "dependencies": ["tesla"]
 }
