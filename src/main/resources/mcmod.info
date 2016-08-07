@@ -8,7 +8,7 @@
   "url": "https://github.com/tjkenmate/TheModdingTrialsMod",
   "updateUrl": "",
   "authorList": ["Blynd3", "tjkenmate", "Bread10", "Tacomundu12"],
-  "logoFile": "modsquad:icon.png",
+  "logoFile": "icon.png",
   "screenshots": [],
   "dependencies": ["tesla"]
 }
