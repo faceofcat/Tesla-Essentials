@@ -1,7 +1,7 @@
 [
 {
   "modid": "modsquad",
-  "name": "Tesla Machines",
+  "name": "Tesla Essentials",
   "description": "Basic machines that use Tesla power.",
   "version": "1.0",
   "mcversion": "1.10.2",
@@ -10,6 +10,6 @@
   "authorList": ["Blynd3", "tjkenmate", "Bread10", "Tacomundu12"],
   "logoFile": "",
   "screenshots": [],
-  "dependencies": ["Tesla"]
+  "dependencies": ["tesla"]
 }
 ]
