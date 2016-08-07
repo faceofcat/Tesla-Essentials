@@ -1,16 +1,15 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "",
+  "modid": "modsquad",
+  "name": "Tesla Machines",
+  "description": "Basic machines that use Tesla power.",
+  "version": "1.0",
+  "mcversion": "1.10.2",
+  "url": "https://github.com/tjkenmate/TheModdingTrialsMod",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["Blynd3", "tjkenmate", "Bread10", "Tacomundu12"],
   "logoFile": "",
   "screenshots": [],
-  "dependencies": []
+  "dependencies": ["Tesla"]
 }
 ]
