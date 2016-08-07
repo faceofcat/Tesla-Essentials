@@ -107,7 +107,7 @@ public class TeslaRegistry{
                 "LLL",
                 "TTT",
                 'T', ModItems.ingotTin, 'L', ModItems.ingotLead);
-        GameRegistry.addRecipe(new ItemStack(ModBlocks.leadCable),
+        GameRegistry.addRecipe(new ItemStack(ModBlocks.leadCable, 8),
                 "LRL",
                 'L', ModItems.ingotLead, 'W', new ItemStack(Blocks.WOOL, 1, 15), 'R', Items.REDSTONE);
         GameRegistry.addRecipe(new ItemStack(ModItems.poweredPotato),
