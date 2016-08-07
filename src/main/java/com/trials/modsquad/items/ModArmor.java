@@ -107,9 +107,9 @@ public class ModArmor extends ItemArmor {
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
         if (slot == EntityEquipmentSlot.LEGS) {
-            return "modsquad:textures/models/armor/electricArmor_layer_2";
+            return "modsquad:textures/models/armor/electricArmor_layer_2.png";
         } else {
-            return "modsquad:textures/models/armor/electricArmor_layer_1";
+            return "modsquad:textures/models/armor/electricArmor_layer_1.png";
         }
 
     }

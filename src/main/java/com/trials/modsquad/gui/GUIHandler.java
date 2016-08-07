@@ -1,10 +1,7 @@
 package com.trials.modsquad.gui;
 
 import com.trials.modsquad.block.TileEntities.*;
-import com.trials.modsquad.block.containers.ContainerCharger;
-import com.trials.modsquad.block.containers.ContainerElectricFurnace;
-import com.trials.modsquad.block.containers.ContainerFurnaceGenerator;
-import com.trials.modsquad.block.containers.ContainerGrinder;
+import com.trials.modsquad.block.containers.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -27,6 +24,8 @@ public class GUIHandler implements IGuiHandler {
                 return new ContainerElectricFurnace(player.inventory, (TileElectricFurnace) e);
             case GUI_ID_CHARGER:
                 return new ContainerCharger(player.inventory, (TileCharger) e);
+            case GUI_ID_CAPACITOR:
+                return new ContainerCapacitor(player.inventory, (TileCapacitor) e);
         }
         return null;
     }
