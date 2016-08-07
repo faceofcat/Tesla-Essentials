@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "normal": { "model": "modsquad:capacitor" },
+    "facing=north":  { "model": "modsquad:capacitor" },
+    "facing=south":  { "model": "modsquad:capacitor", "y": 180, "uvlock": false },
+    "facing=east": { "model": "modsquad:capacitor", "y": 90, "uvlock": false },
+    "facing=west": { "model": "modsquad:capacitor", "y": 270, "uvlock": false }
+
+  }
+}
