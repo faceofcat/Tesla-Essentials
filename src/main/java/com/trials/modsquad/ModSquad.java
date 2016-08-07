@@ -60,6 +60,10 @@ public class ModSquad
         OreDictionary.registerOre("ingotTin", ModItems.ingotTin);
         OreDictionary.registerOre("ingotLead", ModItems.ingotLead);
 
+        OreDictionary.registerOre("blockCopper", ModBlocks.blockCopper);
+        OreDictionary.registerOre("blockTin", ModBlocks.blockTin);
+        OreDictionary.registerOre("blockLead", ModBlocks.blockLead);
+
         //Dusts
         OreDictionary.registerOre("dustCopper", ModItems.dustCopper);
         OreDictionary.registerOre("dustTin", ModItems.dustTin);
