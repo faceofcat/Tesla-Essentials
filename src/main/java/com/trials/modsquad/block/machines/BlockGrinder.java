@@ -94,14 +94,15 @@ public class BlockGrinder extends Block {
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(PROPERTYFACING, EnumFacing.EAST);
+        System.out.println("Meta "+meta);
+        return getDefaultState().withProperty(PROPERTYFACING, meta>1?EnumFacing.values()[meta] : EnumFacing.NORTH);
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase user, ItemStack stack)
     {
         super.onBlockPlacedBy(world, pos, state, user,stack);
-        world.setBlockState(pos, state.withProperty(PROPERTYFACING, EnumFacing.NORTH));
+        world.setBlockState(pos, state.withProperty(PROPERTYFACING, user.getHorizontalFacing().rotateAround(EnumFacing.Axis.Y)));
     }
 
     @Override

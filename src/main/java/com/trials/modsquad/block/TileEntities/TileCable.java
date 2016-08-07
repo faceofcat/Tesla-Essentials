@@ -26,6 +26,7 @@ public class TileCable extends TileEntity implements ITickable{
     private BaseTeslaContainer container;
     private boolean builtForTick = false;
     boolean needUpdate = false;
+    private long rate;
     private List<TileEntity> netList;
     private Map<TileEntity, EnumFacing> adjacentTiles = new HashMap<>(); // Faces are defined by the TileEntity. This allows for modification and extension past the six faces
 
@@ -37,18 +38,13 @@ public class TileCable extends TileEntity implements ITickable{
         container = new BaseTeslaContainer(0, 0, input, output){
             @Override
             public long givePower (long in, boolean simulated) {
-                if(netList==null) netList = buildNetwork(new ArrayList<>());
-                long Tesla = Math.min(in, getOutputRate());
-                long tmp, requested = 0;
-                List<ITeslaConsumer> cons = getCapable(CAPABILITY_CONSUMER, pos, netList);
-                for(ITeslaConsumer c : cons) requested+=c.givePower(Tesla, true);
-                if(simulated) return Math.min(Tesla, requested);
-                long returnVal, value = returnVal = Math.min(requested, Tesla);
-                for (ITeslaConsumer c : cons)
-                    if ((returnVal -= c.givePower(returnVal, false)) == 0) return value;
-                return returnVal;
+                netList = getNetwork(new ArrayList<>()); // Gets list of all connected machines
+                long actualOut = Math.min(in, Math.min(getOutputRate(), getInputRate())); //Since Cable doesn't have power storage, it relies on pushing the power to the next devices
+
+                return 0;
             }
         };
+        rate = Math.min(container.getOutputRate(), container.getInputRate());
         needUpdate = true;
     }
 
