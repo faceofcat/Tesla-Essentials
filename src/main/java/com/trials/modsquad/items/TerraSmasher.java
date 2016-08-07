@@ -39,7 +39,7 @@ public class TerraSmasher extends ItemTool {
             Blocks.STONE_PRESSURE_PLATE, Blocks.CLAY, Blocks.DIRT, Blocks.FARMLAND, Blocks.GRASS, Blocks.GRAVEL, Blocks.MYCELIUM, Blocks.SAND, Blocks.SNOW, Blocks.SNOW_LAYER, Blocks.SOUL_SAND,
             Blocks.GRASS_PATH, ModBlocks.blockCopper, ModBlocks.blockTin, ModBlocks.blockLead, ModBlocks.capacitor, ModBlocks.charger, ModBlocks.electricFurnace, ModBlocks.furnaceGen,
             ModBlocks.grinder, ModBlocks.leadCable, ModBlocks.oreCopper, ModBlocks.oreTin, ModBlocks.oreLead});
-    public static final Item.ToolMaterial TERRA_SMASHER = EnumHelper.addToolMaterial("TERRA_SMASHER", 3, 2000, 15.0F, 3.0F, 25);
+    public static final Item.ToolMaterial TERRA_SMASHER = EnumHelper.addToolMaterial("TERRA_SMASHER", 3, 20000, 15.0F, 3.0F, 25);
     public static final long drain = 10;
     private final Field itemDamage;
 
@@ -110,10 +110,8 @@ public class TerraSmasher extends ItemTool {
     public void setDamage(ItemStack stack, int damage) {
         ITeslaHolder h=stack.getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN);
         // As stored power increases, dam tends towards the value getMaxDamage()
-        //int dam = h.getCapacity()>0?Math.round(h.getStoredPower()*(getMaxDamage()-1)/h.getCapacity()):1;
-        int dam = Math.round(h.getStoredPower()/stack.getMaxDamage());
-        //try{ itemDamage.setInt(stack, getMaxDamage()-dam); }catch(Exception e){}
-        try{ itemDamage.setInt(stack, dam); }catch(Exception e){}
+        int dam = h.getCapacity()>0?Math.round(h.getStoredPower()*(getMaxDamage()-1)/h.getCapacity()):1;
+        try{ itemDamage.setInt(stack, getMaxDamage()-dam); }catch(Exception e){}
     }
 
     @Override

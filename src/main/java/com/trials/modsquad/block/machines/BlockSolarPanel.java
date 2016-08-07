@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -14,11 +15,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static com.trials.modsquad.Ref.GUI_ID_FURNACE_GEN;
@@ -79,6 +82,26 @@ public class BlockSolarPanel extends Block {
 
     @Override
     public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) {
+        return false;
+    }
+
+    private static double x = 0.0625;
+    private static final AxisAlignedBB bBox = new AxisAlignedBB(0,0,0,16*x,5*x,16*x);
+    private static final AxisAlignedBB cBox = new AxisAlignedBB(0,0,0,16*x,5*x,16*x);
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        return bBox;
+    }
+
+    @Nullable
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
+        return cBox;
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state) {
         return false;
     }
 }
