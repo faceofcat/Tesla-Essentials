@@ -6,8 +6,11 @@ import com.trials.modsquad.block.TileEntities.TileCharger;
 import com.trials.modsquad.block.TileEntities.TileGrinder;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -37,6 +40,34 @@ public class BlockCharger extends Block {
         setHarvestLevel("pickaxe", 1);
         setResistance(30F);
         setHardness(5F);
+        setDefaultState(blockState.getBaseState().withProperty(PROPERTYFACING, EnumFacing.NORTH));
+    }
+
+    public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+
+    @Override
+    protected BlockStateContainer createBlockState()
+    {
+        return new BlockStateContainer(this, PROPERTYFACING);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        System.out.println(state+" : "+state.getValue(PROPERTYFACING).ordinal());
+        return state.getValue(PROPERTYFACING).ordinal();
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        System.out.println("Meta "+meta);
+        return getDefaultState().withProperty(PROPERTYFACING, meta>1?EnumFacing.values()[meta] : EnumFacing.NORTH);
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase user, ItemStack stack)
+    {
+        super.onBlockPlacedBy(world, pos, state, user,stack);
+        world.setBlockState(pos, state.withProperty(PROPERTYFACING, user.getHorizontalFacing().rotateAround(EnumFacing.Axis.Y)));
     }
 
     @Override

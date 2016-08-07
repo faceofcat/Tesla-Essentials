@@ -1,6 +1,7 @@
 package com.trials.modsquad.block.TileEntities;
 
 import com.trials.modsquad.block.ModBlocks;
+import ibxm.Player;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
@@ -24,10 +25,8 @@ import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER
 public class TileCable extends TileEntity implements ITickable{
 
     private BaseTeslaContainer container;
-    private boolean builtForTick = false;
     boolean needUpdate = false;
-    private long rate;
-    private List<TileEntity> netList;
+    private Map<TileEntity, ObjectPair<EnumFacing, Long>> netList;
     private Map<TileEntity, EnumFacing> adjacentTiles = new HashMap<>(); // Faces are defined by the TileEntity. This allows for modification and extension past the six faces
 
     public TileCable(){
@@ -39,12 +38,26 @@ public class TileCable extends TileEntity implements ITickable{
             @Override
             public long givePower (long in, boolean simulated) {
                 netList = getNetwork(new ArrayList<>()); // Gets list of all connected machines
-                long actualOut = Math.min(in, Math.min(getOutputRate(), getInputRate())); //Since Cable doesn't have power storage, it relies on pushing the power to the next devices
+                if(netList.size()==0) return 0;
+                // Since Cable doesn't have power storage, it relies on pushing the power to the next devices
+                long actualOut = Math.min(in, Math.min(getOutputRate(), getInputRate())), equalSplit, tmp, tmp2, remainder, requestedPower = 0; for(TileEntity e : netList.keySet())
+                    requestedPower+=e.getCapability(CAPABILITY_CONSUMER, netList.get(e).getKey()).givePower(actualOut, true);
+                tmp2 = requestedPower = Math.min(requestedPower, actualOut);
+                if(simulated) return requestedPower;
+                equalSplit = requestedPower/netList.size();
+                remainder = requestedPower%netList.size();
 
-                return 0;
+                for(int i = 0; i<2; ++i){ // Do two passes in case there is remainder from first pass (when machine rejects it's share of it's power)
+                    if(requestedPower==0) break;
+                    for(TileEntity t : netList.keySet()) {
+                        requestedPower -= tmp = t.getCapability(CAPABILITY_CONSUMER, netList.get(t).getKey()).givePower(equalSplit + remainder, false);
+                        remainder = (equalSplit+remainder)-tmp;
+                    }
+                }
+
+                return tmp2-requestedPower; //In case not all of the power that SHOULD HAVE BEEN GIVEN WAS GIVEN YOU IDIOT I CAN'T BELIEVE IT I ASK YOU TO DO *ONE* THING I SWEAR TO GOD I'M OUT!
             }
         };
-        rate = Math.min(container.getOutputRate(), container.getInputRate());
         needUpdate = true;
     }
 
@@ -87,23 +100,27 @@ public class TileCable extends TileEntity implements ITickable{
      * Should only be called when absolutely necessary! Use getNetwork() if at all possible!
      * Calling this method instead of getNetwork() is not only a bad idea tickrate-wise, but also stupid since getNetwork() does a check to see if this method needs to be called before it can return.
      * @param banList List of cables that future cables should ignore when searching for connected machines
-     * @return a list of all tileEntities
+     * @return A collection corresponding to all accessible machines along with the corresponding maximum throughput of the cables.
+     * NOTE: As said, the maximum throughput is that of the cables connecting the machine to this cable, NOT the machines maximum throughput!
      */
-    private List<TileEntity> buildNetwork(List<TileCable> banList){
-        System.out.println("Building network for "+pos);
+    private Map<TileEntity, ObjectPair<EnumFacing, Long>> buildNetwork(List<TileCable> banList){
+        long maxOut = Math.min(container.getOutputRate(), container.getInputRate());
         banList.add(this);
         List<TileCable> cables = new ArrayList<>();
-        List<TileEntity> capable = new ArrayList<>();
+        Map<TileEntity, ObjectPair<EnumFacing, Long>> capable = new HashMap<>();
         for(TileEntity t : adjacentTiles.keySet())
             if(t instanceof TileCable) cables.add((TileCable)t);
-            else if(t.hasCapability(CAPABILITY_CONSUMER, adjacentTiles.get(t))) capable.add(t);
+            else if(t.hasCapability(CAPABILITY_CONSUMER, adjacentTiles.get(t))) capable.put(t, new ObjectPair<>(adjacentTiles.get(t), maxOut));
         for(TileCable c : cables)
-            if(!banList.contains(c))
-                capable.addAll(c.buildNetwork(banList));
+            if(!banList.contains(c)) {
+                capable.putAll(c.getNetwork(banList));
+                // Update throughput rates to be compatible with this cable
+                capable.keySet().stream().filter(e -> capable.get(e).getValue() > maxOut).forEach(e -> capable.replace(e, new ObjectPair<>(capable.get(e).getKey(), maxOut)));
+            }
         return capable;
     }
 
-    public List<TileEntity> getNetwork(List<TileCable> banList){
+    public Map<TileEntity, ObjectPair<EnumFacing, Long>> getNetwork(List<TileCable> banList){
         if(netList==null) netList = buildNetwork(banList);
         return netList;
     }
@@ -112,5 +129,27 @@ public class TileCable extends TileEntity implements ITickable{
         List<T> l = new ArrayList<>();
         e.stream().filter(e1 -> e1 != null && e1.hasCapability(c, ModBlocks.getRelativeFace(e1.getPos(), pos))).forEach(e1 -> l.add(e1.getCapability(c, ModBlocks.getRelativeFace(e1.getPos(), pos))));
         return l;
+    }
+
+
+    public static class ObjectPair<K, V>{
+
+        K k;
+        V v;
+
+        public ObjectPair(Object... o){
+            k = (K) o[0];
+            v = (V) o[1];
+        }
+
+        public ObjectPair(K k, V v){
+            this.k = k;
+            this.v = v;
+        }
+
+        public K getKey(){ return k; }
+        public V getValue(){ return v; }
+        public void setKey(K k){ this.k = k; }
+        public void setValue(V v){ this.v = v; }
     }
 }

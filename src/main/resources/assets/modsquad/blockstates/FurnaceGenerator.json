@@ -1,5 +1,8 @@
 {
   "variants": {
-    "normal": { "model": "modsquad:generatorFurnace" }
+    "facing=north":  { "model": "modsquad:generatorFurnace" },
+    "facing=south":  { "model": "modsquad:generatorFurnace", "y": 180, "uvlock": false },
+    "facing=east": { "model": "modsquad:generatorFurnace", "y": 90, "uvlock": false },
+    "facing=west": { "model": "modsquad:generatorFurnace", "y": 270, "uvlock": false }
   }
 }
