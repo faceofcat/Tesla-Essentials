@@ -5,7 +5,10 @@ import com.trials.modsquad.block.TileEntities.TileSolarPanel;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -32,6 +35,34 @@ public class BlockSolarPanel extends Block {
         setHarvestLevel("pickaxe", 1);
         setResistance(30F);
         setHardness(5F);
+        setDefaultState(blockState.getBaseState().withProperty(PROPERTYFACING, EnumFacing.NORTH));
+    }
+
+    public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+
+    @Override
+    protected BlockStateContainer createBlockState()
+    {
+        return new BlockStateContainer(this, PROPERTYFACING);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        System.out.println(state+" : "+state.getValue(PROPERTYFACING).ordinal());
+        return state.getValue(PROPERTYFACING).ordinal();
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        System.out.println("Meta "+meta);
+        return getDefaultState().withProperty(PROPERTYFACING, meta>1?EnumFacing.values()[meta] : EnumFacing.NORTH);
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase user, ItemStack stack)
+    {
+        super.onBlockPlacedBy(world, pos, state, user,stack);
+        world.setBlockState(pos, state.withProperty(PROPERTYFACING, user.getHorizontalFacing()));
     }
 
     @Override
@@ -41,7 +72,7 @@ public class BlockSolarPanel extends Block {
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-        if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking()) return false;
+        if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking() || !worldIn.isRemote) return false;
         TileEntity tileentity = worldIn.getTileEntity(pos);
         long power = tileentity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower();
         long cap = tileentity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getCapacity();
