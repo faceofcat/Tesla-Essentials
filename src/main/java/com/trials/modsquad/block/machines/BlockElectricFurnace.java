@@ -29,6 +29,9 @@ public class BlockElectricFurnace extends Block {
         setUnlocalizedName(s);
         setRegistryName(s1);
         setCreativeTab(Ref.tabModSquad);
+        setHarvestLevel("pickaxe", 1);
+        setResistance(30F);
+        setHardness(5F);
     }
 
     @Override

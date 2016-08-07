@@ -29,6 +29,9 @@ public class BlockCapacitor extends Block {
         setUnlocalizedName(name);
         setRegistryName(reg);
         setCreativeTab(Ref.tabModSquad);
+        setHarvestLevel("pickaxe", 1);
+        setResistance(30F);
+        setHardness(5F);
     }
 
     @Override
