@@ -30,7 +30,7 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
             solarContainer.takePower(TeslaUtils.distributePowerToAllFaces(worldObj, pos, Math.min(solarContainer.getStoredPower() / i, solarContainer.getOutputRate()), false), false);
         }
         // Increase internal power supply
-        if (worldObj.getTopSolidOrLiquidBlock(pos).getY() >= pos.getY() && solarContainer.getStoredPower() < solarContainer.getCapacity() -5 && worldObj.isDaytime()) solarContainer.givePower(5, false);
+        if (worldObj.getTopSolidOrLiquidBlock(pos).getY() >= pos.getY() && solarContainer.getStoredPower() < solarContainer.getCapacity() -5 && worldObj.isDaytime() && !worldObj.isRaining()) solarContainer.givePower(5, false);
     }
 
     @Override
