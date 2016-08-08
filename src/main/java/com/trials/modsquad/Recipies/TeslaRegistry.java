@@ -18,10 +18,15 @@ public class TeslaRegistry{
         GameRegistry.addSmelting(ModItems.dustCopper, new ItemStack(ModItems.ingotCopper), 0F);
         GameRegistry.addSmelting(ModItems.dustLead, new ItemStack(ModItems.ingotLead), 0F);
         GameRegistry.addSmelting(ModItems.dustTin, new ItemStack(ModItems.ingotTin), 0F);
+        GameRegistry.addSmelting(ModItems.dustIron, new ItemStack(Items.IRON_INGOT), 0F);
+        GameRegistry.addSmelting(ModItems.dustGold, new ItemStack(Items.GOLD_INGOT), 0F);
         GameRegistry.addSmelting(ModItems.dustElectricAlloy, new ItemStack(ModItems.ingotElectricAlloy), 0F);
         //Materials
         GameRegistry.addShapelessRecipe(new ItemStack(ModItems.dustElectricAlloy, 2), new ItemStack(ModItems.dustCopper), new ItemStack(ModItems.dustCopper),
                 new ItemStack(ModItems.dustTin), new ItemStack(Items.REDSTONE));
+        GameRegistry.addShapelessRecipe(new ItemStack(ModItems.ingotLead, 9), new ItemStack(ModBlocks.blockLead));
+        GameRegistry.addShapelessRecipe(new ItemStack(ModItems.ingotCopper, 9), new ItemStack(ModBlocks.blockCopper));
+        GameRegistry.addShapelessRecipe(new ItemStack(ModItems.ingotTin, 9), new ItemStack(ModBlocks.blockTin));
         GameRegistry.addRecipe(new ItemStack(ModBlocks.blockCopper),
                 "III",
                 "III",

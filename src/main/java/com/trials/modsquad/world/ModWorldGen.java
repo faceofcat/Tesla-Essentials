@@ -19,9 +19,9 @@ public class ModWorldGen implements IWorldGenerator {
 
     public ModWorldGen() {
         //The int is veinsize
-        gen_oreCopper = new WorldGenMinable(ModBlocks.oreCopper.getDefaultState(), 6);
-        gen_oreTin = new WorldGenMinable(ModBlocks.oreTin.getDefaultState(), 6);
-        gen_oreLead = new WorldGenMinable(ModBlocks.oreLead.getDefaultState(), 2);
+        gen_oreCopper = new WorldGenMinable(ModBlocks.oreCopper.getDefaultState(), 8);
+        gen_oreTin = new WorldGenMinable(ModBlocks.oreTin.getDefaultState(), 8);
+        gen_oreLead = new WorldGenMinable(ModBlocks.oreLead.getDefaultState(), 8);
     }
 
     private void runGenerator(WorldGenerator generator, World world, Random rand, int chunk_X, int chunk_Z, int chances, int minHeight, int maxHeight) {

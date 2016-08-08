@@ -15,14 +15,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import java.lang.reflect.Method;
-import java.nio.ByteOrder;
 
+@SuppressWarnings("ALL")
 public class TileDataSync implements IMessage {
 
-    /**
-     * Order that sub-messages are ordered in. USE THIS WHEN GETTING SOMETHING THAT ISN'T A BYTE FROM THE MESSAGE!
-     */
-    public static final ByteOrder order = ByteOrder.LITTLE_ENDIAN;
     /**
      * Class reference for where to call "onClientEvent(FMLNetworkEvent.ClientCustomPacketEvent)"
      */
@@ -67,13 +63,12 @@ public class TileDataSync implements IMessage {
 
     public boolean sendToClassHandler(){
         TileEntity e = Minecraft.getMinecraft().theWorld.getTileEntity(pos);
-        System.out.println(e);
         if(e==null) return false;
         try{
             Method m = clazz.getDeclaredMethod("updateNBT", NBTTagCompound.class);
             m.setAccessible(true);
             m.invoke(e, JsonToNBT.getTagFromJson(data));
-        }catch(Exception e1){ e1.printStackTrace(); }
+        }catch(Exception e1){ }
         return true;
     }
 
@@ -81,7 +76,6 @@ public class TileDataSync implements IMessage {
 
         @Override
         public IMessage handleClientMessage(TileDataSync message, MessageContext ctx) {
-            System.out.println("Sending to Class Handler");
             message.sendToClassHandler();
             return null;
         }

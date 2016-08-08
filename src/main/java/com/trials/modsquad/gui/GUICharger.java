@@ -15,23 +15,33 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import java.lang.reflect.Field;
+
 public class GUICharger extends GuiContainer {
 
     private ITeslaHolder charger;
     private PowerBar p;
+    private Field x;
+    private Field y;
 
     public GUICharger(InventoryPlayer player, TileCharger charger) {
         super(new ContainerCharger(player, charger));
         this.charger = charger.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
-        p = new PowerBar(this, xSize+100, 50, PowerBar.BackgroundType.LIGHT);
+        p = new PowerBar(this, ((width -xSize)/2) + 8, ((height-ySize)/2)+15, PowerBar.BackgroundType.LIGHT);
+        try {
+            x = PowerBar.class.getDeclaredField("x");
+            y = PowerBar.class.getDeclaredField("y");
+            x.setAccessible(true);
+            y.setAccessible(true);
+        } catch (NoSuchFieldException e) {}
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         fontRendererObj.drawString("Charger", 8, 6, 4210751);
-        String power;
-        int count = (power = TeslaUtils.getDisplayableTeslaCount(charger.getStoredPower())).length();
-        fontRendererObj.drawString(power, xSize-45-count/2, 35, 4210751);
+        String power = TeslaUtils.getDisplayableTeslaCount(charger.getStoredPower());
+        String max = TeslaUtils.getDisplayableTeslaCount(charger.getCapacity());
+        fontRendererObj.drawString(power+" / "+max, 56, 70, 4210751);
     }
 
     @Override
@@ -41,13 +51,11 @@ public class GUICharger extends GuiContainer {
         mc.renderEngine.bindTexture(l);
         GL11.glColor4f(1f, 1f, 1f, 1f);
         drawTexturedModalRect((width - xSize)/2, (height-ySize)/2, 0, 0, xSize, ySize);
+        try {
+            x.setInt(p, ((width - xSize)/2) + 8);
+            y.setInt(p, ((height-ySize)/2)+15);
+        } catch (IllegalAccessException e) { }
         p.draw(charger);
-    }
-
-    @Override
-    public void updateScreen() {
-        p.draw(charger);
-        super.updateScreen();
     }
 
 }

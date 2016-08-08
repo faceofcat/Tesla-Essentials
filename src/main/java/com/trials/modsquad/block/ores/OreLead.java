@@ -1,8 +1,10 @@
 package com.trials.modsquad.block.ores;
 
-public class OreLead extends OreBase {
+import com.trials.modsquad.block.ModOre;
 
-    public OreLead(String unloc, String reg) {
-        super(unloc, reg);
+public class OreLead extends ModOre {
+
+    public OreLead(String unloc, String reg, int level) {
+        super(unloc, reg, level);
     }
 }

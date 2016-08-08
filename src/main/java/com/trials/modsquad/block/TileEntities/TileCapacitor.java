@@ -4,10 +4,8 @@ import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.proxy.TileDataSync;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.lib.TeslaUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -17,14 +15,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
-import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
-import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
+import static net.darkhax.tesla.capability.TeslaCapabilities.*;
 
 public class TileCapacitor extends TileEntity implements ITickable {
 
@@ -68,6 +63,7 @@ public class TileCapacitor extends TileEntity implements ITickable {
 
     private int firstfewTicks = 500;
 
+    @SuppressWarnings("unused")
     @SubscribeEvent
     public void onEntityJoinEvent(EntityJoinWorldEvent event){
         firstfewTicks = 0;
@@ -119,6 +115,8 @@ public class TileCapacitor extends TileEntity implements ITickable {
         container.deserializeNBT(nbt);
     }
 
+    //Used by TileDataSync class when updating NBT data
+    @SuppressWarnings("unused")
     public void updateNBT(NBTTagCompound compound){ deserializeNBT(compound); }
 
 }

@@ -8,6 +8,7 @@ import net.darkhax.tesla.api.ITeslaProducer;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemClock;
 import net.minecraft.item.ItemDoor;
@@ -27,6 +28,7 @@ import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 import javax.annotation.Nullable;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static com.trials.modsquad.Ref.BlockReference.LEAD_CABLE;
 
@@ -39,7 +41,7 @@ public class BasicCable extends Block {
     private Ref.BlockReference type;
 
     public BasicCable(String unloc, String reg) {
-        super(Material.ANVIL);
+        super(Material.GROUND);
         this.inputRate = unloc.equals(Ref.BlockReference.LEAD_CABLE.getUnlocalizedName())?20:0;
         this.outputRate = inputRate==20?20:0;
         setUnlocalizedName(unloc);

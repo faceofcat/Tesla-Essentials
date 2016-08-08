@@ -32,9 +32,9 @@ public class ModBlocks {
 
     public static void init() {
         //Ores
-        oreCopper = new OreCopper(Ref.OreReference.COPPER.getUnlocalizedName(), Ref.OreReference.COPPER.getRegistryName());
-        oreTin = new OreTin(Ref.OreReference.TIN.getUnlocalizedName(), Ref.OreReference.TIN.getRegistryName());
-        oreLead = new OreLead(Ref.OreReference.LEAD.getUnlocalizedName(), Ref.OreReference.LEAD.getRegistryName());
+        oreCopper = new OreCopper(Ref.OreReference.COPPER.getUnlocalizedName(), Ref.OreReference.COPPER.getRegistryName(), 2);
+        oreTin = new OreTin(Ref.OreReference.TIN.getUnlocalizedName(), Ref.OreReference.TIN.getRegistryName(), 2);
+        oreLead = new OreLead(Ref.OreReference.LEAD.getUnlocalizedName(), Ref.OreReference.LEAD.getRegistryName(), 2);
 
         blockCopper = new ModIngotBlock(Ref.OreBlockReference.COPPER.getUnlocalizedName(), Ref.OreBlockReference.COPPER.getRegistryName());
         blockTin = new ModIngotBlock(Ref.OreBlockReference.TIN.getUnlocalizedName(), Ref.OreBlockReference.TIN.getRegistryName());

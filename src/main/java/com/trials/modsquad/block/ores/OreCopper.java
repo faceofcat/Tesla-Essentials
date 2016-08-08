@@ -1,9 +1,11 @@
 package com.trials.modsquad.block.ores;
 
-public class OreCopper extends OreBase {
+import com.trials.modsquad.block.ModOre;
 
-    public OreCopper(String unloc, String reg) {
-        super(unloc, reg);
+public class OreCopper extends ModOre {
+
+    public OreCopper(String unloc, String reg, int level) {
+        super(unloc, reg, level);
     }
 
 }

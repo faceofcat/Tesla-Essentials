@@ -13,6 +13,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -20,6 +21,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandlerModifiable;
+
 import javax.annotation.Nullable;
 import java.util.concurrent.ThreadLocalRandom;
 import static com.trials.modsquad.Ref.GUI_ID_FURNACE_GEN;
@@ -81,21 +84,14 @@ public class BlockFurnaceGenerator extends Block {
 
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) { // Drop items when block breaks
-        ThreadLocalRandom rand = ThreadLocalRandom.current();
         TileEntity t = worldIn.getTileEntity(pos);
-        if(!(t instanceof IInventory)) return;
+        if(!(t instanceof IItemHandlerModifiable)) return;
+        IItemHandlerModifiable h = (IItemHandlerModifiable) t;
         ItemStack s;
-        for(int i = 0; i<((IInventory) t).getSizeInventory(); ++i)
-            if((s = ((IInventory) t).getStackInSlot(i))!=null && s.stackSize > 0){
-                EntityItem item = new EntityItem(worldIn, rand.nextFloat()*0.8f+0.1f, rand.nextFloat()*.8f+.1f, rand.nextFloat()*.8f+.1f,
-                        new ItemStack(s.getItem(), s.stackSize, s.getItemDamage()));
-                if(s.hasTagCompound() && s.getTagCompound()!=null) item.getEntityItem().setTagCompound(s.getTagCompound().copy());
-                item.motionX = rand.nextGaussian() * .05f;
-                item.motionY = rand.nextGaussian() * .05f + .2f;
-                item.motionZ = rand.nextGaussian() * .05f;
-                worldIn.spawnEntityInWorld(item);
-                s.stackSize = 0;
-            }
+        for(int i = 0; i<h.getSlots(); ++i) {
+            if(h.getStackInSlot(i)!=null && h.getStackInSlot(i).stackSize>0)
+                InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), h.getStackInSlot(i));
+        }
         super.breakBlock(worldIn, pos, state);
     }
 

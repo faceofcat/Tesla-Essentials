@@ -55,13 +55,20 @@ public class TerraSmasher extends ItemTool {
             f = ItemStack.class.getDeclaredField("itemDamage");
             f.setAccessible(true);
         } catch (NoSuchFieldException e) { }
+        Field k = null;
+        try{
+            k = ItemTool.class.getDeclaredField("toolClass");
+            k.setAccessible(true);
+            k.set(this, "pickaxe");
+        }catch(Exception e){}
         this.itemDamage = f;
     }
 
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
         BaseTeslaContainer container = (BaseTeslaContainer) itemstack.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
-        if (container.getStoredPower() >= drain) { return false;
+        if (container.getStoredPower() >= drain) {
+            return false;
         } else {
             player.addChatMessage(new TextComponentString("Error! Out of power!"));
             return true;
