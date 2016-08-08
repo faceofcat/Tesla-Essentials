@@ -1,49 +1,24 @@
 package com.trials.modsquad.block.TileEntities;
 
 import com.trials.modsquad.ModSquad;
-import com.trials.modsquad.Recipies.GrinderRecipe;
 import com.trials.modsquad.Recipies.TeslaRegistry;
-import com.trials.modsquad.block.ModBlocks;
 import com.trials.modsquad.proxy.TileDataSync;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
-import io.netty.buffer.Unpooled;
-import net.darkhax.tesla.api.ITeslaConsumer;
-import net.darkhax.tesla.api.ITeslaHolder;
-import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
-import net.darkhax.tesla.capability.TeslaCapabilities;
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
-
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.concurrent.ThreadLocalRandom;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 
@@ -57,12 +32,12 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
     // Objects
     private final ItemStack[] inventory; // I'm an idiot
     private BaseTeslaContainer container;
-    private ThreadLocalRandom random = ThreadLocalRandom.current();
 
     public TileGrinder(){
         inventory = new ItemStack[2];
         container = new BaseTeslaContainer();
         container.setInputRate(100);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
 
@@ -70,7 +45,7 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
     @Override
     public SPacketUpdateTileEntity getUpdatePacket() {
         NBTTagCompound t = new NBTTagCompound();
-        writeToNBT(t);
+        t = writeToNBT(t);
         return new SPacketUpdateTileEntity(pos, 0, t);
     }
 
@@ -88,8 +63,9 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         compound.setBoolean("IsGrinding", isGrinding);
         compound.setInteger("GrindTime", grindTime);
         compound.setTag("Container", container.serializeNBT());
-        System.out.println("Writing to nbt: "+compound);
-        return super.writeToNBT(compound);
+        compound = super.writeToNBT(compound);
+        if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(0, pos, compound.toString()));
+        return compound;
     }
 
     @Override
@@ -194,9 +170,7 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         compound.setInteger("GrindTime", grindTime);
         compound.setTag("Container", container.serializeNBT());
 
-        compound =  super.writeToNBT(compound);
-
-        ModSquad.channel.sendToAll(new TileDataSync(0, pos, compound.toString()));
+        compound = super.writeToNBT(compound);
         return compound;
     }
 
@@ -214,8 +188,19 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         grindTime = compound.getInteger("GrindTime");
     }
 
+    private int firstfewTicks = 500;
+
+    @SubscribeEvent
+    public void onEntityJoinEvent(EntityJoinWorldEvent event){
+        firstfewTicks = 0;
+    }
+
     @Override
     public void update() {
+        if(firstfewTicks>=10 && firstfewTicks!=500 && !worldObj.isRemote){
+            if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(0, pos, serializeNBT().toString()));
+            firstfewTicks=500;
+        }else if(firstfewTicks!=500) ++firstfewTicks;
         if(isGrinding){
             if(grindTime==0){
                 ItemStack s = extractItem(0, 1, false);
@@ -249,20 +234,6 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         inventory[slot] = stack!=null?stack.copy():null;
     }
 
-    public void updateNBT(NBTTagCompound compound){ System.out.println("Updating"); deserializeNBT(compound); }
+    public void updateNBT(NBTTagCompound compound){ deserializeNBT(compound); }
 
-    private int[] f = new int[2];
-
-    public int getFieldCount(){
-        return f.length;
-    }
-
-    public int getField(int i){
-        return f[i];
-    }
-
-    public void setField(int i, int j){
-        System.out.println(i+" "+j);
-        f[i] = j;
-    }
 }

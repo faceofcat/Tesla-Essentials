@@ -1,5 +1,7 @@
 package com.trials.modsquad.block.TileEntities;
 
+import com.trials.modsquad.ModSquad;
+import com.trials.modsquad.proxy.TileDataSync;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
@@ -15,8 +17,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -36,49 +41,7 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
     public TileFurnaceGenerator(){
         container = new BaseTeslaContainer();
         fuel = new ItemStack[1];
-    }
-
-    @Nullable
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
-        NBTTagCompound t = new NBTTagCompound();
-        writeToNBT(t);
-        return new SPacketUpdateTileEntity(pos, 0, t);
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        NBTTagCompound c = container.serializeNBT();
-        for(String key : c.getKeySet()) compound.setTag(key, c.getTag(key));
-        NBTTagList list = new NBTTagList();
-        for(int i = 0; i<fuel.length; ++i)
-            if(fuel[i]!=null){
-                NBTTagCompound comp = new NBTTagCompound();
-                comp.setInteger("Slot", i);
-                fuel[i].writeToNBT(comp);
-                list.appendTag(comp);
-            }
-        compound.setTag("Inventory", list);
-        return super.writeToNBT(compound);
-    }
-
-    @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-        readFromNBT(pkt.getNbtCompound());
-        super.onDataPacket(net, pkt);
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        container.deserializeNBT(compound);
-        super.readFromNBT(compound);
-        NBTTagList list = compound.getTagList("Inventory", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
-        for(int i = 0; i<list.tagCount(); ++i){
-            NBTTagCompound c = list.getCompoundTagAt(i);
-            int slot = c.getInteger("Slot");
-            if(slot>=0 && slot < fuel.length) fuel[slot] = ItemStack.loadItemStackFromNBT(c);
-        }
-
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -129,34 +92,67 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
         return split;
     }
 
+    @Nullable
     @Override
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound c = super.serializeNBT();
-        System.out.println("Serializing");
-        try{
-            Field f = NBTTagCompound.class.getDeclaredField("tagMap");
-            f.setAccessible(true);
-            Map<String, NBTBase> r = (Map<String, NBTBase>) f.get(c);
-            Map<String, NBTBase> m = (Map<String, NBTBase>) f.get(container);
-            for(String s : m.keySet()){
-                System.out.println("Ser: "+s);
-                r.put(s, m.get(s)); // Move container tags to my tags
-            }
-            f.set(c, r);
-        }catch(Exception ignored){}
-        return c;
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        NBTTagCompound t = new NBTTagCompound();
+        t = writeToNBT(t);
+        return new SPacketUpdateTileEntity(pos, 0, t);
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        System.out.println("Deserializing");
-        super.deserializeNBT(nbt);
-        container.deserializeNBT(nbt);
-        System.out.println(container.getStoredPower()+" "+nbt.toString());
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        NBTTagList list = new NBTTagList();
+        for(int i = 0; i<fuel.length; ++i)
+            if(fuel[i]!=null){
+                NBTTagCompound comp = new NBTTagCompound();
+                comp.setInteger("Slot", i);
+                fuel[i].writeToNBT(comp);
+                list.appendTag(comp);
+            }
+        compound.setTag("Inventory", list);
+        compound.setBoolean("IsGrinding", isBurning);
+        compound.setInteger("GrindTime", workTime);
+        compound.setTag("Container", container.serializeNBT());
+        compound = super.writeToNBT(compound);
+        if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(0, pos, compound.toString()));
+        return compound;
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        readFromNBT(pkt.getNbtCompound());
+        super.onDataPacket(net, pkt);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
+        if(compound.hasKey("Container")) container.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
+        NBTTagList list = compound.getTagList("Inventory", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
+        for(int i = 0; i<list.tagCount(); ++i){
+            NBTTagCompound c = list.getCompoundTagAt(i);
+            int slot = c.getInteger("Slot");
+            if(slot>=0 && slot < fuel.length) fuel[slot] = ItemStack.loadItemStackFromNBT(c);
+        }
+        isBurning = compound.getBoolean("IsGrinding");
+        workTime = compound.getInteger("GrindTime");
+
+    }
+
+    private int firstfewTicks = 500;
+
+    @SubscribeEvent
+    public void onEntityJoinEvent(EntityJoinWorldEvent event){
+        firstfewTicks = 0;
     }
 
     @Override
     public void update() {
+        if(firstfewTicks>=10 && firstfewTicks!=500 && !worldObj.isRemote){
+            if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(1, pos, serializeNBT().toString()));
+            firstfewTicks=500;
+        }else if(firstfewTicks!=500) ++firstfewTicks;
         if(isBurning){
             container.givePower(20, false);
             if(workTime==0) isBurning = false;
@@ -189,4 +185,6 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
     public void setStackInSlot(int slot, ItemStack stack) {
         fuel[slot] = stack!=null?stack.copy():null;
     }
+
+    public void updateNBT(NBTTagCompound compound){ deserializeNBT(compound); }
 }

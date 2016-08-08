@@ -50,13 +50,11 @@ public class BlockGrinder extends Block {
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        System.out.println(state+" : "+state.getValue(PROPERTYFACING).ordinal());
         return state.getValue(PROPERTYFACING).ordinal();
     }
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        System.out.println("Meta "+meta);
         return getDefaultState().withProperty(PROPERTYFACING, meta>1?EnumFacing.values()[meta] : EnumFacing.NORTH);
     }
 
@@ -103,8 +101,6 @@ public class BlockGrinder extends Block {
             }
         super.breakBlock(worldIn, pos, state);
     }
-
-
 
     @Override
     public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {

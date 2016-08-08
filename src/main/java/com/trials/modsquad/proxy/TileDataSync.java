@@ -5,16 +5,16 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
 import java.lang.reflect.Method;
-import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 public class TileDataSync implements IMessage {
@@ -26,7 +26,8 @@ public class TileDataSync implements IMessage {
     /**
      * Class reference for where to call "onClientEvent(FMLNetworkEvent.ClientCustomPacketEvent)"
      */
-    public static final Class<? extends TileEntity>[] tileRef = new Class[]{TileGrinder.class, TileFurnaceGenerator.class, TileCapacitor.class, TileCharger.class, TileSolarPanel.class};
+    public static final Class<? extends TileEntity>[] tileRef = new Class[]{TileGrinder.class, TileFurnaceGenerator.class, TileCapacitor.class, TileCharger.class, TileSolarPanel.class,
+            TileElectricFurnace.class};
     private int classIndex;
     private BlockPos pos;
     private Class<? extends TileEntity> clazz;
@@ -37,36 +38,42 @@ public class TileDataSync implements IMessage {
     public TileDataSync(int index, BlockPos pos, String data){
         clazz = tileRef[classIndex = index];
         this.data = data;
+        this.pos = pos;
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        clazz = tileRef[classIndex = buf.readInt()];
-        pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
         byte[] bytes = new byte[buf.readableBytes()];
         buf.readBytes(bytes);
         this.data = new String(bytes);
+
+        classIndex = Integer.parseInt(data.substring(0, data.indexOf(":")));
+
+        int x = Integer.parseInt((data = data.substring(data.indexOf(":")+1)).substring(0, data.indexOf(":")));
+        int y = Integer.parseInt((data = data.substring(data.indexOf(":")+1)).substring(0, data.indexOf(":")));
+        int z = Integer.parseInt((data = data.substring(data.indexOf(":")+1)).substring(0, data.indexOf(":")));
+        pos = new BlockPos(x, y, z);
+        data = data.substring(data.indexOf(":")+1);
+
+        clazz = tileRef[classIndex];
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        ByteBuffer buffer = ByteBuffer.allocate(24+data.getBytes().length);
-        buffer.putInt(classIndex);
-        buffer.putInt(pos.getX());
-        buffer.putInt(pos.getY());
-        buffer.putInt(pos.getZ());
-        buffer.put(data.getBytes());
-        buf.writeBytes(Unpooled.wrappedBuffer(buffer));
+        String s = classIndex+":"+pos.getX()+":"+pos.getY()+":"+pos.getZ()+":"+data;
+        buf.writeBytes(Unpooled.wrappedBuffer(s.getBytes()));
     }
 
     public boolean sendToClassHandler(){
         TileEntity e = Minecraft.getMinecraft().theWorld.getTileEntity(pos);
+        System.out.println(e);
         if(e==null) return false;
         try{
-            Method m = clazz.getDeclaredMethod("updateNBT");
+            Method m = clazz.getDeclaredMethod("updateNBT", NBTTagCompound.class);
             m.setAccessible(true);
             m.invoke(e, JsonToNBT.getTagFromJson(data));
-        }catch(Exception e1){ return false; }
+        }catch(Exception e1){ e1.printStackTrace(); }
         return true;
     }
 
@@ -74,6 +81,7 @@ public class TileDataSync implements IMessage {
 
         @Override
         public IMessage handleClientMessage(TileDataSync message, MessageContext ctx) {
+            System.out.println("Sending to Class Handler");
             message.sendToClassHandler();
             return null;
         }

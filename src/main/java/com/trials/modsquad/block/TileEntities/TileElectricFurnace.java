@@ -1,16 +1,27 @@
 package com.trials.modsquad.block.TileEntities;
 
+import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.Recipies.TeslaRegistry;
+import com.trials.modsquad.proxy.TileDataSync;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.IItemHandlerModifiable;
+
+import javax.annotation.Nullable;
 
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
@@ -26,11 +37,69 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
     public TileElectricFurnace(){
         container = new BaseTeslaContainer();
         inventory = new ItemStack[2];
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @SuppressWarnings("ConstantConditions")
+    @Nullable
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        NBTTagCompound t = new NBTTagCompound();
+        t = writeToNBT(t);
+        return new SPacketUpdateTileEntity(pos, 0, t);
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        NBTTagList list = new NBTTagList();
+        for(int i = 0; i<inventory.length; ++i)
+            if(inventory[i]!=null){
+                NBTTagCompound comp = new NBTTagCompound();
+                comp.setInteger("Slot", i);
+                inventory[i].writeToNBT(comp);
+                list.appendTag(comp);
+            }
+        compound.setTag("Inventory", list);
+        compound.setBoolean("IsGrinding", isSmelting);
+        compound.setInteger("GrindTime", workTime);
+        compound.setTag("Container", container.serializeNBT());
+        compound = super.writeToNBT(compound);
+        if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(0, pos, compound.toString()));
+        return compound;
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        readFromNBT(pkt.getNbtCompound());
+        super.onDataPacket(net, pkt);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
+        if(compound.hasKey("Container")) container.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
+        NBTTagList list = compound.getTagList("Inventory", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
+        for(int i = 0; i<list.tagCount(); ++i){
+            NBTTagCompound c = list.getCompoundTagAt(i);
+            int slot = c.getInteger("Slot");
+            if(slot>=0 && slot < inventory.length) inventory[slot] = ItemStack.loadItemStackFromNBT(c);
+        }
+        isSmelting = compound.getBoolean("IsGrinding");
+        workTime = compound.getInteger("GrindTime");
+
+    }
+    private int firstfewTicks = 500;
+
+    @SubscribeEvent
+    public void onEntityJoinEvent(EntityJoinWorldEvent event){
+        firstfewTicks = 0;
+    }
+
     @Override
     public void update() {
+        if(firstfewTicks>=10 && firstfewTicks!=500 && !worldObj.isRemote){
+            if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(5, pos, serializeNBT().toString()));
+            firstfewTicks=500;
+        }else if(firstfewTicks!=500) ++firstfewTicks;
 
         if(isSmelting){
             if(workTime==0){
@@ -134,4 +203,6 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
         if(capability==CAPABILITY_HOLDER || capability==CAPABILITY_PRODUCER) return (T) container;
         return super.getCapability(capability, facing);
     }
+
+    public void updateNBT(NBTTagCompound compound){ deserializeNBT(compound); }
 }

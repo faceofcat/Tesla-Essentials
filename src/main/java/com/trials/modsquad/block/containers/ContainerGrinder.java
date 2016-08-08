@@ -34,14 +34,6 @@ public class ContainerGrinder extends Container {
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
-        ByteBuffer buf = ByteBuffer.allocate(8);
-        buf.putLong(grinder.getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower());
-        ByteBuffer buf1 = ByteBuffer.wrap(buf.array());
-        for(IContainerListener listener : listeners) {
-            System.out.println(listener);
-            listener.sendProgressBarUpdate(this, 0, buf1.getInt());
-            listener.sendProgressBarUpdate(this, 1, buf1.getInt());
-        }
     }
 
     @Nullable
