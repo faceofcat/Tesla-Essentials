@@ -118,8 +118,8 @@ public class TeslaRegistry{
         teslaRegistry.registerGrinderRecipe(new ItemStack(ModBlocks.oreTin), new ItemStack(ModItems.dustTin), 2);
         teslaRegistry.registerGrinderRecipe(new ItemStack(ModBlocks.oreCopper), new ItemStack(ModItems.dustCopper), 2);
         //Vanilla Ores
-        teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.IRON_ORE), new ItemStack(Items.IRON_INGOT), 2);
-        teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.GOLD_ORE), new ItemStack(Items.GOLD_INGOT), 2);
+        teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.IRON_ORE), new ItemStack(ModItems.dustIron), 2);
+        teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.GOLD_ORE), new ItemStack(ModItems.dustGold), 2);
         teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.COAL_ORE), new ItemStack(Items.COAL), 2);
         teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.DIAMOND_ORE), new ItemStack(Items.DIAMOND), 2);
         teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.EMERALD_ORE), new ItemStack(Items.EMERALD), 2);
