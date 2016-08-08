@@ -21,6 +21,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
@@ -37,10 +38,65 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
     private int workTime = 0;
     static final int DRAW_PER_TICK = 10;
 
+    private IItemHandlerModifiable extractor;
+    private IItemHandlerModifiable inserter;
+
     public TileElectricFurnace(){
         container = new BaseTeslaContainer();
         inventory = new ItemStack[2];
         MinecraftForge.EVENT_BUS.register(this);
+        extractor = new IItemHandlerModifiable() {
+            @Override
+            public void setStackInSlot(int slot, ItemStack stack) {
+                TileElectricFurnace.this.setStackInSlot(slot, stack);
+            }
+
+            @Override
+            public int getSlots() {
+                return 1;
+            }
+
+            @Override
+            public ItemStack getStackInSlot(int slot) {
+                return inventory[slot+1];
+            }
+
+            @Override
+            public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+                return stack;
+            }
+
+            @Override
+            public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                return TileElectricFurnace.this.extractItem(slot, amount, simulate);
+            }
+        };
+        inserter = new IItemHandlerModifiable() {
+            @Override
+            public void setStackInSlot(int slot, ItemStack stack) {
+                TileElectricFurnace.this.setStackInSlot(slot, stack);
+            }
+
+            @Override
+            public int getSlots() {
+                return 1;
+            }
+
+            @Override
+            public ItemStack getStackInSlot(int slot) {
+                return inventory[slot+1];
+            }
+
+            @Override
+            public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+                return TileElectricFurnace.this.insertItem(slot, stack, simulate);
+            }
+
+            @Override
+            public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                return null;
+            }
+        };
     }
 
     @Nullable
@@ -156,7 +212,7 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
         ItemStack tmp;
         if(slot==1) return stack;
         if(inventory[slot] == null){
-            inventory[slot] = stack.copy();
+            if(!simulate) inventory[slot] = stack.copy();
             return null;
         }
         if(inventory[slot].isItemEqual(stack)){
@@ -199,12 +255,17 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return capability == TeslaCapabilities.CAPABILITY_CONSUMER || capability == CAPABILITY_HOLDER || super.hasCapability(capability, facing);
+        return capability == TeslaCapabilities.CAPABILITY_CONSUMER || capability == CAPABILITY_HOLDER || capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ||
+                super.hasCapability(capability, facing);
     }
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if(capability==CAPABILITY_HOLDER || capability==CAPABILITY_CONSUMER) return (T) container;
+        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
+            if(facing==EnumFacing.DOWN) return (T) extractor;
+            else return (T) inserter;
+        }
         return super.getCapability(capability, facing);
     }
 

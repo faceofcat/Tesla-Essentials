@@ -22,6 +22,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -59,7 +60,7 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         ItemStack tmp;
         if(fuel[slot] == null){
-            fuel[slot] = stack.copy();
+            if(!simulate) fuel[slot] = stack.copy();
             return null;
         }
         if(fuel[slot].isItemEqual(stack)){
@@ -172,12 +173,14 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return capability == TeslaCapabilities.CAPABILITY_PRODUCER || capability == CAPABILITY_HOLDER || super.hasCapability(capability, facing);
+        return capability == TeslaCapabilities.CAPABILITY_PRODUCER || capability == CAPABILITY_HOLDER || (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing != EnumFacing.DOWN)
+                || super.hasCapability(capability, facing);
     }
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if(capability==CAPABILITY_HOLDER || capability==CAPABILITY_PRODUCER) return (T) container;
+        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return (T) this;
         return super.getCapability(capability, facing);
     }
 

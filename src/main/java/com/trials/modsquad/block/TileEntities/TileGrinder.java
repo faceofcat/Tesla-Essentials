@@ -32,12 +32,66 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
     // Objects
     private final ItemStack[] inventory; // I'm an idiot
     private BaseTeslaContainer container;
+    private IItemHandlerModifiable extractor;
+    private IItemHandlerModifiable inserter;
 
     public TileGrinder(){
         inventory = new ItemStack[2];
         container = new BaseTeslaContainer();
         container.setInputRate(100);
         MinecraftForge.EVENT_BUS.register(this);
+        extractor = new IItemHandlerModifiable() {
+            @Override
+            public void setStackInSlot(int slot, ItemStack stack) {
+                TileGrinder.this.setStackInSlot(slot, stack);
+            }
+
+            @Override
+            public int getSlots() {
+                return 1;
+            }
+
+            @Override
+            public ItemStack getStackInSlot(int slot) {
+                return inventory[slot+1];
+            }
+
+            @Override
+            public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+                return stack;
+            }
+
+            @Override
+            public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                return TileGrinder.this.extractItem(slot+1, amount, simulate);
+            }
+        };
+        inserter = new IItemHandlerModifiable() {
+            @Override
+            public void setStackInSlot(int slot, ItemStack stack) {
+                TileGrinder.this.setStackInSlot(slot, stack);
+            }
+
+            @Override
+            public int getSlots() {
+                return 1;
+            }
+
+            @Override
+            public ItemStack getStackInSlot(int slot) {
+                return inventory[slot];
+            }
+
+            @Override
+            public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+                return TileGrinder.this.insertItem(slot, stack, simulate);
+            }
+
+            @Override
+            public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                return null;
+            }
+        };
     }
 
 
@@ -90,7 +144,7 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
     }
     @Override
     public int getSlots() {
-        return inventory.length;
+        return inventory!=null?inventory.length:0;
     }
 
     @Nullable
@@ -104,7 +158,7 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         ItemStack tmp;
         if(slot==1) return stack;
         if(inventory[slot] == null){
-            inventory[slot] = stack.copy();
+            if(!simulate) inventory[slot] = stack.copy();
             return null;
         }
         if(inventory[slot].isItemEqual(stack)){
@@ -143,7 +197,7 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return capability==CAPABILITY_CONSUMER || capability==CAPABILITY_HOLDER || capability== CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ||
+        return capability==CAPABILITY_CONSUMER || capability==CAPABILITY_HOLDER || capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ||
                 super.hasCapability(capability, facing);
     }
 
@@ -151,6 +205,10 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if(capability==CAPABILITY_CONSUMER || capability==CAPABILITY_HOLDER)
             return (T) container;
+        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
+            if(facing==EnumFacing.DOWN) return (T) extractor;
+            else return (T) inserter;
+        }
         return super.getCapability(capability, facing);
     }
 

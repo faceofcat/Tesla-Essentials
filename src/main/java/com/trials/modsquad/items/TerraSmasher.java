@@ -10,7 +10,6 @@ import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -20,12 +19,10 @@ import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.EnumHelper;
-
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Set;
@@ -33,12 +30,12 @@ import java.util.Set;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 
 public class TerraSmasher extends ItemTool {
-    public static final Set<Block> EFFECTIVE_ON = Sets.newHashSet(new Block[] {Blocks.ACTIVATOR_RAIL, Blocks.COAL_ORE, Blocks.COBBLESTONE, Blocks.DETECTOR_RAIL, Blocks.DIAMOND_BLOCK, Blocks.DIAMOND_ORE,
+    public static final Set<Block> EFFECTIVE_ON = Sets.newHashSet(Blocks.ACTIVATOR_RAIL, Blocks.COAL_ORE, Blocks.COBBLESTONE, Blocks.DETECTOR_RAIL, Blocks.DIAMOND_BLOCK, Blocks.DIAMOND_ORE,
             Blocks.DOUBLE_STONE_SLAB, Blocks.GOLDEN_RAIL, Blocks.GOLD_BLOCK, Blocks.GOLD_ORE, Blocks.ICE, Blocks.IRON_BLOCK, Blocks.IRON_ORE, Blocks.LAPIS_BLOCK, Blocks.LAPIS_ORE, Blocks.LIT_REDSTONE_ORE,
             Blocks.MOSSY_COBBLESTONE, Blocks.NETHERRACK, Blocks.PACKED_ICE, Blocks.RAIL, Blocks.REDSTONE_ORE, Blocks.SANDSTONE, Blocks.RED_SANDSTONE, Blocks.STONE, Blocks.STONE_SLAB, Blocks.STONE_BUTTON,
             Blocks.STONE_PRESSURE_PLATE, Blocks.CLAY, Blocks.DIRT, Blocks.FARMLAND, Blocks.GRASS, Blocks.GRAVEL, Blocks.MYCELIUM, Blocks.SAND, Blocks.SNOW, Blocks.SNOW_LAYER, Blocks.SOUL_SAND,
             Blocks.GRASS_PATH, ModBlocks.blockCopper, ModBlocks.blockTin, ModBlocks.blockLead, ModBlocks.capacitor, ModBlocks.charger, ModBlocks.electricFurnace, ModBlocks.furnaceGen,
-            ModBlocks.grinder, ModBlocks.leadCable, ModBlocks.oreCopper, ModBlocks.oreTin, ModBlocks.oreLead});
+            ModBlocks.grinder, ModBlocks.leadCable, ModBlocks.oreCopper, ModBlocks.oreTin, ModBlocks.oreLead);
     public static final Item.ToolMaterial TERRA_SMASHER = EnumHelper.addToolMaterial("TERRA_SMASHER", 3, 20000, 15.0F, 3.0F, 25);
     public static final long drain = 10;
     private final Field itemDamage;
@@ -55,7 +52,7 @@ public class TerraSmasher extends ItemTool {
             f = ItemStack.class.getDeclaredField("itemDamage");
             f.setAccessible(true);
         } catch (NoSuchFieldException e) { }
-        Field k = null;
+        Field k;
         try{
             k = ItemTool.class.getDeclaredField("toolClass");
             k.setAccessible(true);
@@ -117,7 +114,7 @@ public class TerraSmasher extends ItemTool {
     public void setDamage(ItemStack stack, int damage) {
         ITeslaHolder h=stack.getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN);
         // As stored power increases, dam tends towards the value getMaxDamage()
-        int dam = h.getCapacity()>0?Math.round(h.getStoredPower()*(getMaxDamage()-1)/h.getCapacity()):1;
+        int dam = h.getCapacity()>0?Math.round(h.getStoredPower()*(getMaxDamage()-1)/h.getCapacity()):0;
         try{ itemDamage.setInt(stack, getMaxDamage()-dam); }catch(Exception e){}
     }
 

@@ -45,6 +45,7 @@ public class TileCharger extends TileEntity implements IItemHandlerModifiable, I
 
     public TileCharger(){
         container = new BaseTeslaContainer();
+        container.setTransferRate(60);
         inventory = new ItemStack[1];
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -63,19 +64,40 @@ public class TileCharger extends TileEntity implements IItemHandlerModifiable, I
 
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        ItemStack s = inventory[slot];
-        if(simulate) return s;
+        ItemStack tmp;
+        if(slot==1) return stack;
+        if(inventory[slot] == null){
+            if(!simulate) inventory[slot] = stack.copy();
+            return null;
+        }
+        if(inventory[slot].isItemEqual(stack)){
+            if(inventory[slot].stackSize+stack.stackSize<=64 && inventory[slot].stackSize+stack.stackSize<=stack.getMaxStackSize()) {
+                if(!simulate) inventory[slot].stackSize += stack.stackSize;
+                return null;
+            }
+            tmp = stack.copy();
+            tmp.stackSize = stack.getMaxStackSize() - inventory[slot].stackSize - stack.stackSize;
+            if(!simulate) inventory[slot].stackSize = stack.getMaxStackSize();
+            return tmp;
+        }
+        if(simulate) return inventory[slot];
+        tmp = inventory[slot];
         inventory[slot] = stack;
-        return s;
+        return tmp;
     }
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if(simulate) return inventory[slot];
-        ItemStack s = inventory[slot];
-        if(s.stackSize-amount<=0) inventory[slot]=null;
-        else inventory[slot] = s.splitStack(amount);
-        return s;
+        ItemStack split;
+        if(inventory[slot]==null) return null;
+        if(amount>=inventory[slot].stackSize){
+            split = inventory[slot];
+            if(!simulate) inventory[slot] = null;
+            return split;
+        }
+        if(simulate) (split = inventory[slot].copy()).stackSize = amount;
+        else split = inventory[slot].splitStack(amount);
+        return split;
     }
 
     @Override

@@ -58,8 +58,6 @@ public class ModSquad
 
         GameRegistry.registerWorldGenerator(new ModWorldGen(), 0);
 
-        proxy.preInit();
-
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GUIHandler());
         //OreDictionary stuff
         //Ores
@@ -82,6 +80,8 @@ public class ModSquad
         OreDictionary.registerOre("dustLead", ModItems.dustLead);
         OreDictionary.registerOre("dustIron", ModItems.dustIron);
         OreDictionary.registerOre("dustGold", ModItems.dustGold);
+
+        proxy.preInit();
     }
 
     @EventHandler

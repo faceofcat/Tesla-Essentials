@@ -35,7 +35,7 @@ public class TileDataSync implements IMessage {
         clazz = tileRef[classIndex = index];
         this.data = data;
         this.pos = pos;
-        MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(this); // Technically a resource leak
     }
 
     @Override
