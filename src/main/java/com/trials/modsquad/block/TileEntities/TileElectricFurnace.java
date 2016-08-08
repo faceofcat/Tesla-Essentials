@@ -2,6 +2,8 @@ package com.trials.modsquad.block.TileEntities;
 
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.Recipies.TeslaRegistry;
+import com.trials.modsquad.block.machines.ActiveState;
+import com.trials.modsquad.block.machines.BlockElectricFurnace;
 import com.trials.modsquad.proxy.TileDataSync;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
@@ -23,6 +25,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
 
+import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
 
@@ -94,6 +97,7 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
         firstfewTicks = 0;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void update() {
         if(firstfewTicks>=10 && firstfewTicks!=500 && !worldObj.isRemote){
@@ -127,7 +131,7 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
             if (itemstack != null && (inventory[1] == null || inventory[1].isItemEqual(itemstack)) && (size = (inventory[1] != null ? inventory[1].stackSize : 0) + itemstack.stackSize) <= 64 &&
                     size <= itemstack.getMaxStackSize()) {
                 isSmelting = true;
-                workTime = TileEntityFurnace.getItemBurnTime(inventory[0]);
+                workTime = 60;
             }
         }
     }
@@ -195,12 +199,12 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return capability == TeslaCapabilities.CAPABILITY_PRODUCER || capability == CAPABILITY_HOLDER || super.hasCapability(capability, facing);
+        return capability == TeslaCapabilities.CAPABILITY_CONSUMER || capability == CAPABILITY_HOLDER || super.hasCapability(capability, facing);
     }
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if(capability==CAPABILITY_HOLDER || capability==CAPABILITY_PRODUCER) return (T) container;
+        if(capability==CAPABILITY_HOLDER || capability==CAPABILITY_CONSUMER) return (T) container;
         return super.getCapability(capability, facing);
     }
 

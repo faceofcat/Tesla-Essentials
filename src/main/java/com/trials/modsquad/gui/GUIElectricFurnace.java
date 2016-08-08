@@ -30,7 +30,7 @@ public class GUIElectricFurnace extends GuiContainer {
         fontRendererObj.drawString("Electric Furnace", 8, 6, 4210751);
         String power;
         int count = (power = TeslaUtils.getDisplayableTeslaCount(furnace!=null?furnace.getStoredPower():0)).length();
-        fontRendererObj.drawString(power, xSize-45-count/2, 35, 4210751);
+        fontRendererObj.drawString(power, width/4, 35, 4210751);
     }
 
     @Override

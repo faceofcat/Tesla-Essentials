@@ -1,5 +1,6 @@
 package com.trials.modsquad.block.machines;
 
+import com.google.common.base.Predicate;
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.TileEntities.TileElectricFurnace;
@@ -8,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -22,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import javax.annotation.Nullable;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import static com.trials.modsquad.Ref.GUI_ID_FURNACE;
 
@@ -54,14 +57,14 @@ public class BlockElectricFurnace extends Block {
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(PROPERTYFACING, meta>1?EnumFacing.values()[meta] : EnumFacing.NORTH);
+        return getDefaultState().withProperty(PROPERTYFACING, meta>1?EnumFacing.values()[meta]:EnumFacing.NORTH);
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase user, ItemStack stack)
     {
         super.onBlockPlacedBy(world, pos, state, user,stack);
-        world.setBlockState(pos, state.withProperty(PROPERTYFACING, user.getHorizontalFacing().rotateAround(EnumFacing.Axis.Y)));
+        world.setBlockState(pos, state.withProperty(PROPERTYFACING, user.getHorizontalFacing()));
     }
 
     @Override
@@ -78,6 +81,13 @@ public class BlockElectricFurnace extends Block {
     @Override
     public boolean hasTileEntity(IBlockState state) {
         return true;
+    }
+
+    @Override
+    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
+        System.out.println("Update Tick");
+
+        super.updateTick(worldIn, pos, state, rand);
     }
 
     @Override
