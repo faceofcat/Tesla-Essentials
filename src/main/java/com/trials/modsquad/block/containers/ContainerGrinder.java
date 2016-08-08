@@ -5,12 +5,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nullable;
+
+import java.nio.ByteBuffer;
+
+import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 
 public class ContainerGrinder extends Container {
 
@@ -19,13 +24,8 @@ public class ContainerGrinder extends Container {
 
     public ContainerGrinder(InventoryPlayer inv, TileGrinder grinder){
         this.grinder = grinder;
-        addSlotToContainer(new SlotItemHandler(grinder, 0, 56, 35)); // Nice and centered :P
-        addSlotToContainer(new SlotItemHandler(grinder, 1, 116, 35){
-            @Override
-            public boolean isItemValid(@Nullable ItemStack stack) {
-                return false;
-            }
-        });
+        addSlotToContainer(new SlotItemHandler(grinder, 0, 56, 35));
+        addSlotToContainer(new SlotItemHandler(grinder, 1, 116, 35));
 
         for(int i = 0; i<3; ++i) for(int j = 0; j<9; ++j) addSlotToContainer(new Slot(inv, j+i*9+9, 8+j*18, 84+i*18));
         for(int i = 0; i<9; ++i) addSlotToContainer(new Slot(inv, i, 8+i*18, 142));
@@ -34,6 +34,14 @@ public class ContainerGrinder extends Container {
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
+        ByteBuffer buf = ByteBuffer.allocate(8);
+        buf.putLong(grinder.getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower());
+        ByteBuffer buf1 = ByteBuffer.wrap(buf.array());
+        for(IContainerListener listener : listeners) {
+            System.out.println(listener);
+            listener.sendProgressBarUpdate(this, 0, buf1.getInt());
+            listener.sendProgressBarUpdate(this, 1, buf1.getInt());
+        }
     }
 
     @Nullable

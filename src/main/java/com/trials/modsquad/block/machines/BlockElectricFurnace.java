@@ -49,13 +49,11 @@ public class BlockElectricFurnace extends Block {
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        System.out.println(state+" : "+state.getValue(PROPERTYFACING).ordinal());
         return state.getValue(PROPERTYFACING).ordinal();
     }
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        System.out.println("Meta "+meta);
         return getDefaultState().withProperty(PROPERTYFACING, meta>1?EnumFacing.values()[meta] : EnumFacing.NORTH);
     }
 
@@ -104,6 +102,11 @@ public class BlockElectricFurnace extends Block {
 
     @Override
     public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) {
+        return false;
+    }
+
+    @Override
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
         return false;
     }
 }

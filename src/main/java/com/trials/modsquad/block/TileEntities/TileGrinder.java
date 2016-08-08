@@ -1,8 +1,13 @@
 package com.trials.modsquad.block.TileEntities;
 
+import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.Recipies.GrinderRecipe;
 import com.trials.modsquad.Recipies.TeslaRegistry;
 import com.trials.modsquad.block.ModBlocks;
+import com.trials.modsquad.proxy.TileDataSync;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
@@ -15,10 +20,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.*;
 import net.minecraft.network.NetworkManager;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -26,20 +31,21 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
-
-import static com.trials.modsquad.block.ModBlocks.getRelativeFace;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
-import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
 
 public class TileGrinder extends TileEntity implements IItemHandlerModifiable, ITickable {
     // Primitives
@@ -70,8 +76,6 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        NBTTagCompound c = container.serializeNBT();
-        for(String key : c.getKeySet()) compound.setTag(key, c.getTag(key));
         NBTTagList list = new NBTTagList();
         for(int i = 0; i<inventory.length; ++i)
             if(inventory[i]!=null){
@@ -81,6 +85,10 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
                 list.appendTag(comp);
             }
         compound.setTag("Inventory", list);
+        compound.setBoolean("IsGrinding", isGrinding);
+        compound.setInteger("GrindTime", grindTime);
+        compound.setTag("Container", container.serializeNBT());
+        System.out.println("Writing to nbt: "+compound);
         return super.writeToNBT(compound);
     }
 
@@ -92,14 +100,16 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
-        container.deserializeNBT(compound);
         super.readFromNBT(compound);
+        if(compound.hasKey("Container")) container.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
         NBTTagList list = compound.getTagList("Inventory", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
         for(int i = 0; i<list.tagCount(); ++i){
             NBTTagCompound c = list.getCompoundTagAt(i);
             int slot = c.getInteger("Slot");
             if(slot>=0 && slot < inventory.length) inventory[slot] = ItemStack.loadItemStackFromNBT(c);
         }
+        isGrinding = compound.getBoolean("IsGrinding");
+        grindTime = compound.getInteger("GrindTime");
 
     }
     @Override
@@ -116,8 +126,11 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         ItemStack tmp;
-        int val;
-        if(inventory[slot]==null || slot==1) return stack;
+        if(slot==1) return stack;
+        if(inventory[slot] == null){
+            inventory[slot] = stack.copy();
+            return null;
+        }
         if(inventory[slot].isItemEqual(stack)){
             if(inventory[slot].stackSize+stack.stackSize<=64 && inventory[slot].stackSize+stack.stackSize<=stack.getMaxStackSize()) {
                 if(!simulate) inventory[slot].stackSize += stack.stackSize;
@@ -131,13 +144,17 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         if(simulate) return inventory[slot];
         tmp = inventory[slot];
         inventory[slot] = stack;
+        if(isGrinding){ // If items are switched while grinding, grinding stops
+            isGrinding = false;
+            grindTime = 0;
+        }
         return tmp;
     }
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         ItemStack split;
-        if(inventory[slot] == null || slot==0) return null;
+        if(inventory[slot]==null) return null;
         if(amount>=inventory[slot].stackSize){
             split = inventory[slot];
             if(!simulate) inventory[slot] = null;
@@ -163,22 +180,38 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
 
     @Override
     public NBTTagCompound serializeNBT() {
-        NBTTagCompound c = super.serializeNBT();
-        try{
-            Field f = NBTTagCompound.class.getDeclaredField("tagMap");
-            f.setAccessible(true);
-            Map<String, NBTBase> r = (Map<String, NBTBase>) f.get(c);
-            Map<String, NBTBase> m = (Map<String, NBTBase>) f.get(container);
-            for(String s : m.keySet()) r.put(s, m.get(s)); // Move container tags to my tags
-            f.set(c, r);
-        }catch(Exception ignored){}
-        return c;
+        NBTTagCompound compound = new NBTTagCompound();
+        NBTTagList list = new NBTTagList();
+        for(int i = 0; i<inventory.length; ++i)
+            if(inventory[i]!=null){
+                NBTTagCompound comp = new NBTTagCompound();
+                comp.setInteger("Slot", i);
+                inventory[i].writeToNBT(comp);
+                list.appendTag(comp);
+            }
+        compound.setTag("Inventory", list);
+        compound.setBoolean("IsGrinding", isGrinding);
+        compound.setInteger("GrindTime", grindTime);
+        compound.setTag("Container", container.serializeNBT());
+
+        compound =  super.writeToNBT(compound);
+
+        ModSquad.channel.sendToAll(new TileDataSync(0, pos, compound.toString()));
+        return compound;
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        super.deserializeNBT(nbt);
-        container.deserializeNBT(nbt);
+    public void deserializeNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
+        if(compound.hasKey("Container")) container.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
+        NBTTagList list = compound.getTagList("Inventory", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
+        for(int i = 0; i<list.tagCount(); ++i){
+            NBTTagCompound c = list.getCompoundTagAt(i);
+            int slot = c.getInteger("Slot");
+            if(slot>=0 && slot < inventory.length) inventory[slot] = ItemStack.loadItemStackFromNBT(c);
+        }
+        isGrinding = compound.getBoolean("IsGrinding");
+        grindTime = compound.getInteger("GrindTime");
     }
 
     @Override
@@ -186,11 +219,14 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         if(isGrinding){
             if(grindTime==0){
                 ItemStack s = extractItem(0, 1, false);
+                if(s==null){ // Invalid state that for some reason can arise
+                    isGrinding = false;
+                    return;
+                }
                 if(inventory[1]==null){
-                    inventory[1] = TeslaRegistry.teslaRegistry.getGrinderOutFromIn(s);
+                    inventory[1] = TeslaRegistry.teslaRegistry.getGrinderOutFromIn(s).copy();
                     inventory[1].stackSize = TeslaRegistry.teslaRegistry.getGrinderRecipeFromIn(s).getAmount();
-                }else
-                    inventory[1].stackSize+=TeslaRegistry.teslaRegistry.getGrinderRecipeFromIn(s).getAmount();
+                }else inventory[1].stackSize+=TeslaRegistry.teslaRegistry.getGrinderRecipeFromIn(s).getAmount();
                 isGrinding = false;
             }
             if(container.getStoredPower()<DRAW_PER_TICK){
@@ -201,7 +237,7 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
             container.takePower(DRAW_PER_TICK, false);
             --grindTime;
         }else if(inventory[0]!=null && TeslaRegistry.teslaRegistry.hasRecipe(inventory[0]) && (inventory[1] == null ||
-                inventory[1] == TeslaRegistry.teslaRegistry.getGrinderOutFromIn(inventory[0])) && container.getStoredPower()>0 &&
+                inventory[1].isItemEqual(TeslaRegistry.teslaRegistry.getGrinderOutFromIn(inventory[0]))) && container.getStoredPower()>0 &&
                 (inventory[1]==null || inventory[1].stackSize<64)){
             isGrinding = true;
             grindTime = DEFAULT_GRIND_TIME;
@@ -211,5 +247,22 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
     @Override
     public void setStackInSlot(int slot, ItemStack stack) {
         inventory[slot] = stack!=null?stack.copy():null;
+    }
+
+    public void updateNBT(NBTTagCompound compound){ System.out.println("Updating"); deserializeNBT(compound); }
+
+    private int[] f = new int[2];
+
+    public int getFieldCount(){
+        return f.length;
+    }
+
+    public int getField(int i){
+        return f[i];
+    }
+
+    public void setField(int i, int j){
+        System.out.println(i+" "+j);
+        f[i] = j;
     }
 }

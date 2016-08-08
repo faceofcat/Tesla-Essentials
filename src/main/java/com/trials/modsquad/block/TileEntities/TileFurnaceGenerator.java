@@ -94,20 +94,41 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
 
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        ItemStack s = fuel[slot];
-        if(simulate) return s;
+        ItemStack tmp;
+        if(fuel[slot] == null){
+            fuel[slot] = stack.copy();
+            return null;
+        }
+        if(fuel[slot].isItemEqual(stack)){
+            if(fuel[slot].stackSize+stack.stackSize<=64 && fuel[slot].stackSize+stack.stackSize<=stack.getMaxStackSize()) {
+                if(!simulate) fuel[slot].stackSize += stack.stackSize;
+                return null;
+            }
+            tmp = stack.copy();
+            tmp.stackSize = stack.getMaxStackSize() - fuel[slot].stackSize - stack.stackSize;
+            if(!simulate) fuel[slot].stackSize = stack.getMaxStackSize();
+            return tmp;
+        }
+        if(simulate) return fuel[slot];
+        tmp = fuel[slot];
         fuel[slot] = stack;
-        return s;
+        return tmp;
     }
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if(simulate) return fuel[slot];
-        ItemStack s = fuel[slot];
-        if(s.stackSize-amount<=0) fuel[slot]=null;
-        else fuel[slot] = s.splitStack(amount);
-        return s;
+        ItemStack split;
+        if(fuel[slot]==null) return null;
+        if(amount>=fuel[slot].stackSize){
+            split = fuel[slot];
+            if(!simulate) fuel[slot] = null;
+            return split;
+        }
+        if(simulate) (split = fuel[slot].copy()).stackSize = amount;
+        else split = fuel[slot].splitStack(amount);
+        return split;
     }
+
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound c = super.serializeNBT();
@@ -154,7 +175,9 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) { return capability == TeslaCapabilities.CAPABILITY_PRODUCER || capability == CAPABILITY_HOLDER; }
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capability == TeslaCapabilities.CAPABILITY_PRODUCER || capability == CAPABILITY_HOLDER || super.hasCapability(capability, facing);
+    }
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {

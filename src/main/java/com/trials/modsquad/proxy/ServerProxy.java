@@ -1,10 +1,14 @@
 package com.trials.modsquad.proxy;
 
+import com.trials.modsquad.ModSquad;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+
 public class ServerProxy implements CommonProxy {
 
     @Override
     public void preInit() {
-
+        // Register TileEntities that want data
     }
 
     @Override
@@ -14,6 +18,11 @@ public class ServerProxy implements CommonProxy {
 
     @Override
     public void postInit() {
+
+    }
+
+    @SubscribeEvent
+    public void onServerPacket(FMLNetworkEvent.ServerCustomPacketEvent event){
 
     }
 }

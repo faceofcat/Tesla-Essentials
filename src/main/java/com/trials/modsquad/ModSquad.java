@@ -5,6 +5,8 @@ import com.trials.modsquad.block.ModBlocks;
 import com.trials.modsquad.gui.GUIHandler;
 import com.trials.modsquad.items.ModItems;
 import com.trials.modsquad.proxy.CommonProxy;
+import com.trials.modsquad.proxy.TileDataSync;
+import com.trials.modsquad.proxy.TileDataSync.Handler;
 import com.trials.modsquad.world.ModWorldGen;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
@@ -18,8 +20,13 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLEventChannel;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 
 @Mod(modid = ModSquad.MODID, version = ModSquad.VERSION)
@@ -27,6 +34,7 @@ public class ModSquad
 {
     public static final String MODID = "modsquad";
     public static final String VERSION = "1.0";
+    public static SimpleNetworkWrapper channel;
 
     @Mod.Instance(value = MODID)
     public static ModSquad instance;
@@ -36,6 +44,11 @@ public class ModSquad
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent e){
+        //Network communication
+        channel = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
+
+        channel.registerMessage((Class) Handler.class, TileDataSync.class, 0, Side.CLIENT);
+
         // Item init and registration
         ModBlocks.init();
         ModBlocks.register();
@@ -48,7 +61,6 @@ public class ModSquad
         proxy.preInit();
 
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GUIHandler());
-
         //OreDictionary stuff
         //Ores
         OreDictionary.registerOre("oreCopper", ModBlocks.oreCopper);
