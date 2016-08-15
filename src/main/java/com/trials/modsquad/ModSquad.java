@@ -11,6 +11,7 @@ import com.trials.modsquad.world.ModWorldGen;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -35,6 +36,9 @@ public class ModSquad
     public static final String MODID = "modsquad";
     public static final String VERSION = "1.0";
     public static SimpleNetworkWrapper channel;
+    public static boolean allowCopperGen = false;
+    public static boolean allowTinGen = false;
+    public static boolean allowLeadGen = false;
 
     @Mod.Instance(value = MODID)
     public static ModSquad instance;
@@ -43,7 +47,7 @@ public class ModSquad
     public static CommonProxy proxy;
 
     @EventHandler
-    public void preInit(FMLPreInitializationEvent e){
+    public void preInit(FMLPreInitializationEvent event){
         //Network communication
         channel = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 
@@ -55,8 +59,17 @@ public class ModSquad
 
         ModItems.init();
         ModItems.register();
+        Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 
-        GameRegistry.registerWorldGenerator(new ModWorldGen(), 0);
+        config.load();
+
+        allowCopperGen = config.getBoolean("allowCopperGen", Configuration.CATEGORY_GENERAL, true, "Generates Copper Ore");
+        allowTinGen = config.getBoolean("allowTinGen", Configuration.CATEGORY_GENERAL, true, "Generates Tin Ore");
+        allowLeadGen = config.getBoolean("allowLeadGen", Configuration.CATEGORY_GENERAL, true, "Generates Lead Ore");
+        config.save();
+
+        proxy.preInit();
+        GameRegistry.registerWorldGenerator(new ModWorldGen(allowCopperGen, allowTinGen, allowLeadGen), 0);
 
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GUIHandler());
         //OreDictionary stuff
@@ -81,7 +94,6 @@ public class ModSquad
         OreDictionary.registerOre("dustIron", ModItems.dustIron);
         OreDictionary.registerOre("dustGold", ModItems.dustGold);
 
-        proxy.preInit();
     }
 
     @EventHandler
