@@ -27,6 +27,14 @@ public class TeslaRegistry{
         GameRegistry.addShapelessRecipe(new ItemStack(ModItems.ingotLead, 9), new ItemStack(ModBlocks.blockLead));
         GameRegistry.addShapelessRecipe(new ItemStack(ModItems.ingotCopper, 9), new ItemStack(ModBlocks.blockCopper));
         GameRegistry.addShapelessRecipe(new ItemStack(ModItems.ingotTin, 9), new ItemStack(ModBlocks.blockTin));
+        GameRegistry.addRecipe(new ItemStack(ModBlocks.solarPanel),
+                "C C",
+                "TLT",
+                "TIT",
+                'C', ModItems.ingotCopper,
+                'T', ModItems.ingotTin,
+                'L', ModItems.dustLead,
+                'I', Items.IRON_INGOT);
         GameRegistry.addRecipe(new ItemStack(ModBlocks.blockCopper),
                 "III",
                 "III",

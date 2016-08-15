@@ -2,7 +2,6 @@ package com.trials.modsquad.items;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import com.trials.modsquad.Ref;
-import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
@@ -10,7 +9,6 @@ import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -18,11 +16,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.EnumHelper;
-
 import java.lang.reflect.Field;
 import java.util.List;
-
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
 
@@ -46,6 +41,7 @@ public class ModArmor extends ItemArmor {
         } catch (NoSuchFieldException e) { }
         this.itemDamage = f;
         try{
+
             f = ItemArmor.class.getDeclaredField("damageReduceAmount");
             f.setAccessible(true);
         } catch (Exception e){ }
@@ -64,7 +60,6 @@ public class ModArmor extends ItemArmor {
         BaseTeslaContainer container = (BaseTeslaContainer) stack.getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN);
         if(container.getCapacity()!=20000)
             try{
-            System.out.println("Not 20k!");
                 Field f = BaseTeslaContainer.class.getDeclaredField("capacity");
                 f.setAccessible(true);
                 f.setLong(container, 20000);
@@ -83,13 +78,15 @@ public class ModArmor extends ItemArmor {
 
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
-        BaseTeslaContainer container = (BaseTeslaContainer) itemStack.getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN);
-
+        //noinspection ConstantConditions
         if (player.inventory.armorItemInSlot(3) !=null && player.inventory.armorItemInSlot(3).getItem() == ModItems.electricHelmet
                 && player.inventory.armorItemInSlot(2) !=null && player.inventory.armorItemInSlot(2).getItem() == ModItems.jetChestplate
                 && player.inventory.armorItemInSlot(1) !=null && player.inventory.armorItemInSlot(1).getItem() == ModItems.electricLeggings
                 && player.inventory.armorItemInSlot(0) !=null && player.inventory.armorItemInSlot(0).getItem() == ModItems.electricBoots
                 && player.inventory.armorItemInSlot(2).getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
+                && player.inventory.armorItemInSlot(1).getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
+                && player.inventory.armorItemInSlot(0).getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
+                && player.inventory.armorItemInSlot(3).getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
                 || player.isCreative()) {
             player.capabilities.allowFlying = true;
             if(player.capabilities.isFlying && !player.isCreative()) {
@@ -104,7 +101,6 @@ public class ModArmor extends ItemArmor {
             player.capabilities.allowFlying = false;
             player.capabilities.isFlying = false;
         }
-
     }
 
     @Override
