@@ -8,6 +8,7 @@ import com.trials.modsquad.block.TileEntities.TileFurnaceGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -48,20 +49,13 @@ public class BlockElectricFurnace extends Block {
     public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     @Override
-    protected BlockStateContainer createBlockState()
-    {
-        return new BlockStateContainer(this, PROPERTYFACING);
-    }
+    protected BlockStateContainer createBlockState(){ return new BlockStateContainer(this, PROPERTYFACING); }
 
     @Override
-    public int getMetaFromState(IBlockState state) {
-        return state.getValue(PROPERTYFACING).ordinal();
-    }
+    public int getMetaFromState(IBlockState state) { return state.getValue(PROPERTYFACING).ordinal(); }
 
     @Override
-    public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(PROPERTYFACING, meta>1?EnumFacing.values()[meta]:EnumFacing.NORTH);
-    }
+    public IBlockState getStateFromMeta(int meta) { return getDefaultState().withProperty(PROPERTYFACING, meta>1?EnumFacing.values()[meta]:EnumFacing.NORTH); }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase user, ItemStack stack)
@@ -77,14 +71,11 @@ public class BlockElectricFurnace extends Block {
         return true;
     }
 
-    @Override public TileEntity createTileEntity(World world, IBlockState state) {
-        return new TileElectricFurnace();
-    }
+    @Override
+    public TileEntity createTileEntity(World world, IBlockState state) { return new TileElectricFurnace(); }
 
     @Override
-    public boolean hasTileEntity(IBlockState state) {
-        return true;
-    }
+    public boolean hasTileEntity(IBlockState state) { return true; }
 
     @Override
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
@@ -111,8 +102,6 @@ public class BlockElectricFurnace extends Block {
         return false;
     }
 
-    @Override
-    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
-        return false;
-    }
+    @Override //Teehee "block" rendering :P
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) { return false; }
 }

@@ -94,6 +94,13 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
         return super.getCapability(capability, facing);
     }
 
+    @Override
+    public void deserializeNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
+        if(compound.hasKey("Container")) solarContainer.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
+        NBTTagList list = compound.getTagList("Inventory", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
+    }
+
     public void updateNBT(NBTTagCompound compound){ deserializeNBT(compound); }
 
 }

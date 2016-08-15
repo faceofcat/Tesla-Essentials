@@ -89,7 +89,9 @@ public class TileCharger extends TileEntity implements IItemHandlerModifiable, I
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         ItemStack split;
-        if(inventory[slot]==null) return null;
+        ITeslaHolder h;
+        if(inventory[slot]==null || (inventory[0].hasCapability(CAPABILITY_HOLDER, EnumFacing.DOWN)) &&
+                (h=inventory[0].getCapability(CAPABILITY_HOLDER, EnumFacing.DOWN)).getCapacity()<h.getStoredPower()) return null;
         if(amount>=inventory[slot].stackSize){
             split = inventory[slot];
             if(!simulate) inventory[slot] = null;
@@ -180,6 +182,12 @@ public class TileCharger extends TileEntity implements IItemHandlerModifiable, I
     @Override
     public void setStackInSlot(int slot, ItemStack stack) {
         inventory[slot] = stack!=null?stack.copy():null;
+    }
+
+    @Override
+    public void deserializeNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
+        if(compound.hasKey("Container")) container.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
     }
 
     public void updateNBT(NBTTagCompound compound){ deserializeNBT(compound); }

@@ -189,5 +189,19 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
         fuel[slot] = stack!=null?stack.copy():null;
     }
 
+    @Override
+    public void deserializeNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
+        if(compound.hasKey("Container")) container.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
+        NBTTagList list = compound.getTagList("Inventory", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
+        for(int i = 0; i<list.tagCount(); ++i){
+            NBTTagCompound c = list.getCompoundTagAt(i);
+            int slot = c.getInteger("Slot");
+            if(slot>=0 && slot < fuel.length) fuel[slot] = ItemStack.loadItemStackFromNBT(c);
+        }
+        isBurning = compound.getBoolean("IsGrinding");
+        workTime = compound.getInteger("GrindTime");
+    }
+
     public void updateNBT(NBTTagCompound compound){ deserializeNBT(compound); }
 }

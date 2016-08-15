@@ -16,6 +16,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.relauncher.Side;
+
 import java.lang.reflect.Field;
 import java.util.List;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
@@ -79,19 +81,21 @@ public class ModArmor extends ItemArmor {
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
         //noinspection ConstantConditions
-        if (player.inventory.armorItemInSlot(3) !=null && player.inventory.armorItemInSlot(3).getItem() == ModItems.electricHelmet
-                && player.inventory.armorItemInSlot(2) !=null && player.inventory.armorItemInSlot(2).getItem() == ModItems.jetChestplate
-                && player.inventory.armorItemInSlot(1) !=null && player.inventory.armorItemInSlot(1).getItem() == ModItems.electricLeggings
-                && player.inventory.armorItemInSlot(0) !=null && player.inventory.armorItemInSlot(0).getItem() == ModItems.electricBoots
-                && player.inventory.armorItemInSlot(2).getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
-                && player.inventory.armorItemInSlot(1).getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
-                && player.inventory.armorItemInSlot(0).getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
-                && player.inventory.armorItemInSlot(3).getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
+        System.out.println(player.inventory.armorInventory[0]);
+
+        if (player.inventory.armorInventory[3] !=null && player.inventory.armorInventory[3].getItem() == ModItems.electricHelmet
+                && player.inventory.armorInventory[2] !=null && player.inventory.armorInventory[2].getItem() == ModItems.jetChestplate
+                && player.inventory.armorInventory[1] !=null && player.inventory.armorInventory[1].getItem() == ModItems.electricLeggings
+                && player.inventory.armorInventory[0] !=null && player.inventory.armorInventory[0].getItem() == ModItems.electricBoots
+                && player.inventory.armorInventory[2].getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
+                && player.inventory.armorInventory[1].getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
+                && player.inventory.armorInventory[0].getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
+                && player.inventory.armorInventory[3].getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
                 || player.isCreative()) {
             player.capabilities.allowFlying = true;
             if(player.capabilities.isFlying && !player.isCreative()) {
                 if (ticks == 80) {
-                    player.inventory.armorItemInSlot(2).getCapability(TeslaCapabilities.CAPABILITY_PRODUCER, EnumFacing.DOWN).takePower(powerDrawPerTickOnFlight, false);
+                    player.inventory.armorInventory[2].getCapability(TeslaCapabilities.CAPABILITY_PRODUCER, EnumFacing.DOWN).takePower(powerDrawPerTickOnFlight, false);
                     ticks = 0;
                 } else {
                     ticks++;

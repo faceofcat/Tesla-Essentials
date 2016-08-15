@@ -88,6 +88,9 @@ public class TileCable extends TileEntity implements ITickable{
         List<TileCable> cables = new ArrayList<>();
         Map<TileEntity, ObjectPair<EnumFacing, Long>> capable = new HashMap<>();
 
+        //Possible fix b-cuz arraylist check seems to give OutOfBoundsException
+        if(worldObj.loadedTileEntityList==null || (worldObj.loadedTileEntityList==null && worldObj.loadedTileEntityList.size()==0)) return capable;
+
         TileEntity e;
         adjacentTiles = new HashMap<>();
         for(EnumFacing f : EnumFacing.VALUES) if((e=worldObj.getTileEntity(pos.offset(f)))!=null) adjacentTiles.put(e, f);

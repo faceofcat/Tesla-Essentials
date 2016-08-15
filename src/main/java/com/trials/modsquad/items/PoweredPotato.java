@@ -39,7 +39,7 @@ public class PoweredPotato extends ItemFood {
         setRegistryName(registryName);
         setCreativeTab(Ref.tabModSquad);
         setMaxStackSize(1);
-        setMaxDamage(40);
+        setMaxDamage(240);
         Field f = null;
         try {
             f = ItemStack.class.getDeclaredField("itemDamage");
