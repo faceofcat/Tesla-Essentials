@@ -19,7 +19,7 @@ public class ModWorldGen implements IWorldGenerator {
     private boolean c, t, l;
 
     public ModWorldGen(boolean c, boolean t, boolean l) {
-        //The int is veinsize
+        //The int is vein size
         gen_oreCopper = new WorldGenMinable(ModBlocks.oreCopper.getDefaultState(), 8);
         gen_oreTin = new WorldGenMinable(ModBlocks.oreTin.getDefaultState(), 8);
         gen_oreLead = new WorldGenMinable(ModBlocks.oreLead.getDefaultState(), 8);

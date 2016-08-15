@@ -1,6 +1,8 @@
 package com.trials.modsquad.block.TileEntities;
 
+import com.trials.modsquad.block.Network.BasicCable;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
+import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -79,7 +81,25 @@ public class TileCable extends TileEntity implements ITickable{
         if(needUpdate){
             netList = buildNetwork(new ArrayList<>()); // Rebuild network of connected Tiles
             needUpdate = false;
+
+            boolean straight = true;
+            List<EnumFacing> connections = new ArrayList<>();
+            TileEntity e;
+            for(EnumFacing f : EnumFacing.VALUES) {
+                if((e=worldObj.getTileEntity(pos.offset(f)))!=null && (e.hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, f.getOpposite()) ||
+                        e.hasCapability(TeslaCapabilities.CAPABILITY_PRODUCER, f.getOpposite()))){
+                    if(!arrayContains(f, EnumFacing.HORIZONTALS)) straight = false;
+                    connections.add(f);
+                }
+            }
+            worldObj.setBlockState(pos, worldObj.getBlockState(pos).withProperty(BasicCable.Tx, BasicCable.Type.fromData(connections.size(), straight)));
         }
+
+    }
+
+    public static <T> boolean arrayContains(T t, T[] ts){
+        for(T t1 : ts) if(t.equals(t1)) return true;
+        return false;
     }
 
     private Map<TileEntity, ObjectPair<EnumFacing, Long>> buildNetwork(List<TileCable> banList){

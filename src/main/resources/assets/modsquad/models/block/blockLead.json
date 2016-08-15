@@ -2,6 +2,6 @@
     "parent": "block/cube_all",
     "textures": {
         "all": "modsquad:blocks/blockLead",
-      "particle": "modsquad:blocks/blockCopper"
+      "particle": "modsquad:blocks/blockLead"
     }
 }
