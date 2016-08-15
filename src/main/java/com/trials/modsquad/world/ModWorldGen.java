@@ -16,12 +16,16 @@ public class ModWorldGen implements IWorldGenerator {
     private WorldGenerator gen_oreCopper;
     private WorldGenerator gen_oreTin;
     private WorldGenerator gen_oreLead;
+    private boolean c, t, l;
 
-    public ModWorldGen() {
+    public ModWorldGen(boolean c, boolean t, boolean l) {
         //The int is veinsize
         gen_oreCopper = new WorldGenMinable(ModBlocks.oreCopper.getDefaultState(), 8);
         gen_oreTin = new WorldGenMinable(ModBlocks.oreTin.getDefaultState(), 8);
         gen_oreLead = new WorldGenMinable(ModBlocks.oreLead.getDefaultState(), 8);
+        this.c = c;
+        this.t = t;
+        this.l = l;
     }
 
     private void runGenerator(WorldGenerator generator, World world, Random rand, int chunk_X, int chunk_Z, int chances, int minHeight, int maxHeight) {
@@ -41,9 +45,12 @@ public class ModWorldGen implements IWorldGenerator {
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
         switch (world.provider.getDimension()) {
             case 0: //Overworld
-                runGenerator(gen_oreCopper, world, random, chunkX, chunkZ, 9, 20, 64);
-                runGenerator(gen_oreTin, world, random, chunkX, chunkZ, 9, 20, 64);
-                runGenerator(gen_oreLead, world, random, chunkX, chunkZ, 4, 0, 40);
+                if(this.c)
+                    runGenerator(gen_oreCopper, world, random, chunkX, chunkZ, 9, 20, 64);
+                if(this.t)
+                    runGenerator(gen_oreTin, world, random, chunkX, chunkZ, 9, 20, 64);
+                if(this.l)
+                    runGenerator(gen_oreLead, world, random, chunkX, chunkZ, 4, 0, 40);
                 break;
             case -1: /*Nether*/ break;
             case 1: /*End*/ break;
