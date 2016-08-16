@@ -1,11 +1,14 @@
 package com.trials.modsquad.block.TileEntities;
 
 import com.trials.modsquad.block.Network.BasicCable;
+import javafx.geometry.Side;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,18 +84,6 @@ public class TileCable extends TileEntity implements ITickable{
         if(needUpdate){
             netList = buildNetwork(new ArrayList<>()); // Rebuild network of connected Tiles
             needUpdate = false;
-
-            boolean straight = true;
-            List<EnumFacing> connections = new ArrayList<>();
-            TileEntity e;
-            for(EnumFacing f : EnumFacing.VALUES) {
-                if((e=worldObj.getTileEntity(pos.offset(f)))!=null && (e.hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, f.getOpposite()) ||
-                        e.hasCapability(TeslaCapabilities.CAPABILITY_PRODUCER, f.getOpposite()))){
-                    if(!arrayContains(f, EnumFacing.HORIZONTALS)) straight = false;
-                    connections.add(f);
-                }
-            }
-            worldObj.setBlockState(pos, worldObj.getBlockState(pos).withProperty(BasicCable.Tx, BasicCable.Type.fromData(connections.size(), straight)));
         }
 
     }
@@ -129,7 +120,26 @@ public class TileCable extends TileEntity implements ITickable{
         return capable;
     }
 
-    public static class ObjectPair<K, V>{
+    /**
+     * Rotationally and cardinally ambiguous model update algorithm.
+     */
+    public void updateModel(){
+        boolean flat = true;
+        int rY = 0;
+        List<EnumFacing> connections = new ArrayList<>();
+        TileEntity e;
+        for(EnumFacing f : EnumFacing.VALUES) {
+            if((e=worldObj.getTileEntity(pos.offset(f)))!=null && (e.hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, f.getOpposite()) ||
+                    e.hasCapability(TeslaCapabilities.CAPABILITY_PRODUCER, f.getOpposite()))){
+                connections.add(f);
+                if(f == EnumFacing.SOUTH) rY = 3;
+            }
+        }
+        worldObj.setBlockState(pos, worldObj.getBlockState(pos).withProperty(BasicCable.Tx, BasicCable.Type.fromData(connections.size(), flat))
+                .withProperty(BasicCable.rY, BasicCable.Rotation.fromValue(rY)));
+    }
+
+    public static final class ObjectPair<K, V>{
 
         K k;
         V v;
@@ -149,4 +159,61 @@ public class TileCable extends TileEntity implements ITickable{
         public void setKey(K k){ this.k = k; }
         public void setValue(V v){ this.v = v; }
     }
+
+    public static final class DFacing{
+        private World world;
+        private BlockPos pos;
+        private EnumSide[] mappedSides = new EnumSide[6]; // Generic mapping for storage
+        public DFacing(World world, BlockPos pos){
+            this.world = world;
+            this.pos = pos;
+            mappedSides[0] = EnumSide.Left;     // North
+            mappedSides[1] = EnumSide.Right;    // South
+            mappedSides[2] = EnumSide.Front;    // East
+            mappedSides[3] = EnumSide.Back;     // West
+            mappedSides[4] = EnumSide.Top;      // Up
+            mappedSides[5] = EnumSide.Bottom;   // Down
+        }
+
+        /**
+         * Rotates relative faces around X-axis.
+         * @param times the amount of times to perform rotation modulo 4
+         */
+        public void rotateX(int times){
+            EnumSide overflow = mappedSides[5];
+            mappedSides[5] = mappedSides[1];
+            mappedSides[1] = mappedSides[4];
+            mappedSides[4] = mappedSides[0];
+            mappedSides[0] = overflow;
+            if((times%4)<0) rotateX((times%4)-1); // 4 rotations == 0 rotations
+        }
+
+        /**
+         * Rotates relative faces around Y-axis.
+         * @param times the amount of times to perform rotation modulo 4
+         */
+        public void rotateY(int times){
+            EnumSide overflow = mappedSides[0];
+            mappedSides[0] = mappedSides[2];
+            mappedSides[2] = mappedSides[1];
+            mappedSides[1] = mappedSides[3];
+            mappedSides[3] = overflow;
+            if((times%4)<0) rotateY((times%4)-1); // 4 rotations == 0 rotations
+        }
+
+        /**
+         * Rotates relative faces around Z-axis.
+         * @param times the amount of times to perform rotation modulo 4
+         */
+        public void rotateZ(int times){
+            EnumSide overflow = mappedSides[5];
+            mappedSides[5] = mappedSides[3];
+            mappedSides[3] = mappedSides[4];
+            mappedSides[4] = mappedSides[2];
+            mappedSides[2] = overflow;
+            if((times%4)<0) rotateZ((times%4)-1); // 4 rotations == 0 rotations
+        }
+    }
+
+    public static enum EnumSide{ Top, Bottom, Left, Right, Front, Back; }
 }
