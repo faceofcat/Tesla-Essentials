@@ -24,6 +24,8 @@ public class TileCable extends TileEntity implements ITickable{
     boolean needUpdate = false;
     private Map<TileEntity, ObjectPair<EnumFacing, Long>> netList;
     private Map<TileEntity, EnumFacing> adjacentTiles = new HashMap<>(); // Faces are defined by the TileEntity. This allows for modification and extension past the six faces
+    private DFacing connectedFaces = new DFacing();
+    private DFacing pointing = new DFacing();
 
     public TileCable(){
         this(20, 20);
@@ -161,18 +163,25 @@ public class TileCable extends TileEntity implements ITickable{
     }
 
     public static final class DFacing{
-        private World world;
-        private BlockPos pos;
         private EnumSide[] mappedSides = new EnumSide[6]; // Generic mapping for storage
-        public DFacing(World world, BlockPos pos){
-            this.world = world;
-            this.pos = pos;
+        private boolean[] activeSides = new boolean[6];
+        public DFacing(){
             mappedSides[0] = EnumSide.Left;     // North
             mappedSides[1] = EnumSide.Right;    // South
             mappedSides[2] = EnumSide.Front;    // East
             mappedSides[3] = EnumSide.Back;     // West
             mappedSides[4] = EnumSide.Top;      // Up
             mappedSides[5] = EnumSide.Bottom;   // Down
+        }
+
+        public DFacing(boolean... active){
+            this();
+            if(active==null) return;
+            for(int i = 0; i<Math.min(active.length, 6); ++i) activeSides[i] = active[i];
+        }
+
+        public DFacing(EnumSide... mappedSides){
+
         }
 
         /**
@@ -215,5 +224,13 @@ public class TileCable extends TileEntity implements ITickable{
         }
     }
 
-    public static enum EnumSide{ Top, Bottom, Left, Right, Front, Back; }
+    /**
+     * Like EnumFacing except relative!
+     * This means that all these values are independent of a cardinal direction and can, as such, change cardinal direction at any time.
+     * This means that BlockState rotation can be done separately from the cardinal directions.
+     */
+    public static enum EnumSide{
+        Top, Bottom, Left, Right, Front, Back;
+        public EnumSide getOpposite(){ return ordinal()%2==0?EnumSide.values()[ordinal()+1]:EnumSide.values()[ordinal()-1]; }
+    }
 }
