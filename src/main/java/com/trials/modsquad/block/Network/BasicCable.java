@@ -2,23 +2,25 @@ package com.trials.modsquad.block.Network;
 
 import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.TileEntities.TileCable;
+import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemClock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import javax.annotation.Nullable;
-import java.util.Random;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class BasicCable extends Block {
@@ -27,11 +29,12 @@ public class BasicCable extends Block {
 
     private Ref.BlockReference type;
 
-    // NOTE: Max amount of states is exceeded if all possible states * bit length per state > 31 (slightly more complicated but yeah...)
-    public static final PropertyEnum<Rotation> rX = PropertyEnum.create("rx",         Rotation.class);
-    public static final PropertyEnum<Rotation> rY = PropertyEnum.create("ry",         Rotation.class);
-    public static final PropertyEnum<Rotation> rZ = PropertyEnum.create("rz",         Rotation.class);
-    public static final PropertyEnum<Type>     Tx = PropertyEnum.create("cabletype",  Type.class);
+    public static final PropertyBool    NORTH   =   PropertyBool.create("north");
+    public static final PropertyBool    SOUTH   =   PropertyBool.create("south");
+    public static final PropertyBool    EAST    =   PropertyBool.create("east");
+    public static final PropertyBool    WEST    =   PropertyBool.create("west");
+    public static final PropertyBool    UP      =   PropertyBool.create("up");
+    public static final PropertyBool    DOWN    =   PropertyBool.create("down");
 
     public BasicCable(String unloc, String reg) {
         super(Material.GROUND);
@@ -41,8 +44,8 @@ public class BasicCable extends Block {
         setRegistryName(reg);
         setCreativeTab(Ref.tabModSquad);
         //Should give 576 unique combinations
-        setDefaultState(blockState.getBaseState().withProperty(rX, Rotation.r0).withProperty(rY, Rotation.r0).withProperty(rZ, Rotation.r0).withProperty(Tx, Type.c0));
-        assert blockState.getValidStates().size()==576 : "Not all BlockStates have been loaded :("; // "BlockStates" because Intellij
+        setDefaultState(blockState.getBaseState().withProperty(NORTH, false).withProperty(SOUTH, false).withProperty(EAST, false).withProperty(WEST, false).withProperty(UP, false)
+                .withProperty(DOWN, false));
     }
 
     @Override
@@ -56,28 +59,49 @@ public class BasicCable extends Block {
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY,
+                                    float hitZ)
     {
         //clock: Wrench
-        if(heldItem != null && heldItem.getItem().getClass() == ItemClock.class) { //Specifically ItemClock! No other derivatives count
-            EntityItem i = new EntityItem(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(this, 1));
-            worldIn.spawnEntityInWorld(i);
-            this.breakBlock(worldIn,pos,state);
-        }
+        if(heldItem != null && heldItem.getItem().getClass() == ItemClock.class) //Specifically ItemClock! No other derivatives count
+            worldIn.destroyBlock(pos, true);
         return false;
     }
 
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, rX, rY, rZ, Tx);
+        return new BlockStateContainer(this, NORTH, SOUTH, EAST, WEST, UP, DOWN);
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase user, ItemStack stack)
     {
-        super.onBlockPlacedBy(world, pos, state, user,stack);
-        world.setBlockState(pos, state.withProperty(rX, Rotation.r0).withProperty(rY, Rotation.r0).withProperty(rZ, Rotation.r0).withProperty(Tx, Type.c0));
+        super.onBlockPlacedBy(world, pos, updateModel(world, pos, getDefaultState(), true), user, stack);
+        world.scheduleBlockUpdate(pos, this, 0, 1);
+    }
+
+    public static IBlockState updateModel(World world, BlockPos pos, IBlockState defaultState, boolean simulate){
+        List<EnumFacing> connected = new ArrayList<>();
+        int i = -1;
+        TileEntity e;
+        for(EnumFacing f : EnumFacing.VALUES)
+            if((e=world.getTileEntity(pos.offset(f)))!=null && (e.hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, f.getOpposite()) ||
+                    e.hasCapability(TeslaCapabilities.CAPABILITY_PRODUCER, f.getOpposite()))) connected.add(f);
+
+        // Ensure that a valid BlockState is provided, even if the block isn't available
+        IBlockState base = world.getBlockState(pos)!=Blocks.AIR.getDefaultState()?world.getBlockState(pos):defaultState;
+
+        IBlockState state = base.withProperty(NORTH, connected.contains(EnumFacing.NORTH))
+                .withProperty(SOUTH, connected.contains(EnumFacing.SOUTH))
+                .withProperty(EAST, connected.contains(EnumFacing.EAST))
+                .withProperty(WEST, connected.contains(EnumFacing.WEST))
+                .withProperty(UP, connected.contains(EnumFacing.UP))
+                .withProperty(DOWN, connected.contains(EnumFacing.DOWN));
+
+        if(!simulate) world.setBlockState(pos, state);
+
+        return state;
     }
 
     public enum CableType{
@@ -93,6 +117,20 @@ public class BasicCable extends Block {
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
         System.out.println("Update");
         super.updateTick(worldIn, pos, state, rand);
+    }
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        AxisAlignedBB bb = new AxisAlignedBB(pos);
+        bb.addCoord(0.3, 0.3, 0);
+        bb.addCoord(0.6, 0.3, 0);
+        bb.addCoord(0.6, 0.6, 0);
+        bb.addCoord(0.3, 0.6, 0);
+        bb.addCoord(0.3, 0.6, 1);
+        bb.addCoord(0.6, 0.3, 1);
+        bb.addCoord(0.6, 0.6, 1);
+        bb.addCoord(0.3, 0.6, 1);
+        return bb;
     }
 
     @Override
@@ -118,36 +156,7 @@ public class BasicCable extends Block {
     @SuppressWarnings("deprecation")
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(Tx, Type.c0).withProperty(rX, Rotation.r0).withProperty(rY, Rotation.r0).withProperty(rZ, Rotation.r0);
-    }
-
-    public enum Rotation implements IStringSerializable {
-        r0("0"), r1("1"), r2("2"), r3("3");
-        String name;
-        Rotation(String name){ this.name = name; }
-        public String getName(){ return name; }
-        public static Rotation fromValue(int val){
-            for(Rotation r : Rotation.values()) if(r.getName().equals(val+"")) return r;
-            return r0;
-        }
-        public static Rotation fromPosition(int position){ return Rotation.values()[position]; }
-    }
-
-    public enum Type implements IStringSerializable{
-        c0("c0"), c1("c1"), c2_0("c2_0"), c2_1("c2_1"), c3_0("c3_0"), c3_1("c3_1"), c4_0("c4_0"), c4_1("c4_1"), c5("c5"), c6("c6");
-        String name;
-        Type(String name){ this.name = name; }
-        public String getName(){ return name; }
-        public static Type fromValue(String val){
-            for(Type r : Type.values()) if(r.getName().equals(val)) return r;
-            assert false : "Invalid value!";
-            return c0;
-        }
-        public static Type fromData(int connections, boolean straight){
-            if(connections<2 || connections>4) return fromValue("c"+connections);
-            return fromValue("c"+connections+"_"+(straight?"0":"1"));
-        }
-        public static Type fromPosition(int position){ return Type.values()[position]; }
+        return getDefaultState().withProperty(NORTH, false).withProperty(SOUTH, false).withProperty(EAST, false).withProperty(WEST, false).withProperty(UP, false).withProperty(DOWN, false);
     }
 
 }

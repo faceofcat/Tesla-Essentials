@@ -3,41 +3,59 @@
     "forge_marker": 1,
     "defaults": {
         "textures": {
-            "0": "modsquad:blocks/lcable"
+            "0": "modsquad:blocks/cable"
         },
         "model": "modsquad:cable0",
         "uvlock": true
     },
     "variants": {
-        "rx": {
-            "0": {  },
-            "1": { "x": 90 },
-            "2": { "x": 180 },
-            "3": { "x": 270 }
+        "north": {
+            "true": {
+              "submodel": {
+                "connector_n": { "model": "modsquad:cable_c", "x": 270 }
+              }
+            },
+            "false": { }
         },
-        "ry": {
-            "0": {  },
-            "1": { "y": 90 },
-            "2": { "y": 180 },
-            "3": { "y": 270 }
+        "south": {
+            "true": {
+              "submodel": {
+                "connector_s": { "model": "modsquad:cable_c", "x": 90 }
+              }
+            },
+            "false": { }
         },
-        "rz": {
-            "0": {  },
-            "1": { "z": 90 },
-            "2": { "z": 180 },
-            "3": { "z": 270 }
+        "east": {
+            "true": {
+              "submodel": {
+                "connector_e": { "model": "modsquad:cable_c", "x": 270, "y": 90 }
+              }
+            },
+            "false": { }
         },
-        "cabletype": {
-            "c0": { "model": "modsquad:cable0" },
-            "c1": { "model": "modsquad:cable1" },
-            "c2_0": { "model": "modsquad:cable2_0" },
-            "c2_1": { "model": "modsquad:cable2_1" },
-            "c3_0": { "model": "modsquad:cable3_0" },
-            "c3_1": { "model": "modsquad:cable3_1" },
-            "c4_0": { "model": "modsquad:cable4_0" },
-            "c4_1": { "model": "modsquad:cable4_1" },
-            "c5": { "model": "modsquad:cable5" },
-            "c6": { "model": "modsquad:cable6" }
+        "west": {
+            "true": {
+              "submodel": {
+                "connector_w": { "model": "modsquad:cable_c", "x": 90, "y": 90 }
+              }
+            },
+            "false": { }
+        },
+        "up": {
+            "true": {
+              "submodel": {
+                "connector_u": { "model": "modsquad:cable_c", "x": 180 }
+              }
+            },
+            "false": { }
+        },
+        "down": {
+            "true": {
+              "submodel": {
+                "connector_d": { "model": "modsquad:cable_c" }
+              }
+            },
+            "false": { }
         }
     }
 }
