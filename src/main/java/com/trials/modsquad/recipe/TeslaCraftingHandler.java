@@ -1,4 +1,4 @@
-package com.trials.modsquad.Recipies;
+package com.trials.modsquad.recipe;
 
 import net.minecraft.item.ItemStack;
 import java.util.ArrayList;

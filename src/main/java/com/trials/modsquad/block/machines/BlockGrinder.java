@@ -5,14 +5,11 @@ import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.TileEntities.TileGrinder;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -22,15 +19,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandlerModifiable;
-
 import javax.annotation.Nullable;
-import java.util.concurrent.ThreadLocalRandom;
-
 import static com.trials.modsquad.Ref.GUI_ID_GRINDER;
 
+@SuppressWarnings("deprecation")
 public class BlockGrinder extends Block {
-
-    private TileEntity grinder;
 
     public BlockGrinder(String s, String s1) {
         super(Material.IRON);
@@ -86,11 +79,10 @@ public class BlockGrinder extends Block {
     }
 
     @Override
-    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) { // Drop items when block breaks
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) { // Drop item when block breaks
         TileEntity t = worldIn.getTileEntity(pos);
         if(!(t instanceof IItemHandlerModifiable)) return;
         IItemHandlerModifiable h = (IItemHandlerModifiable) t;
-        ItemStack s;
         for(int i = 0; i<h.getSlots(); ++i) {
             if(h.getStackInSlot(i)!=null && h.getStackInSlot(i).stackSize>0)
                 InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), h.getStackInSlot(i));

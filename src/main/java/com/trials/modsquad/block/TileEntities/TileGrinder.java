@@ -1,7 +1,7 @@
 package com.trials.modsquad.block.TileEntities;
 
 import com.trials.modsquad.ModSquad;
-import com.trials.modsquad.Recipies.TeslaRegistry;
+import com.trials.modsquad.recipe.TeslaRegistry;
 import com.trials.modsquad.proxy.TileDataSync;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.minecraft.item.ItemStack;
@@ -174,7 +174,7 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         if(simulate) return inventory[slot];
         tmp = inventory[slot];
         inventory[slot] = stack;
-        if(isGrinding){ // If items are switched while grinding, grinding stops
+        if(isGrinding){ // If item are switched while grinding, grinding stops
             isGrinding = false;
             grindTime = 0;
         }

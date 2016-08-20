@@ -32,6 +32,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static com.trials.modsquad.Ref.GUI_ID_CHARGER;
 import static com.trials.modsquad.Ref.GUI_ID_GRINDER;
 
+@SuppressWarnings("deprecation")
 public class BlockCharger extends Block {
 
     public BlockCharger(String s, String s1) {
@@ -88,7 +89,7 @@ public class BlockCharger extends Block {
     }
 
     @Override
-    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) { // Drop items when block breaks
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) { // Drop item when block breaks
         TileEntity t = worldIn.getTileEntity(pos);
         if(!(t instanceof IItemHandlerModifiable)) return;
         IItemHandlerModifiable h = (IItemHandlerModifiable) t;

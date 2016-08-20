@@ -1,7 +1,7 @@
-package com.trials.modsquad.Recipies;
+package com.trials.modsquad.recipe;
 
 import com.trials.modsquad.block.ModBlocks;
-import com.trials.modsquad.items.ModItems;
+import com.trials.modsquad.item.ModItems;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;

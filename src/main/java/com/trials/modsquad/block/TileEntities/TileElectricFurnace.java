@@ -1,9 +1,6 @@
 package com.trials.modsquad.block.TileEntities;
 
 import com.trials.modsquad.ModSquad;
-import com.trials.modsquad.Recipies.TeslaRegistry;
-import com.trials.modsquad.block.machines.ActiveState;
-import com.trials.modsquad.block.machines.BlockElectricFurnace;
 import com.trials.modsquad.proxy.TileDataSync;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
@@ -14,7 +11,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,7 +24,6 @@ import javax.annotation.Nullable;
 
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
-import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
 
 public class TileElectricFurnace extends TileEntity implements IItemHandlerModifiable, ITickable{
 

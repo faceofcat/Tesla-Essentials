@@ -21,11 +21,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
 import javax.annotation.Nullable;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+@SuppressWarnings("deprecation")
 public class BlockSolarPanel extends Block {
     public BlockSolarPanel(String name, String reg) {
         super(Material.IRON);
@@ -72,8 +71,8 @@ public class BlockSolarPanel extends Block {
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking() || !worldIn.isRemote) return false;
         TileEntity tileentity = worldIn.getTileEntity(pos);
-        long power = tileentity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower();
-        long cap = tileentity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getCapacity();
+        long power = tileentity==null?0:tileentity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower();
+        long cap = tileentity==null?20000:tileentity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getCapacity();
         playerIn.addChatMessage(new TextComponentString("Power: " + power + "/" + cap));
         return true;
     }
@@ -84,7 +83,7 @@ public class BlockSolarPanel extends Block {
     }
 
     @Override
-    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) { // Drop items when block breaks
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) { // Drop item when block breaks
         ThreadLocalRandom rand = ThreadLocalRandom.current();
         TileEntity t = worldIn.getTileEntity(pos);
         if(!(t instanceof IInventory)) return;

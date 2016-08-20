@@ -1,9 +1,8 @@
-package com.trials.modsquad.items;
+package com.trials.modsquad.item;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import com.trials.modsquad.Ref;
 import net.darkhax.tesla.api.ITeslaHolder;
-import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
 import net.darkhax.tesla.capability.TeslaCapabilities;
@@ -13,10 +12,8 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.stats.StatList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.world.BossInfo;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
@@ -26,7 +23,6 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
-import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
 
 public class PoweredPotato extends ItemFood {
 

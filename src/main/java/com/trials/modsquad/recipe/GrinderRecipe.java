@@ -1,11 +1,7 @@
-package com.trials.modsquad.Recipies;
+package com.trials.modsquad.recipe;
 
 
 import net.minecraft.item.ItemStack;
-
-/**
- * Created by Tjeltigre on 8/4/2016.
- */
 
 public class GrinderRecipe {
     private ItemStack input;

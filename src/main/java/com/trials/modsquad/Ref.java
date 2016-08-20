@@ -1,11 +1,8 @@
 package com.trials.modsquad;
 
-import com.trials.modsquad.items.ModItems;
+import com.trials.modsquad.item.ModItems;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
-import net.minecraftforge.common.util.EnumHelper;
 
 public class Ref {
 
@@ -123,7 +120,7 @@ public class Ref {
 
     public static final CreativeTabs tabModSquad = new CreativeTabs("modSquad") {
         @Override public Item getTabIconItem() {
-            return ModItems.ingotCopper;
+            return ModItems.jetChestplate;
         }
     };
 

@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 import java.util.concurrent.ThreadLocalRandom;
 import static com.trials.modsquad.Ref.GUI_ID_FURNACE_GEN;
 
+@SuppressWarnings("deprecation")
 public class BlockFurnaceGenerator extends Block {
 
     public BlockFurnaceGenerator(String s, String s1){
@@ -83,7 +84,7 @@ public class BlockFurnaceGenerator extends Block {
     }
 
     @Override
-    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) { // Drop items when block breaks
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) { // Drop item when block breaks
         TileEntity t = worldIn.getTileEntity(pos);
         if(!(t instanceof IItemHandlerModifiable)) return;
         IItemHandlerModifiable h = (IItemHandlerModifiable) t;

@@ -1,4 +1,4 @@
-package com.trials.modsquad.items;
+package com.trials.modsquad.item;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import com.trials.modsquad.Ref;
@@ -16,7 +16,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fml.relauncher.Side;
 
 import java.lang.reflect.Field;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.trials.modsquad.items;
+package com.trials.modsquad.item;
 
 import com.google.common.collect.Sets;
 import com.trials.modsquad.Ref;
