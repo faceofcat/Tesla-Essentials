@@ -1,8 +1,8 @@
 package com.trials.modsquad.gui;
 
 import com.trials.modsquad.ModSquad;
-import com.trials.modsquad.block.TileEntities.TileGrinder;
-import com.trials.modsquad.block.containers.ContainerGrinder;
+import com.trials.modsquad.block.tile.TileGrinder;
+import com.trials.modsquad.block.container.ContainerGrinder;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.darkhax.tesla.lib.PowerBar;

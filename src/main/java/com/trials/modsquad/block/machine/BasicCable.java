@@ -1,7 +1,7 @@
-package com.trials.modsquad.block.Network;
+package com.trials.modsquad.block.machine;
 
 import com.trials.modsquad.Ref;
-import com.trials.modsquad.block.TileEntities.TileCable;
+import com.trials.modsquad.block.tile.TileCable;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.*;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "deprecation"})
 public class BasicCable extends Block {
     private long inputRate;
     private long outputRate;
@@ -44,14 +44,12 @@ public class BasicCable extends Block {
         setRegistryName(reg);
         setCreativeTab(Ref.tabModSquad);
         //Should give 576 unique combinations
-        setDefaultState(blockState.getBaseState().withProperty(NORTH, false).withProperty(SOUTH, false).withProperty(EAST, false).withProperty(WEST, false).withProperty(UP, false)
-                .withProperty(DOWN, false));
+        setDefaultState(blockState.getBaseState().withProperty(NORTH, false).withProperty(SOUTH, false).withProperty(EAST, false).withProperty(WEST, false)
+                .withProperty(UP, false).withProperty(DOWN, false));
     }
 
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state) {
-        return new TileCable(inputRate, outputRate); //MEGADERP
-    }
+    public TileEntity createTileEntity(World world, IBlockState state) { return new TileCable(inputRate, outputRate); }
 
     @Override
     public boolean hasTileEntity(IBlockState state) {
@@ -59,20 +57,16 @@ public class BasicCable extends Block {
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY,
-                                    float hitZ)
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem,
+                                    EnumFacing side, float hitX, float hitY, float hitZ)
     {
         //clock: Wrench
-        if(heldItem != null && heldItem.getItem().getClass() == ItemClock.class) //Specifically ItemClock! No other derivatives count
-            worldIn.destroyBlock(pos, true);
+        if(heldItem != null && heldItem.getItem().getClass() == ItemClock.class) worldIn.destroyBlock(pos, true); //Specifically ItemClock! No other derivatives count
         return false;
     }
 
     @Override
-    protected BlockStateContainer createBlockState()
-    {
-        return new BlockStateContainer(this, NORTH, SOUTH, EAST, WEST, UP, DOWN);
-    }
+    protected BlockStateContainer createBlockState() { return new BlockStateContainer(this, NORTH, SOUTH, EAST, WEST, UP, DOWN); }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase user, ItemStack stack)
@@ -104,15 +98,6 @@ public class BasicCable extends Block {
         return state;
     }
 
-    public enum CableType{
-        IRON("iron");
-
-        String name;
-        CableType(String name){
-            this.name = name;
-        }
-    }
-
     @Override
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
         System.out.println("Update");
@@ -134,29 +119,33 @@ public class BasicCable extends Block {
     }
 
     @Override
-    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
-        return 0;
-    }
+    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) { return 0; }
 
     @Override
-    public boolean isVisuallyOpaque() {
-        return false;
-    }
+    public boolean isVisuallyOpaque() { return false; }
 
     @Override
-    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
-        return false;
-    }
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) { return false; }
 
     @Override
-    public int getMetaFromState(IBlockState state) {
-        return 0;
-    }
+    public int getMetaFromState(IBlockState state) { return 0; }
 
     @SuppressWarnings("deprecation")
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(NORTH, false).withProperty(SOUTH, false).withProperty(EAST, false).withProperty(WEST, false).withProperty(UP, false).withProperty(DOWN, false);
+        return getDefaultState().withProperty(NORTH, false).withProperty(SOUTH, false).withProperty(EAST, false).withProperty(WEST, false).withProperty(UP, false)
+                .withProperty(DOWN, false);
+    }
+
+
+
+    public enum CableType{
+        IRON("iron");
+
+        String name;
+        CableType(String name){
+            this.name = name;
+        }
     }
 
 }

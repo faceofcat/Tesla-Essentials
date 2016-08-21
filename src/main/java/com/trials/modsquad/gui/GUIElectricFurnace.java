@@ -1,9 +1,8 @@
 package com.trials.modsquad.gui;
 
 import com.trials.modsquad.ModSquad;
-import com.trials.modsquad.block.TileEntities.TileElectricFurnace;
-import com.trials.modsquad.block.containers.ContainerElectricFurnace;
-import net.darkhax.tesla.Tesla;
+import com.trials.modsquad.block.tile.TileElectricFurnace;
+import com.trials.modsquad.block.container.ContainerElectricFurnace;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.darkhax.tesla.lib.PowerBar;
@@ -13,7 +12,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-import scala.tools.nsc.interpreter.Power;
 
 import java.lang.reflect.Field;
 

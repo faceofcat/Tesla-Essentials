@@ -1,4 +1,4 @@
-package com.trials.modsquad.block.ores;
+package com.trials.modsquad.block.ore;
 
 import com.trials.modsquad.block.ModOre;
 

@@ -1,21 +1,13 @@
-package com.trials.modsquad.block.containers;
+package com.trials.modsquad.block.container;
 
-import com.trials.modsquad.block.TileEntities.TileGrinder;
+import com.trials.modsquad.block.tile.TileGrinder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nullable;
-
-import java.nio.ByteBuffer;
-
-import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 
 public class ContainerGrinder extends Container {
 
@@ -41,7 +33,7 @@ public class ContainerGrinder extends Container {
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
         ItemStack i = null;
         Slot s = inventorySlots.get(index);
-        if(s!=null && s.getHasStack()){
+        if(s!=null && s.getHasStack() && s.getStack()!=null){
             ItemStack is = s.getStack();
             i = is.copy();
             if(index<grinder.getSlots()){

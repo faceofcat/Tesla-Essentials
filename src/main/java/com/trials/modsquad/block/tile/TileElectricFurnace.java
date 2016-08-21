@@ -1,4 +1,4 @@
-package com.trials.modsquad.block.TileEntities;
+package com.trials.modsquad.block.tile;
 
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.proxy.TileDataSync;

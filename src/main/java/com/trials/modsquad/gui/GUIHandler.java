@@ -1,9 +1,8 @@
 package com.trials.modsquad.gui;
 
-import com.trials.modsquad.block.TileEntities.*;
-import com.trials.modsquad.block.containers.*;
+import com.trials.modsquad.block.tile.*;
+import com.trials.modsquad.block.container.*;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

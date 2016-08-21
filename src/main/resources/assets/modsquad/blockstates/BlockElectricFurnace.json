@@ -6,20 +6,14 @@
   },
   "variants": {
     "facing":  {
-        "north": {
-
-        },
-        "south": {
-            "y": 180, "uvlock": false
-        },
-        "east": {
-            "y": 90, "uvlock": false
-        },
-        "west": {
-            "y": 270, "uvlock": false
-        }
+        "north": {},
+        "south": { "y": 180, "uvlock": false },
+        "east": { "y": 90, "uvlock": false },
+        "west": { "y": 270, "uvlock": false }
      },
-    "active=inactive": { "model": "modsquad:electricFurnace" },
-    "active=active": { "model": "modsquad:electricFurnaceOn" }
+    "state": {
+        "active": { "model": "modsquad:electricFurnaceOn" },
+        "inactive": { "model": "modsquad:electricFurnace" }
+    }
   }
 }

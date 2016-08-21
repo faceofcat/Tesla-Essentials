@@ -1,6 +1,6 @@
 package com.trials.modsquad.proxy;
 
-import com.trials.modsquad.block.TileEntities.*;
+import com.trials.modsquad.block.tile.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
@@ -16,7 +16,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import java.lang.reflect.Method;
 
-@SuppressWarnings("ALL")
 public class TileDataSync implements IMessage {
 
     /**
@@ -29,7 +28,9 @@ public class TileDataSync implements IMessage {
     private Class<? extends TileEntity> clazz;
     private String data;
 
-    public TileDataSync(){}
+
+    @SuppressWarnings("unused") // Used through reflect
+    public TileDataSync() {}
 
     public TileDataSync(int index, BlockPos pos, String data){
         clazz = tileRef[classIndex = index];
@@ -100,6 +101,8 @@ public class TileDataSync implements IMessage {
             return null;
         }
     }
+    // Not used *yet*
+    @SuppressWarnings("unused")
     public static abstract class AbstractServer<T extends IMessage> extends  AbstractBase<T>{
         @Override
         public final IMessage handleClientMessage(T message, MessageContext ctx) {

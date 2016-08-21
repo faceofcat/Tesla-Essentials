@@ -1,37 +1,27 @@
-package com.trials.modsquad.block.TileEntities;
+package com.trials.modsquad.block.tile;
 
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.proxy.TileDataSync;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
-import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
-import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
 import net.darkhax.tesla.capability.TeslaCapabilities;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.TabCompleter;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
-import java.util.Map;
 
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
@@ -160,6 +150,7 @@ public class TileCharger extends TileEntity implements IItemHandlerModifiable, I
     }
     private int firstfewTicks = 500;
 
+    @SuppressWarnings("unused")
     @SubscribeEvent
     public void onEntityJoinEvent(EntityJoinWorldEvent event){
         firstfewTicks = 0;
@@ -190,5 +181,9 @@ public class TileCharger extends TileEntity implements IItemHandlerModifiable, I
         if(compound.hasKey("Container")) container.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
     }
 
+    // Marked as "unused".
+    // This is not true!
+    // com.trials.modsquad.proxy.TileDataSync.class accesses this method through reflection when updating energy across server
+    @SuppressWarnings("unused")
     public void updateNBT(NBTTagCompound compound){ deserializeNBT(compound); }
 }

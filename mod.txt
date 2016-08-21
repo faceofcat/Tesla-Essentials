@@ -1,0 +1,69 @@
+ModSquad{
+	Status: Unfinished
+	Progress: ≈ 83% (Don't ask. I did a lot of math)
+	TODO: See Pulverizer, Smelter, Generator, Power Storage, Ore Gen, Machine Augments, Tools
+
+
+	Pulverizer{
+		Priority: 1
+		Status: Unfinished
+		Purpose: Double ore output
+		TODO: GUI animation
+	}
+	
+	Smelter{
+		Priority: 1
+		Status: Unfinished
+		Purpose: Smelting (with a bonus)
+		TODO: GUI animation
+	}
+	
+	Generator{
+		Priority: 1
+		Status: Unfinished
+		TODO: GUI animation
+	}
+	
+	
+	
+	Power Storage{
+		Priority: 2
+		Status: Unfinished
+		TODO: Clear chat
+	}
+	
+	Power Transmission{
+		Priority: 2
+		Status: Finished
+	}
+	
+	Ore Gen{
+		Priority: 2
+		Status: Unfinished
+		TODO: Tweak spawning ratios
+	}
+	
+	
+	
+	Machine Augments{
+		Priority: 3
+		Status: Unfinished
+		TODO: Implement
+	}
+	
+	
+	
+	Tools{
+		Priority: 4
+		Status: Unfinished
+		TODO: Fix damage bar for TerraSmasher. Add other tools
+	}
+	
+	
+	
+	Powered food{
+		Priority: 5
+		Status: Finished
+	}
+	
+}

@@ -1,12 +1,12 @@
 package com.trials.modsquad.block;
 
 import com.trials.modsquad.Ref;
-import com.trials.modsquad.block.Network.BasicCable;
-import com.trials.modsquad.block.TileEntities.*;
-import com.trials.modsquad.block.machines.*;
-import com.trials.modsquad.block.ores.OreCopper;
-import com.trials.modsquad.block.ores.OreLead;
-import com.trials.modsquad.block.ores.OreTin;
+import com.trials.modsquad.block.machine.BasicCable;
+import com.trials.modsquad.block.tile.*;
+import com.trials.modsquad.block.machine.*;
+import com.trials.modsquad.block.ore.OreCopper;
+import com.trials.modsquad.block.ore.OreLead;
+import com.trials.modsquad.block.ore.OreTin;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -75,7 +75,7 @@ public class ModBlocks {
         registerBlock(leadCable);
 
 
-        // ---- TileEntities ----
+        // ---- tile ----
         //Machines
         registerTileEntity(TileGrinder.class, "Grinder");
         registerTileEntity(TileElectricFurnace.class, "Electric Furnace");

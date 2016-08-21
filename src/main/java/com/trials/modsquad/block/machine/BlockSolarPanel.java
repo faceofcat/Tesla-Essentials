@@ -1,7 +1,7 @@
-package com.trials.modsquad.block.machines;
+package com.trials.modsquad.block.machine;
 
 import com.trials.modsquad.Ref;
-import com.trials.modsquad.block.TileEntities.TileSolarPanel;
+import com.trials.modsquad.block.tile.TileSolarPanel;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

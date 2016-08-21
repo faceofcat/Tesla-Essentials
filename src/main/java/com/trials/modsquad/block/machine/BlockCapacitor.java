@@ -1,7 +1,7 @@
-package com.trials.modsquad.block.machines;
+package com.trials.modsquad.block.machine;
 
 import com.trials.modsquad.Ref;
-import com.trials.modsquad.block.TileEntities.TileCapacitor;
+import com.trials.modsquad.block.tile.TileCapacitor;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
+@SuppressWarnings("deprecation")
 public class BlockCapacitor extends Block {
 
     public BlockCapacitor (String name, String reg) {

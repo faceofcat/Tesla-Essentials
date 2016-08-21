@@ -1,8 +1,8 @@
-package com.trials.modsquad.block.machines;
+package com.trials.modsquad.block.machine;
 
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.Ref;
-import com.trials.modsquad.block.TileEntities.TileElectricFurnace;
+import com.trials.modsquad.block.tile.TileGrinder;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -20,14 +20,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nullable;
-import java.util.Random;
-import static com.trials.modsquad.Ref.GUI_ID_FURNACE;
+import static com.trials.modsquad.Ref.GUI_ID_GRINDER;
 
 @SuppressWarnings("deprecation")
-public class BlockElectricFurnace extends Block {
+public class BlockGrinder extends Block {
 
-
-    public BlockElectricFurnace(String s, String s1) {
+    public BlockGrinder(String s, String s1) {
         super(Material.IRON);
         setUnlocalizedName(s);
         setRegistryName(s1);
@@ -41,39 +39,43 @@ public class BlockElectricFurnace extends Block {
     public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     @Override
-    protected BlockStateContainer createBlockState(){ return new BlockStateContainer(this, PROPERTYFACING); }
+    protected BlockStateContainer createBlockState()
+    {
+        return new BlockStateContainer(this, PROPERTYFACING);
+    }
 
     @Override
-    public int getMetaFromState(IBlockState state) { return state.getValue(PROPERTYFACING).ordinal(); }
+    public int getMetaFromState(IBlockState state) {
+        return state.getValue(PROPERTYFACING).ordinal();
+    }
 
     @Override
-    public IBlockState getStateFromMeta(int meta) { return getDefaultState().withProperty(PROPERTYFACING, meta>1?EnumFacing.values()[meta]:EnumFacing.NORTH); }
+    public IBlockState getStateFromMeta(int meta) {
+        return getDefaultState().withProperty(PROPERTYFACING, meta>1?EnumFacing.values()[meta] : EnumFacing.NORTH);
+    }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase user, ItemStack stack)
     {
         super.onBlockPlacedBy(world, pos, state, user,stack);
-        world.setBlockState(pos, state.withProperty(PROPERTYFACING, user.getHorizontalFacing()));
+        world.setBlockState(pos, state.withProperty(PROPERTYFACING, user.getHorizontalFacing().rotateAround(EnumFacing.Axis.Y)));
     }
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking()) return false;
-        playerIn.openGui(ModSquad.instance, GUI_ID_FURNACE, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        playerIn.openGui(ModSquad.instance, GUI_ID_GRINDER, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
 
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state) { return new TileElectricFurnace(); }
+    public TileEntity createTileEntity(World world, IBlockState state) {
+        return new TileGrinder();
+    }
 
     @Override
-    public boolean hasTileEntity(IBlockState state) { return true; }
-
-    @Override
-    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
-        System.out.println("Update Tick");
-
-        super.updateTick(worldIn, pos, state, rand);
+    public boolean hasTileEntity(IBlockState state) {
+        return true;
     }
 
     @Override
@@ -89,10 +91,7 @@ public class BlockElectricFurnace extends Block {
     }
 
     @Override
-    public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) {
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
         return false;
     }
-
-    @Override //Teehee "block" rendering :P
-    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) { return false; }
 }

@@ -8,7 +8,7 @@ public class ServerProxy implements CommonProxy {
 
     @Override
     public void preInit() {
-        // Register TileEntities that want data
+        // Register tile that want data
     }
 
     @Override

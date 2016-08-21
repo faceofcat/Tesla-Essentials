@@ -1,18 +1,15 @@
-package com.trials.modsquad.block.machines;
+package com.trials.modsquad.block.machine;
 
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.Ref;
-import com.trials.modsquad.block.TileEntities.TileFurnaceGenerator;
+import com.trials.modsquad.block.tile.TileCharger;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -24,13 +21,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
-import java.util.concurrent.ThreadLocalRandom;
-import static com.trials.modsquad.Ref.GUI_ID_FURNACE_GEN;
+
+import static com.trials.modsquad.Ref.GUI_ID_CHARGER;
 
 @SuppressWarnings("deprecation")
-public class BlockFurnaceGenerator extends Block {
+public class BlockCharger extends Block {
 
-    public BlockFurnaceGenerator(String s, String s1){
+    public BlockCharger(String s, String s1) {
         super(Material.IRON);
         setUnlocalizedName(s);
         setRegistryName(s1);
@@ -67,15 +64,15 @@ public class BlockFurnaceGenerator extends Block {
     }
 
     @Override
-    public TileEntity createTileEntity(World worldIn, IBlockState state) {
-        return new TileFurnaceGenerator();
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking()) return false;
+        playerIn.openGui(ModSquad.instance, GUI_ID_CHARGER, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        return true;
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-        if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking()) return false;
-        playerIn.openGui(ModSquad.instance, GUI_ID_FURNACE_GEN, worldIn, pos.getX(), pos.getY(), pos.getZ());
-        return true;
+    public TileEntity createTileEntity(World world, IBlockState state) {
+        return new TileCharger();
     }
 
     @Override
@@ -100,4 +97,5 @@ public class BlockFurnaceGenerator extends Block {
     public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
         return false;
     }
+
 }

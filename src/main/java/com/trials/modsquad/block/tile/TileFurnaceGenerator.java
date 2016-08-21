@@ -1,14 +1,11 @@
-package com.trials.modsquad.block.TileEntities;
+package com.trials.modsquad.block.tile;
 
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.proxy.TileDataSync;
-import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
-import net.darkhax.tesla.lib.Constants;
 import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
@@ -25,8 +22,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
-import java.util.Map;
+
 import static net.darkhax.tesla.capability.TeslaCapabilities.*;
 
 

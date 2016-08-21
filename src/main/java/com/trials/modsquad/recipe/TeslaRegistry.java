@@ -11,7 +11,7 @@ public class TeslaRegistry{
     public static TeslaCraftingHandler teslaRegistry = new TeslaCraftingHandler();
 
     public static void traditionalCraftingRegister(){
-        //Smelting ores
+        //Smelting ore
         GameRegistry.addSmelting(ModBlocks.oreCopper, new ItemStack(ModItems.ingotCopper), 0F);
         GameRegistry.addSmelting(ModBlocks.oreLead, new ItemStack(ModItems.ingotLead), 0F);
         GameRegistry.addSmelting(ModBlocks.oreTin, new ItemStack(ModItems.ingotTin), 0F);

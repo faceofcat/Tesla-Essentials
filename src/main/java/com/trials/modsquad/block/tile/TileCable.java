@@ -1,6 +1,6 @@
-package com.trials.modsquad.block.TileEntities;
+package com.trials.modsquad.block.tile;
 
-import com.trials.modsquad.block.Network.BasicCable;
+import com.trials.modsquad.block.machine.BasicCable;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -27,7 +27,7 @@ public class TileCable extends TileEntity implements ITickable{
         container = new BaseTeslaContainer(0, 0, input, output){
             @Override
             public long givePower (long in, boolean simulated) {
-                netList = buildNetwork(new ArrayList<>()); // Gets list of all connected machines
+                netList = buildNetwork(new ArrayList<>()); // Gets list of all connected machine
                 if(netList.size()==0) return 0;
                 // Since Cable doesn't have power storage, it relies on pushing the power to the next devices
                 long actualOut = Math.min(in, Math.min(getOutputRate(), getInputRate())), equalSplit, tmp, tmp2, remainder, requestedPower = 0; for(TileEntity e : netList.keySet())
@@ -115,7 +115,7 @@ public class TileCable extends TileEntity implements ITickable{
     }
 
     /**
-     * Updates model to connect to adjacent, tesla-capable machines.
+     * Updates model to connect to adjacent, tesla-capable machine.
      */
     public void updateModel(){
         if(updatedForTick) return;

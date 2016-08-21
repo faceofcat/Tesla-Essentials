@@ -1,10 +1,8 @@
 package com.trials.modsquad.gui;
 
 import com.trials.modsquad.ModSquad;
-import com.trials.modsquad.block.TileEntities.TileCharger;
-import com.trials.modsquad.block.TileEntities.TileFurnaceGenerator;
-import com.trials.modsquad.block.containers.ContainerCharger;
-import com.trials.modsquad.block.containers.ContainerFurnaceGenerator;
+import com.trials.modsquad.block.tile.TileCharger;
+import com.trials.modsquad.block.container.ContainerCharger;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.darkhax.tesla.lib.PowerBar;

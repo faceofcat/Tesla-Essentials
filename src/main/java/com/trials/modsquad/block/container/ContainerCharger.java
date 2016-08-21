@@ -1,6 +1,6 @@
-package com.trials.modsquad.block.containers;
+package com.trials.modsquad.block.container;
 
-import com.trials.modsquad.block.TileEntities.TileElectricFurnace;
+import com.trials.modsquad.block.tile.TileCharger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -10,14 +10,13 @@ import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nullable;
 
-public class ContainerElectricFurnace extends Container {
+public class ContainerCharger extends Container {
 
-    private TileElectricFurnace furnace;
+    private TileCharger charger;
 
-    public ContainerElectricFurnace(InventoryPlayer inv, TileElectricFurnace furnace){
-        this.furnace = furnace;
-        addSlotToContainer(new SlotItemHandler(furnace, 0, 56, 35));
-        addSlotToContainer(new SlotItemHandler(furnace, 1, 116, 35));
+    public ContainerCharger(InventoryPlayer inv, TileCharger charger){
+        this.charger = charger;
+        addSlotToContainer(new SlotItemHandler(charger, 0, 80, 34)); // Nice and centered :P
 
         for(int i = 0; i<3; ++i) for(int j = 0; j<9; ++j) addSlotToContainer(new Slot(inv, j+i*9+9, 8+j*18, 84+i*18));
         for(int i = 0; i<9; ++i) addSlotToContainer(new Slot(inv, i, 8+i*18, 142));
@@ -30,11 +29,12 @@ public class ContainerElectricFurnace extends Container {
         Slot s = inventorySlots.get(index);
         if(s!=null && s.getHasStack()){
             ItemStack is = s.getStack();
+            assert is!=null;
             i = is.copy();
-            if(index<furnace.getSlots()){
-                if(!mergeItemStack(is, furnace.getSlots(), 36+furnace.getSlots(), true)) return null;
+            if(index<charger.getSlots()){
+                if(!mergeItemStack(is, charger.getSlots(), 36+charger.getSlots(), true)) return null;
             }
-            else if(!mergeItemStack(is, 0, furnace.getSlots(), false)) return null;
+            else if(!mergeItemStack(is, 0, charger.getSlots(), false)) return null;
             if(is.stackSize == 0) s.putStack(null);
             else s.onSlotChanged();
             if(is.stackSize == i.stackSize) return null;
@@ -42,8 +42,9 @@ public class ContainerElectricFurnace extends Container {
         }
         return i;
     }
+
     @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
-        return furnace.getDistanceSq(playerIn.posX+.5, playerIn.posY+.5, playerIn.posZ+.5)<64;
+        return charger.getDistanceSq(playerIn.posX+.5, playerIn.posY+.5, playerIn.posZ+.5)<64;
     }
 }
