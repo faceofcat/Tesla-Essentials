@@ -5,7 +5,7 @@
         "textures": {
             "0": "modsquad:blocks/cable"
         },
-        "model": "modsquad:cable0",
+        "model": "modsquad:cable_b",
         "uvlock": true
     },
     "variants": {
