@@ -2,6 +2,7 @@ package com.trials.modsquad.recipe;
 
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class GrinderRecipe {
     private ItemStack input;
@@ -13,6 +14,12 @@ public class GrinderRecipe {
         output = out;
         amount = num;
     }
+    /**
+    GrinderRecipe(OreDictionary in, ItemStack out, int num){
+        input = in;
+        output = out;
+        amount = num;
+    }*/
 
     public ItemStack getOutput() {
         return output;
