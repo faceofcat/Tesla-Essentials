@@ -91,13 +91,13 @@ public class ModSquad
     public void init(FMLInitializationEvent event) {
         // Recipes
         proxy.init();
-        TeslaRegistry.registerGrinderCrafting();
         TeslaRegistry.traditionalCraftingRegister();
     }
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent e){
         // Inter-mod interaction
+        TeslaRegistry.registerGrinderCrafting();
         proxy.postInit();
     }
 }
