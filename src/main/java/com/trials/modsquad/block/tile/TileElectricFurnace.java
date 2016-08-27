@@ -1,6 +1,7 @@
 package com.trials.modsquad.block.tile;
 
 import com.trials.modsquad.ModSquad;
+import com.trials.modsquad.block.States;
 import com.trials.modsquad.proxy.TileDataSync;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
@@ -22,11 +23,16 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
 
+import static com.trials.modsquad.block.machine.BlockElectricFurnace.STATE;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 
 public class TileElectricFurnace extends TileEntity implements IItemHandlerModifiable, ITickable{
 
+    /**
+     * Inventory slot 0: Input
+     * Inventory slot 1: Output
+     */
     private ItemStack[] inventory;
     private BaseTeslaContainer container;
     private boolean isSmelting = false;
@@ -43,7 +49,7 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
         extractor = new IItemHandlerModifiable() {
             @Override
             public void setStackInSlot(int slot, ItemStack stack) {
-                TileElectricFurnace.this.setStackInSlot(slot, stack);
+                TileElectricFurnace.this.setStackInSlot(1, stack);
             }
 
             @Override
@@ -53,7 +59,7 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
 
             @Override
             public ItemStack getStackInSlot(int slot) {
-                return inventory[slot+1];
+                return inventory[1];
             }
 
             @Override
@@ -63,13 +69,13 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
 
             @Override
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
-                return TileElectricFurnace.this.extractItem(slot, amount, simulate);
+                return TileElectricFurnace.this.extractItem(1, amount, simulate);
             }
         };
         inserter = new IItemHandlerModifiable() {
             @Override
             public void setStackInSlot(int slot, ItemStack stack) {
-                TileElectricFurnace.this.setStackInSlot(slot, stack);
+                TileElectricFurnace.this.setStackInSlot(0, stack);
             }
 
             @Override
@@ -79,12 +85,12 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
 
             @Override
             public ItemStack getStackInSlot(int slot) {
-                return inventory[slot+1];
+                return inventory[0];
             }
 
             @Override
             public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-                return TileElectricFurnace.this.insertItem(slot, stack, simulate);
+                return TileElectricFurnace.this.insertItem(0, stack, simulate);
             }
 
             @Override
@@ -156,7 +162,15 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
             firstfewTicks=500;
         }else if(firstfewTicks!=500) ++firstfewTicks;
 
+        // Locks the current smelting process until more power is received
+        if(container.getStoredPower()<DRAW_PER_TICK){
+            if(isSmelting) worldObj.setBlockState(pos, worldObj.getBlockState(pos).withProperty(STATE, States.ActiveState.INACTIVE));
+            return;
+        }
+
         if(isSmelting){
+            if(worldObj.getBlockState(pos).getProperties().get(STATE).equals(States.ActiveState.INACTIVE))
+                worldObj.setBlockState(pos, worldObj.getBlockState(pos).withProperty(STATE, States.ActiveState.ACTIVE));
             if(workTime==0){
                 ItemStack s = extractItem(0, 1, false);
                 if(s==null){ // Invalid state that for some reason can arise
@@ -177,6 +191,8 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
             container.takePower(DRAW_PER_TICK, false);
             --workTime;
         }else{
+            if(worldObj.getBlockState(pos).getProperties().get(STATE).equals(States.ActiveState.ACTIVE))
+                worldObj.setBlockState(pos, worldObj.getBlockState(pos).withProperty(STATE, States.ActiveState.INACTIVE));
             ItemStack itemstack = inventory[0] != null ? FurnaceRecipes.instance().getSmeltingResult(inventory[0]) : null;
             int size;
             if (itemstack != null && (inventory[1] == null || inventory[1].isItemEqual(itemstack)) && (size = (inventory[1] != null ? inventory[1].stackSize : 0) + itemstack.stackSize) <= 64 &&
@@ -254,6 +270,7 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
                 super.hasCapability(capability, facing);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if(capability==CAPABILITY_HOLDER || capability==CAPABILITY_CONSUMER) return (T) container;

@@ -107,14 +107,14 @@ public class BasicCable extends Block {
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         AxisAlignedBB bb = new AxisAlignedBB(pos);
-        bb.addCoord(0.3, 0.3, 0);
-        bb.addCoord(0.6, 0.3, 0);
-        bb.addCoord(0.6, 0.6, 0);
-        bb.addCoord(0.3, 0.6, 0);
-        bb.addCoord(0.3, 0.6, 1);
-        bb.addCoord(0.6, 0.3, 1);
-        bb.addCoord(0.6, 0.6, 1);
-        bb.addCoord(0.3, 0.6, 1);
+        bb.addCoord(1.3, 0.3, 0);
+        bb.addCoord(1.6, 0.3, 0);
+        bb.addCoord(1.6, 0.6, 0);
+        bb.addCoord(1.3, 0.6, 0);
+        bb.addCoord(1.3, 0.6, 1);
+        bb.addCoord(1.6, 0.3, 1);
+        bb.addCoord(1.6, 0.6, 1);
+        bb.addCoord(1.3, 0.6, 1);
         return bb;
     }
 

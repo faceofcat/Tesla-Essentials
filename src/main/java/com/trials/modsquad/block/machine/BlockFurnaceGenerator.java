@@ -2,12 +2,10 @@ package com.trials.modsquad.block.machine;
 
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.Ref;
-import com.trials.modsquad.block.States;
 import com.trials.modsquad.block.tile.TileFurnaceGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,16 +19,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandlerModifiable;
-
 import javax.annotation.Nullable;
-
 import static com.trials.modsquad.Ref.GUI_ID_FURNACE_GEN;
 
 @SuppressWarnings("deprecation")
 public class BlockFurnaceGenerator extends Block {
 
     public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-    public static final PropertyEnum<States.ActiveState> STATE = PropertyEnum.create("state", States.ActiveState.class);
 
     public BlockFurnaceGenerator(String s, String s1){
         super(Material.IRON);
@@ -40,26 +35,25 @@ public class BlockFurnaceGenerator extends Block {
         setHarvestLevel("pickaxe", 1);
         setResistance(30F);
         setHardness(5F);
-        setDefaultState(blockState.getBaseState().withProperty(PROPERTYFACING, EnumFacing.NORTH).withProperty(STATE, States.ActiveState.INACTIVE));
+        setDefaultState(blockState.getBaseState().withProperty(PROPERTYFACING, EnumFacing.NORTH));
     }
 
     @Override
-    protected BlockStateContainer createBlockState() { return new BlockStateContainer(this, PROPERTYFACING, STATE); }
+    protected BlockStateContainer createBlockState() { return new BlockStateContainer(this, PROPERTYFACING); }
 
     @Override
     public int getMetaFromState(IBlockState state) { return 0; }
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(PROPERTYFACING, EnumFacing.NORTH).withProperty(STATE, States.ActiveState.INACTIVE);
+        return getDefaultState().withProperty(PROPERTYFACING, EnumFacing.NORTH);
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase user, ItemStack stack)
     {
         super.onBlockPlacedBy(world, pos, state, user,stack);
-        world.setBlockState(pos, state.withProperty(PROPERTYFACING, user.getHorizontalFacing().rotateAround(EnumFacing.Axis.Y))
-                .withProperty(STATE, States.ActiveState.INACTIVE));
+        world.setBlockState(pos, state.withProperty(PROPERTYFACING, user.getHorizontalFacing().rotateAround(EnumFacing.Axis.Y)));
     }
 
     @Override

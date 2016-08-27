@@ -10,7 +10,6 @@ import java.util.List;
 public class TeslaCraftingHandler {
     private ArrayList<GrinderRecipe> grinderRecipeList = new ArrayList<>();
     private List<ItemStack> oreDictIn = null, oreDictOut;
-    private ItemStack output = null;
 
     TeslaCraftingHandler(){
         grinderRecipeList.trimToSize();
@@ -23,6 +22,7 @@ public class TeslaCraftingHandler {
 
     public void registerGrinderRecipe(String oreDictIn, String oreDictOut, int amount)
     {
+        ItemStack output;
         this.oreDictIn = OreDictionary.getOres(oreDictIn, false);
         if(this.oreDictIn != null) {
             output = OreDictionary.getOres(oreDictOut, false).get(0);
@@ -46,6 +46,7 @@ public class TeslaCraftingHandler {
 
     public void registerGrinderRecipe(ItemStack in, String oreDictOut, int amount)
     {
+        ItemStack output;
         output = OreDictionary.getOres(oreDictOut, false).get(0);
         if(output != null)
             this.grinderRecipeList.add(new GrinderRecipe(in, output, amount));

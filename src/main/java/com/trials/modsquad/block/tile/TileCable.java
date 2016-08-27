@@ -17,6 +17,7 @@ public class TileCable extends TileEntity implements ITickable{
     boolean needUpdate = false;
     private Map<TileEntity, ObjectPair<EnumFacing, Long>> netList;
     private Map<TileEntity, EnumFacing> adjacentTiles = new HashMap<>(); // Faces are defined by the TileEntity. This allows for modification and extension past the six faces
+    private TileEntity[] adjacent = new TileEntity[EnumFacing.VALUES.length];
     private boolean updatedForTick = false;
 
     public TileCable(){
@@ -78,11 +79,12 @@ public class TileCable extends TileEntity implements ITickable{
         if(needUpdate){
             netList = buildNetwork(new ArrayList<>()); // Rebuild network of connected Tiles
             needUpdate = false;
-            updateModel();
         }
 
-        updatedForTick = false;
+        // Does a specific check to see if updating the model is necessary
+        if(needUpdate()) updateModel();
 
+        updatedForTick = false;
     }
 
     public static <T> boolean arrayContains(T t, T[] ts){
@@ -114,6 +116,15 @@ public class TileCable extends TileEntity implements ITickable{
         return capable;
     }
 
+    public boolean needUpdate(){
+        boolean update = false;
+        for(int i = 0; i<EnumFacing.VALUES.length; ++i){
+            if(!update && adjacent[i]!=worldObj.getTileEntity(pos.offset(EnumFacing.VALUES[i]))) update=true;
+            adjacent[i]=worldObj.getTileEntity(pos.offset(EnumFacing.VALUES[i]));
+        }
+        return update;
+    }
+
     /**
      * Updates model to connect to adjacent, tesla-capable machine.
      */
@@ -126,11 +137,6 @@ public class TileCable extends TileEntity implements ITickable{
 
         K k;
         V v;
-
-        public ObjectPair(Object... o){
-            k = (K) o[0];
-            v = (V) o[1];
-        }
 
         public ObjectPair(K k, V v){
             this.k = k;
