@@ -8,6 +8,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -35,6 +36,17 @@ public class BasicCable extends Block {
     public static final PropertyBool    WEST    =   PropertyBool.create("west");
     public static final PropertyBool    UP      =   PropertyBool.create("up");
     public static final PropertyBool    DOWN    =   PropertyBool.create("down");
+
+    public static final PropertyBool[] CARDINALS=   {NORTH, SOUTH, EAST, WEST, UP, DOWN};
+
+    public static final AxisAlignedBB[] sides   =   new AxisAlignedBB[]{
+            new AxisAlignedBB(0.333, 0.333, 0, 0.666, 0.666, 0.666), // North (Negative Z)
+            new AxisAlignedBB(0.333, 0.333, 0.333, 0.666, 0.666, 1), // South (Positive Z)
+            new AxisAlignedBB(0.333, 0.333, 0.333, 1, 0.666, 0.666), // East (Positive X)
+            new AxisAlignedBB(0, 0.333, 0.333, 0.666, 0.666, 0.666), // West (Negative X)
+            new AxisAlignedBB(0.333, 0.333, 0.333, 0.666, 1, 0.666), // Up (Positive Y)
+            new AxisAlignedBB(0.333, 0, 0.333, 0.666, 0.666, 0.666)  // Down (Negative Y)
+    };
 
     public BasicCable(String unloc, String reg) {
         super(Material.GROUND);
@@ -99,23 +111,16 @@ public class BasicCable extends Block {
     }
 
     @Override
-    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
-        System.out.println("Update");
-        super.updateTick(worldIn, pos, state, rand);
+    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn) {
+        addCollisionBoxToList(pos, entityBox, collidingBoxes, new AxisAlignedBB(0.333, 0.333, 0.333, 0.666, 0.666, 0.666));
+        for(int i = 0; i<CARDINALS.length; ++i) if(state.getValue(CARDINALS[i])) addCollisionBoxToList(pos, entityBox, collidingBoxes, sides[i]);
     }
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        AxisAlignedBB bb = new AxisAlignedBB(pos);
-        bb.addCoord(1.3, 0.3, 0);
-        bb.addCoord(1.6, 0.3, 0);
-        bb.addCoord(1.6, 0.6, 0);
-        bb.addCoord(1.3, 0.6, 0);
-        bb.addCoord(1.3, 0.6, 1);
-        bb.addCoord(1.6, 0.3, 1);
-        bb.addCoord(1.6, 0.6, 1);
-        bb.addCoord(1.3, 0.6, 1);
-        return bb;
+        AxisAlignedBB base = new AxisAlignedBB(0.333, 0.333, 0.333, 0.666, 0.666, 0.666);
+        for(int i = 0; i<CARDINALS.length; ++i) if(state.getValue(CARDINALS[i])) base = base.union(sides[i]);
+        return base;
     }
 
     @Override
