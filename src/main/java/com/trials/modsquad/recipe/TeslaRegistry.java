@@ -126,10 +126,6 @@ public class TeslaRegistry{
 
     public static void registerGrinderCrafting()
     {
-        //Mod Ores
-        teslaRegistry.registerGrinderRecipe("oreLead", "dustLead", 2);
-        teslaRegistry.registerGrinderRecipe("oreTin", "dustTin", 2);
-        teslaRegistry.registerGrinderRecipe("oreCopper", "dustCopper", 2);
         //Vanilla Ores
         teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.IRON_ORE), new ItemStack(ModItems.dustIron), 2);
         teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.GOLD_ORE), new ItemStack(ModItems.dustGold), 2);
@@ -142,5 +138,13 @@ public class TeslaRegistry{
         teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.WOOL), new ItemStack(Items.STRING), 2);
         teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.CARPET), new ItemStack(Items.STRING), 1);
         teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.TALLGRASS), new ItemStack(Items.DYE, 1, 13), 1);
+    }
+
+    public static void registerOreDictCrafting()
+    {
+        //Mod Ores
+        teslaRegistry.registerGrinderRecipe("oreLead", "dustLead", 2);
+        teslaRegistry.registerGrinderRecipe("oreTin", "dustTin", 2);
+        teslaRegistry.registerGrinderRecipe("oreCopper", "dustCopper", 2);
     }
 }
