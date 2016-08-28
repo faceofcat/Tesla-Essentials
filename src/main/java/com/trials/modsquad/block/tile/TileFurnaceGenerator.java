@@ -199,5 +199,6 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
         workTime = compound.getInteger("GrindTime");
     }
 
+    @SuppressWarnings("unused")
     public void updateNBT(NBTTagCompound compound){ deserializeNBT(compound); }
 }

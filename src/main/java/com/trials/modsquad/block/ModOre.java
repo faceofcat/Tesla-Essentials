@@ -3,8 +3,6 @@ package com.trials.modsquad.block;
 import com.trials.modsquad.Ref;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class ModOre extends Block {
 

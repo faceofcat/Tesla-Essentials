@@ -12,7 +12,6 @@ import javax.annotation.Nullable;
 public class ContainerGrinder extends Container {
 
     private TileGrinder grinder;
-    private int workTime;
 
     public ContainerGrinder(InventoryPlayer inv, TileGrinder grinder){
         this.grinder = grinder;

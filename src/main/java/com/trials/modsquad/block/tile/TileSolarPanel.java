@@ -6,7 +6,6 @@ import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -15,9 +14,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
 import javax.annotation.Nullable;
-
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
@@ -41,7 +38,6 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        NBTTagList list = new NBTTagList();
         compound.setTag("Container", solarContainer.serializeNBT());
         compound = super.writeToNBT(compound);
         if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(0, pos, compound.toString()));
@@ -61,6 +57,7 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
     }
     private int firstfewTicks = 500;
 
+    @SuppressWarnings("unused")
     @SubscribeEvent
     public void onEntityJoinEvent(EntityJoinWorldEvent event){
         firstfewTicks = 0;
@@ -86,7 +83,8 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if(capability==CAPABILITY_HOLDER || capability==CAPABILITY_PRODUCER) return (T) solarContainer;
+        if(capability==CAPABILITY_HOLDER || capability==CAPABILITY_PRODUCER) //noinspection unchecked
+            return (T) solarContainer;
         return super.getCapability(capability, facing);
     }
 
@@ -94,9 +92,9 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
     public void deserializeNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
         if(compound.hasKey("Container")) solarContainer.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
-        NBTTagList list = compound.getTagList("Inventory", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
     }
 
+    @SuppressWarnings("unused")
     public void updateNBT(NBTTagCompound compound){ deserializeNBT(compound); }
 
 }

@@ -85,7 +85,6 @@ public class BlockCharger extends Block {
         TileEntity t = worldIn.getTileEntity(pos);
         if(!(t instanceof IItemHandlerModifiable)) return;
         IItemHandlerModifiable h = (IItemHandlerModifiable) t;
-        ItemStack s;
         for(int i = 0; i<h.getSlots(); ++i) {
             if(h.getStackInSlot(i)!=null && h.getStackInSlot(i).stackSize>0)
                 InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), h.getStackInSlot(i));

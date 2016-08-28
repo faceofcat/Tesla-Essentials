@@ -88,6 +88,7 @@ public class TileCapacitor extends TileEntity implements ITickable {
                 super.hasCapability(capability, facing);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if(capability==CAPABILITY_CONSUMER || capability==CAPABILITY_HOLDER || capability==CAPABILITY_PRODUCER)
@@ -95,6 +96,7 @@ public class TileCapacitor extends TileEntity implements ITickable {
         return super.getCapability(capability, facing);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound c = super.serializeNBT();

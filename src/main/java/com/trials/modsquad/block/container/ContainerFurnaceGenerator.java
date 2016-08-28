@@ -15,7 +15,6 @@ import javax.annotation.Nullable;
 public class ContainerFurnaceGenerator extends Container {
 
     private TileFurnaceGenerator generator;
-    private int workTime;
 
     public ContainerFurnaceGenerator(InventoryPlayer inv, TileFurnaceGenerator generator){
         this.generator = generator;

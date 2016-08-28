@@ -12,8 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import static com.trials.modsquad.Ref.BlockReference.*;
 import static net.minecraftforge.fml.common.registry.GameRegistry.registerTileEntity;
@@ -121,14 +119,4 @@ public class ModBlocks {
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block), 0,
                 new ModelResourceLocation(block.getRegistryName(), "inventory"));
     }
-
-    public static EnumFacing getRelativeFace(BlockPos origin, BlockPos pos){
-        if(origin.getX()>pos.getX()) return EnumFacing.WEST;
-        if(origin.getX()<pos.getX()) return EnumFacing.EAST;
-        if(origin.getZ()>pos.getZ()) return EnumFacing.NORTH;
-        if(origin.getZ()<pos.getZ()) return EnumFacing.SOUTH;
-        if(origin.getY()>pos.getY()) return EnumFacing.DOWN;
-        return EnumFacing.UP; // Default
-    }
-
 }

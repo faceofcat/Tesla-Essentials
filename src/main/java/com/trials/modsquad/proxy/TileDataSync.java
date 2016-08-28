@@ -21,11 +21,11 @@ public class TileDataSync implements IMessage {
     /**
      * Class reference for where to call "onClientEvent(FMLNetworkEvent.ClientCustomPacketEvent)"
      */
-    public static final Class<? extends TileEntity>[] tileRef = new Class[]{TileGrinder.class, TileFurnaceGenerator.class, TileCapacitor.class, TileCharger.class, TileSolarPanel.class,
+    public static final Class[] tileRef = new Class[]{TileGrinder.class, TileFurnaceGenerator.class, TileCapacitor.class, TileCharger.class, TileSolarPanel.class,
             TileElectricFurnace.class};
     private int classIndex;
     private BlockPos pos;
-    private Class<? extends TileEntity> clazz;
+    private Class clazz;
     private String data;
 
 
@@ -66,7 +66,7 @@ public class TileDataSync implements IMessage {
         TileEntity e = Minecraft.getMinecraft().theWorld.getTileEntity(pos);
         if(e==null) return false;
         try{
-            Method m = clazz.getDeclaredMethod("updateNBT", NBTTagCompound.class);
+            @SuppressWarnings("unchecked") Method m = clazz.getDeclaredMethod("updateNBT", NBTTagCompound.class);
             m.setAccessible(true);
             m.invoke(e, JsonToNBT.getTagFromJson(data));
         }catch(Exception e1){ }

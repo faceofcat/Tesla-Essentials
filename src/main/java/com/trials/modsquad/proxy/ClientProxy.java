@@ -3,6 +3,7 @@ package com.trials.modsquad.proxy;
 import com.trials.modsquad.block.ModBlocks;
 import com.trials.modsquad.item.ModItems;
 
+@SuppressWarnings("unused")
 public class ClientProxy implements CommonProxy {
 
     @Override

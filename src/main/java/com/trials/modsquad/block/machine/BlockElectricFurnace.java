@@ -22,7 +22,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nullable;
-import java.util.Random;
 import static com.trials.modsquad.Ref.GUI_ID_FURNACE;
 
 @SuppressWarnings("deprecation")

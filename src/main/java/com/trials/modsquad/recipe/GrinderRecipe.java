@@ -1,8 +1,6 @@
 package com.trials.modsquad.recipe;
 
-
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class GrinderRecipe {
     private ItemStack input;

@@ -1,9 +1,9 @@
 package com.trials.modsquad.proxy;
 
-import com.trials.modsquad.ModSquad;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
+@SuppressWarnings("unused")
 public class ServerProxy implements CommonProxy {
 
     @Override

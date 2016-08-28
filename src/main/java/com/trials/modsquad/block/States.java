@@ -19,8 +19,6 @@ public class States {
         public String getName() {
             return name;
         }
-        // Just for convenience
-        public static ActiveState fromState(boolean state){ return ActiveState.values()[state?0:1]; }
         public boolean getState() { return state; }
 
         @Override

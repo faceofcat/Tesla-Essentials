@@ -42,6 +42,7 @@ public class ModSquad
         //Network communication
         channel = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 
+        //noinspection unchecked
         channel.registerMessage((Class) Handler.class, TileDataSync.class, 0, Side.CLIENT);
 
         // Item init and registration

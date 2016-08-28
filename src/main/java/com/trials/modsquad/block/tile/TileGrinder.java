@@ -201,6 +201,7 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
                 super.hasCapability(capability, facing);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if(capability==CAPABILITY_CONSUMER || capability==CAPABILITY_HOLDER)
@@ -292,6 +293,7 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         inventory[slot] = stack!=null?stack.copy():null;
     }
 
+    @SuppressWarnings("unused")
     public void updateNBT(NBTTagCompound compound){ deserializeNBT(compound); }
 
 }
