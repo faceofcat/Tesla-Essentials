@@ -28,7 +28,7 @@ tile.blockTin.name=Block of Tin
 tile.blockLead.name=Block of Lead
 
 tile.grinder.name=Grinder
-tile.electricFurnace.name=Electric Furnace
+tile.electricFurnace.name=Electric Furnace(WIP)
 tile.lcable.name=Lead Cable
 tile.generatorFurnace.name=Furnace Generator
 tile.charger.name=Charger
