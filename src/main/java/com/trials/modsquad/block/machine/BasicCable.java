@@ -1,6 +1,7 @@
 package com.trials.modsquad.block.machine;
 
 import com.trials.modsquad.Ref;
+import com.trials.modsquad.block.ModBlocks;
 import com.trials.modsquad.block.tile.TileCable;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.block.Block;
@@ -110,10 +111,14 @@ public class BasicCable extends Block {
         return state;
     }
 
+    /*@Nullable
     @Override
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn) {
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, new AxisAlignedBB(0.333, 0.333, 0.333, 0.666, 0.666, 0.666));
-        for(int i = 0; i<CARDINALS.length; ++i) if(state.getValue(CARDINALS[i])) addCollisionBoxToList(pos, entityBox, collidingBoxes, sides[i]);
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
+        return super.getCollisionBoundingBox(blockState, worldIn, pos);
+    }*/
+
+    private void prnt(String arg) {
+        System.out.println(arg);
     }
 
     @Override
@@ -124,16 +129,23 @@ public class BasicCable extends Block {
     }
 
     @Override
-    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) { return 0; }
-
-    @Override
-    public boolean isVisuallyOpaque() { return false; }
-
-    @Override
     public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) { return false; }
 
     @Override
     public int getMetaFromState(IBlockState state) { return 0; }
+
+    @Override public boolean isFullCube(IBlockState state) { return false; }
+    @Override public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) { return false; }
+    @Override public boolean isOpaqueCube(IBlockState state) { return false; }
+    @Override public boolean isCollidable() { return true; }
+    @Override public boolean isBlockSolid(IBlockAccess worldIn, BlockPos pos, EnumFacing side) { return false; }
+    @Override public boolean isNormalCube(IBlockState state) { return false; }
+    @Override public boolean isVisuallyOpaque() { return false; }
+    @Override public boolean isSideSolid(IBlockState base_state, IBlockAccess world, BlockPos pos, EnumFacing side) { return false; }
+    @Override public boolean isBlockNormalCube(IBlockState state) { return false; }
+    @Override public boolean isFullyOpaque(IBlockState state) { return false; }
+    @Override public boolean isFullBlock(IBlockState state) { return false; }
+    @Override public boolean isTranslucent(IBlockState state) { return false; }
 
     @SuppressWarnings("deprecation")
     @Override
@@ -141,8 +153,6 @@ public class BasicCable extends Block {
         return getDefaultState().withProperty(NORTH, false).withProperty(SOUTH, false).withProperty(EAST, false).withProperty(WEST, false).withProperty(UP, false)
                 .withProperty(DOWN, false);
     }
-
-
 
     public enum CableType{
         IRON("iron");

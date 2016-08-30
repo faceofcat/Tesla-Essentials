@@ -80,7 +80,6 @@ public class ModArmor extends ItemArmor {
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
         //noinspection ConstantConditions
-        System.out.println(player.inventory.armorInventory[0]);
 
         if (player.inventory.armorInventory[3] !=null && player.inventory.armorInventory[3].getItem() == ModItems.electricHelmet
                 && player.inventory.armorInventory[2] !=null && player.inventory.armorInventory[2].getItem() == ModItems.jetChestplate
