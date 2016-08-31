@@ -118,6 +118,22 @@ public class Ref {
         public String getRegistryName(){ return registryName; }
     }
 
+    public enum BreadReference {
+        BREAD_SLICE("slicedBread", "ItemSlicedBread"),
+        TOAST_SLICE("toast", "ItemToast")
+        ;
+
+        private String unlocalizedName, registeryName;
+        BreadReference(String unlocalizedName, String registeryName) {
+            this.unlocalizedName = unlocalizedName;
+            this.registeryName = registeryName;
+        }
+
+        public String getUnlocalizedName() { return unlocalizedName; }
+        public String getRegisteryName() { return registeryName; }
+
+    }
+
     public static final CreativeTabs tabModSquad = new CreativeTabs("modSquad") {
         @Override public Item getTabIconItem() {
             return ModItems.jetChestplate;
