@@ -23,7 +23,7 @@ public class ModBlocks {
     public static Block blockCopper, blockTin, blockLead;
 
     //Machines
-    public static Block grinder, electricFurnace, furnaceGen, charger, capacitor, solarPanel;
+    public static Block grinder, electricFurnace, furnaceGen, charger, capacitor, solarPanel, toaster;
 
     //Cables
     public static Block leadCable;
@@ -45,6 +45,7 @@ public class ModBlocks {
         charger = new BlockCharger(MACHINE_CHARGER.getUnlocalizedName(), MACHINE_CHARGER.getRegistryName());
         capacitor = new BlockCapacitor(MACHINE_CAPACITOR.getUnlocalizedName(), MACHINE_CAPACITOR.getRegistryName());
         solarPanel = new BlockSolarPanel(GENERATOR_SOLAR.getUnlocalizedName(), GENERATOR_SOLAR.getRegistryName());
+        toaster = new BlockToaster(TOASTER.getUnlocalizedName(), TOASTER.getRegistryName());
 
         //Cables
         leadCable = new BasicCable(LEAD_CABLE.getUnlocalizedName(), LEAD_CABLE.getRegistryName());
@@ -68,6 +69,7 @@ public class ModBlocks {
         registerBlock(charger);
         registerBlock(capacitor);
         registerBlock(solarPanel);
+        registerBlock(toaster);
 
         //Cables
         registerBlock(leadCable);
@@ -110,6 +112,7 @@ public class ModBlocks {
         registerRender(charger);
         registerRender(capacitor);
         registerRender(solarPanel);
+        registerRender(toaster);
 
         //Cables
         registerRender(leadCable);

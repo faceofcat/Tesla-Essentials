@@ -38,7 +38,9 @@ public class Ref {
         GENERATOR_FURNACE("generatorFurnace", "FurnaceGenerator"),
         GENERATOR_SOLAR("solarPanel", "SolarPanel"),
         MACHINE_CAPACITOR("capacitor", "BlockCapacitor"),
-        MACHINE_CHARGER("charger", "BlockCharger");
+        MACHINE_CHARGER("charger", "BlockCharger"),
+        TOASTER("toaster", "BlockToaster")
+        ;
 
         private String unlocalizedName, registryName;
         BlockReference(String unlocalizedName, String registryName) {
@@ -134,10 +136,6 @@ public class Ref {
 
     }
 
-    public static final CreativeTabs tabModSquad = new CreativeTabs("modSquad") {
-        @Override public Item getTabIconItem() {
-            return ModItems.jetChestplate;
-        }
-    };
+    public static final CreativeTabs tabModSquad = new CreativeTabs("modSquad") { @Override public Item getTabIconItem() { return ModItems.jetChestplate; } };
 
 }
