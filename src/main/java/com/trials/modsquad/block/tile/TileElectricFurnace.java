@@ -2,11 +2,13 @@ package com.trials.modsquad.block.tile;
 
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.block.States;
-import com.trials.modsquad.proxy.TileDataSync;
+import com.trials.net.TileDataSync;
+import com.trials.net.Updatable;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
-import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
@@ -14,20 +16,19 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
-
 import javax.annotation.Nullable;
-
 import static com.trials.modsquad.block.machine.BlockElectricFurnace.STATE;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 
-public class TileElectricFurnace extends TileEntity implements IItemHandlerModifiable, ITickable{
+public class TileElectricFurnace extends TileEntity implements IItemHandlerModifiable, ITickable, Updatable{
 
     /**
      * Inventory slot 0: Input
@@ -49,7 +50,7 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
         extractor = new IItemHandlerModifiable() {
             @Override
             public void setStackInSlot(int slot, ItemStack stack) {
-                TileElectricFurnace.this.setStackInSlot(1, stack);
+                TileElectricFurnace.this.setStackInSlot(slot, stack);
             }
 
             @Override
@@ -59,7 +60,7 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
 
             @Override
             public ItemStack getStackInSlot(int slot) {
-                return inventory[1];
+                return inventory[slot+1];
             }
 
             @Override
@@ -69,13 +70,13 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
 
             @Override
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
-                return TileElectricFurnace.this.extractItem(1, amount, simulate);
+                return TileElectricFurnace.this.extractItem(slot+1, amount, simulate);
             }
         };
         inserter = new IItemHandlerModifiable() {
             @Override
             public void setStackInSlot(int slot, ItemStack stack) {
-                TileElectricFurnace.this.setStackInSlot(0, stack);
+                TileElectricFurnace.this.setStackInSlot(slot, stack);
             }
 
             @Override
@@ -85,12 +86,12 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
 
             @Override
             public ItemStack getStackInSlot(int slot) {
-                return inventory[0];
+                return inventory[slot];
             }
 
             @Override
             public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-                return TileElectricFurnace.this.insertItem(0, stack, simulate);
+                return TileElectricFurnace.this.insertItem(slot, stack, simulate);
             }
 
             @Override
@@ -123,7 +124,15 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
         compound.setInteger("GrindTime", workTime);
         compound.setTag("Container", container.serializeNBT());
         compound = super.writeToNBT(compound);
-        if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(0, pos, compound.toString()));
+        if(pos!=null){
+            int dim = 0;
+            for(int i : DimensionManager.getIDs())
+                if(DimensionManager.getWorld(i).equals(worldObj)) {
+                    dim = i;
+                    break;
+                }
+            ModSquad.channel.sendToAll(new TileDataSync(pos, compound.toString(), dim));
+        }
         return compound;
     }
 
@@ -158,7 +167,15 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
     @Override
     public void update() {
         if(firstfewTicks>=10 && firstfewTicks!=500 && !worldObj.isRemote){
-            if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(5, pos, serializeNBT().toString()));
+            if(pos!=null){
+                int dim = 0;
+                for(int i : DimensionManager.getIDs())
+                    if(DimensionManager.getWorld(i).equals(worldObj)) {
+                        dim = i;
+                        break;
+                    }
+                ModSquad.channel.sendToAll(new TileDataSync(pos, serializeNBT().toString(), dim));
+            }
             firstfewTicks=500;
         }else if(firstfewTicks!=500) ++firstfewTicks;
 
@@ -205,7 +222,7 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
 
     @Override
     public void setStackInSlot(int slot, ItemStack stack) {
-        inventory[slot] = stack;
+        inventory[slot] = stack!=null?stack.copy():null;
     }
 
     @Override
@@ -266,14 +283,14 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return capability == TeslaCapabilities.CAPABILITY_CONSUMER || capability == CAPABILITY_HOLDER || capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ||
+        return capability==CAPABILITY_CONSUMER || capability==CAPABILITY_HOLDER || capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ||
                 super.hasCapability(capability, facing);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if(capability==CAPABILITY_HOLDER || capability==CAPABILITY_CONSUMER) return (T) container;
+        if(capability==CAPABILITY_CONSUMER || capability==CAPABILITY_HOLDER) return (T) container;
         if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
             if(facing==EnumFacing.DOWN) return (T) extractor;
             else return (T) inserter;
@@ -295,6 +312,12 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
         workTime = compound.getInteger("GrindTime");
     }
 
-    @SuppressWarnings("unused")
-    public void updateNBT(NBTTagCompound compound){ deserializeNBT(compound); }
+    @Override
+    public void update(String s) {
+        try {
+            deserializeNBT(JsonToNBT.getTagFromJson(s));
+        } catch (NBTException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -2,9 +2,12 @@ package com.trials.modsquad.block.tile;
 
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.recipe.TeslaRegistry;
-import com.trials.modsquad.proxy.TileDataSync;
+import com.trials.net.TileDataSync;
+import com.trials.net.Updatable;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
@@ -12,6 +15,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -22,7 +26,7 @@ import javax.annotation.Nullable;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 
-public class TileGrinder extends TileEntity implements IItemHandlerModifiable, ITickable {
+public class TileGrinder extends TileEntity implements IItemHandlerModifiable, ITickable, Updatable {
     // Primitives
     private int grindTime;
     public static final int DEFAULT_GRIND_TIME = 60;
@@ -118,7 +122,15 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         compound.setInteger("GrindTime", grindTime);
         compound.setTag("Container", container.serializeNBT());
         compound = super.writeToNBT(compound);
-        if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(0, pos, compound.toString()));
+        if(pos!=null){
+            int dim = 0;
+            for(int i : DimensionManager.getIDs())
+                if(DimensionManager.getWorld(i).equals(worldObj)) {
+                    dim = i;
+                    break;
+                }
+            ModSquad.channel.sendToAll(new TileDataSync(pos, compound.toString(), dim));
+        }
         return compound;
     }
 
@@ -257,7 +269,15 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
     @Override
     public void update() {
         if(firstfewTicks>=10 && firstfewTicks!=500 && !worldObj.isRemote){
-            if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(0, pos, serializeNBT().toString()));
+            if(pos!=null){
+                int dim = 0;
+                for(int i : DimensionManager.getIDs())
+                    if(DimensionManager.getWorld(i).equals(worldObj)) {
+                        dim = i;
+                        break;
+                    }
+                ModSquad.channel.sendToAll(new TileDataSync(pos, serializeNBT().toString(), dim));
+            }
             firstfewTicks=500;
         }else if(firstfewTicks!=500) ++firstfewTicks;
         if(isGrinding){
@@ -293,7 +313,13 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         inventory[slot] = stack!=null?stack.copy():null;
     }
 
-    @SuppressWarnings("unused")
-    public void updateNBT(NBTTagCompound compound){ deserializeNBT(compound); }
+    @Override
+    public void update(String s) {
+        try {
+            deserializeNBT(JsonToNBT.getTagFromJson(s));
+        } catch (NBTException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

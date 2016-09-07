@@ -1,16 +1,20 @@
 package com.trials.modsquad.block.tile;
 
 import com.trials.modsquad.ModSquad;
-import com.trials.modsquad.proxy.TileDataSync;
+import com.trials.net.TileDataSync;
+import com.trials.net.Updatable;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.lib.TeslaUtils;
+import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -18,10 +22,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Map;
-
 import static net.darkhax.tesla.capability.TeslaCapabilities.*;
 
-public class TileCapacitor extends TileEntity implements ITickable {
+public class TileCapacitor extends TileEntity implements ITickable, Updatable {
 
     private BaseTeslaContainer container;
 
@@ -45,7 +48,15 @@ public class TileCapacitor extends TileEntity implements ITickable {
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         compound.setTag("Container", container.serializeNBT());
         compound = super.writeToNBT(compound);
-        if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(0, pos, compound.toString()));
+        if(pos!=null){
+            int dim = 0;
+            for(int i : DimensionManager.getIDs())
+                if(DimensionManager.getWorld(i).equals(worldObj)) {
+                    dim = i;
+                    break;
+                }
+            ModSquad.channel.sendToAll(new TileDataSync(pos, compound.toString(), dim));
+        }
         return compound;
     }
 
@@ -72,7 +83,15 @@ public class TileCapacitor extends TileEntity implements ITickable {
     @Override
     public void update() {
         if(firstfewTicks>=10 && firstfewTicks!=500 && !worldObj.isRemote){
-            if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(2, pos, serializeNBT().toString()));
+            if(pos!=null){
+                int dim = 0;
+                for(int i : DimensionManager.getIDs())
+                    if(DimensionManager.getWorld(i).equals(worldObj)) {
+                        dim = i;
+                        break;
+                    }
+                ModSquad.channel.sendToAll(new TileDataSync(pos, serializeNBT().toString(), dim));
+            }
             firstfewTicks=500;
         }else if(firstfewTicks!=500) ++firstfewTicks;
         if(container.getStoredPower()>0) {
@@ -117,8 +136,13 @@ public class TileCapacitor extends TileEntity implements ITickable {
         if(compound.hasKey("Container")) container.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
     }
 
-    //Used by TileDataSync class when updating NBT data
-    @SuppressWarnings("unused")
-    public void updateNBT(NBTTagCompound compound){ deserializeNBT(compound); }
+    @Override
+    public void update(String s) {
+        try {
+            deserializeNBT(JsonToNBT.getTagFromJson(s));
+        } catch (NBTException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

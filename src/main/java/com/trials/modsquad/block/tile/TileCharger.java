@@ -1,12 +1,15 @@
 package com.trials.modsquad.block.tile;
 
 import com.trials.modsquad.ModSquad;
-import com.trials.modsquad.proxy.TileDataSync;
+import com.trials.net.TileDataSync;
+import com.trials.net.Updatable;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
@@ -14,6 +17,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -27,7 +31,7 @@ import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 
 
-public class TileCharger extends TileEntity implements IItemHandlerModifiable, ITickable {
+public class TileCharger extends TileEntity implements IItemHandlerModifiable, ITickable, Updatable {
 
 
     private ItemStack[] inventory;
@@ -127,7 +131,15 @@ public class TileCharger extends TileEntity implements IItemHandlerModifiable, I
         compound.setTag("Inventory", list);
         compound.setTag("Container", container.serializeNBT());
         compound = super.writeToNBT(compound);
-        if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(0, pos, compound.toString()));
+        if(pos!=null){
+            int dim = 0;
+            for(int i : DimensionManager.getIDs())
+                if(DimensionManager.getWorld(i).equals(worldObj)) {
+                    dim = i;
+                    break;
+                }
+            ModSquad.channel.sendToAll(new TileDataSync(pos, compound.toString(), dim));
+        }
         return compound;
     }
 
@@ -160,7 +172,15 @@ public class TileCharger extends TileEntity implements IItemHandlerModifiable, I
     @Override
     public void update() {
         if(firstfewTicks>=10 && firstfewTicks!=500 && !worldObj.isRemote){
-            if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(3, pos, serializeNBT().toString()));
+            if(pos!=null){
+                int dim = 0;
+                for(int i : DimensionManager.getIDs())
+                    if(DimensionManager.getWorld(i).equals(worldObj)) {
+                        dim = i;
+                        break;
+                    }
+                ModSquad.channel.sendToAll(new TileDataSync(pos, serializeNBT().toString(), dim));
+            }
             firstfewTicks=500;
         }else if(firstfewTicks!=500) ++firstfewTicks;
         if (inventory[0] != null && inventory[0].hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, EnumFacing.DOWN) &&
@@ -182,9 +202,13 @@ public class TileCharger extends TileEntity implements IItemHandlerModifiable, I
         if(compound.hasKey("Container")) container.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
     }
 
-    // Marked as "unused".
-    // This is not true!
-    // com.trials.modsquad.proxy.TileDataSync.class accesses this method through reflection when updating energy across server
-    @SuppressWarnings("unused")
-    public void updateNBT(NBTTagCompound compound){ deserializeNBT(compound); }
+
+    @Override
+    public void update(String s) {
+        try {
+            deserializeNBT(JsonToNBT.getTagFromJson(s));
+        } catch (NBTException e) {
+            e.printStackTrace();
+        }
+    }
 }

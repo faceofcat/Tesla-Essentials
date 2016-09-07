@@ -1,11 +1,14 @@
 package com.trials.modsquad.block.tile;
 
 import com.trials.modsquad.ModSquad;
-import com.trials.modsquad.proxy.TileDataSync;
+import com.trials.net.TileDataSync;
+import com.trials.net.Updatable;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
@@ -14,6 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -27,7 +31,7 @@ import static net.darkhax.tesla.capability.TeslaCapabilities.*;
 
 
 @SuppressWarnings("unchecked")
-public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModifiable, ITickable, ICapabilityProvider{
+public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModifiable, ITickable, ICapabilityProvider, Updatable {
 
     private ItemStack[] fuel;
     private BaseTeslaContainer container;
@@ -112,7 +116,15 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
         compound.setInteger("GrindTime", workTime);
         compound.setTag("Container", container.serializeNBT());
         compound = super.writeToNBT(compound);
-        if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(0, pos, compound.toString()));
+        if(pos!=null){
+            int dim = 0;
+            for(int i : DimensionManager.getIDs())
+                if(DimensionManager.getWorld(i).equals(worldObj)) {
+                    dim = i;
+                    break;
+                }
+            ModSquad.channel.sendToAll(new TileDataSync(pos, compound.toString(), dim));
+        }
         return compound;
     }
 
@@ -147,7 +159,15 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
     @Override
     public void update() {
         if(firstfewTicks>=10 && firstfewTicks!=500 && !worldObj.isRemote){
-            if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(1, pos, serializeNBT().toString()));
+            if(pos!=null){
+                int dim = 0;
+                for(int i : DimensionManager.getIDs())
+                    if(DimensionManager.getWorld(i).equals(worldObj)) {
+                        dim = i;
+                        break;
+                    }
+                ModSquad.channel.sendToAll(new TileDataSync(pos, serializeNBT().toString(), dim));
+            }
             firstfewTicks=500;
         }else if(firstfewTicks!=500) ++firstfewTicks;
         if(isBurning){
@@ -199,6 +219,12 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
         workTime = compound.getInteger("GrindTime");
     }
 
-    @SuppressWarnings("unused")
-    public void updateNBT(NBTTagCompound compound){ deserializeNBT(compound); }
+    @Override
+    public void update(String s) {
+        try {
+            deserializeNBT(JsonToNBT.getTagFromJson(s));
+        } catch (NBTException e) {
+            e.printStackTrace();
+        }
+    }
 }

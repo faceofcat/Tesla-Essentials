@@ -1,15 +1,19 @@
 package com.trials.modsquad.block.tile;
 
 import com.trials.modsquad.ModSquad;
-import com.trials.modsquad.proxy.TileDataSync;
+import com.trials.net.TileDataSync;
+import com.trials.net.Updatable;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.darkhax.tesla.lib.TeslaUtils;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -19,12 +23,12 @@ import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;
 
-public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITickable {
+public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITickable, Updatable {
 
     private BaseTeslaContainer solarContainer;
 
     public TileSolarPanel(){
-        solarContainer = new BaseTeslaContainer(10000, 20, 20);
+        solarContainer = new BaseTeslaContainer(0, 10000, 20, 20);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -40,7 +44,15 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         compound.setTag("Container", solarContainer.serializeNBT());
         compound = super.writeToNBT(compound);
-        if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(0, pos, compound.toString()));
+        if(pos!=null){
+            int dim = 0;
+            for(int i : DimensionManager.getIDs())
+                if(DimensionManager.getWorld(i).equals(worldObj)) {
+                    dim = i;
+                    break;
+                }
+            ModSquad.channel.sendToAll(new TileDataSync(pos, compound.toString(), dim));
+        }
         return compound;
     }
 
@@ -66,7 +78,15 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
     @Override
     public void update() {
         if(firstfewTicks>=10 && firstfewTicks!=500 && !worldObj.isRemote){
-            if(pos!=null) ModSquad.channel.sendToAll(new TileDataSync(4, pos, serializeNBT().toString()));
+            if(pos!=null){
+                int dim = 0;
+                for(int i : DimensionManager.getIDs())
+                    if(DimensionManager.getWorld(i).equals(worldObj)) {
+                        dim = i;
+                        break;
+                    }
+                ModSquad.channel.sendToAll(new TileDataSync(pos, serializeNBT().toString(), dim));
+            }
             firstfewTicks=500;
         }else if(firstfewTicks!=500) ++firstfewTicks;
         if(solarContainer.getStoredPower()>0) {
@@ -75,7 +95,8 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
             solarContainer.takePower(TeslaUtils.distributePowerToAllFaces(worldObj, pos, Math.min(solarContainer.getStoredPower() / i, solarContainer.getOutputRate()), false), false);
         }
         // Increase internal power supply
-        if (worldObj.getTopSolidOrLiquidBlock(pos).getY() >= pos.getY() && solarContainer.getStoredPower() < solarContainer.getCapacity() -5 && worldObj.isDaytime() && !worldObj.isRaining()) solarContainer.givePower(5, false);
+        if (worldObj.getTopSolidOrLiquidBlock(pos).getY() >= pos.getY() && solarContainer.getStoredPower() < solarContainer.getCapacity() && worldObj.isDaytime()
+                && !worldObj.isRaining()) solarContainer.givePower(Math.min(solarContainer.getCapacity()-solarContainer.getStoredPower(), 5), false); // Fills as much as possible
     }
 
     @Override
@@ -94,7 +115,13 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
         if(compound.hasKey("Container")) solarContainer.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
     }
 
-    @SuppressWarnings("unused")
-    public void updateNBT(NBTTagCompound compound){ deserializeNBT(compound); }
+    @Override
+    public void update(String s) {
+        try {
+            deserializeNBT(JsonToNBT.getTagFromJson(s));
+        } catch (NBTException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
