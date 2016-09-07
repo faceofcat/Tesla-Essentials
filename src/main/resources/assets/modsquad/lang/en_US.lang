@@ -19,6 +19,9 @@ item.electricLeggings.name=Electric Leggings
 item.electricBoots.name=Electric Boots
 item.jetChestplate.name=Electric JetPlate
 
+item.slicedBread.name=Sliced Bread
+item.toast.name=Toast
+
 tile.oreCopper.name=Copper Ore
 tile.oreTin.name=Tin Ore
 tile.oreLead.name=Lead Ore

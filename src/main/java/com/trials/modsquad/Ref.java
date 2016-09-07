@@ -38,7 +38,9 @@ public class Ref {
         GENERATOR_FURNACE("generatorFurnace", "FurnaceGenerator"),
         GENERATOR_SOLAR("solarPanel", "SolarPanel"),
         MACHINE_CAPACITOR("capacitor", "BlockCapacitor"),
-        MACHINE_CHARGER("charger", "BlockCharger");
+        MACHINE_CHARGER("charger", "BlockCharger"),
+        TOASTER("toaster", "BlockToaster")
+        ;
 
         private String unlocalizedName, registryName;
         BlockReference(String unlocalizedName, String registryName) {
@@ -118,10 +120,22 @@ public class Ref {
         public String getRegistryName(){ return registryName; }
     }
 
-    public static final CreativeTabs tabModSquad = new CreativeTabs("modSquad") {
-        @Override public Item getTabIconItem() {
-            return ModItems.jetChestplate;
+    public enum BreadReference {
+        BREAD_SLICE("slicedBread", "ItemSlicedBread"),
+        TOAST_SLICE("toast", "ItemToast")
+        ;
+
+        private String unlocalizedName, registeryName;
+        BreadReference(String unlocalizedName, String registeryName) {
+            this.unlocalizedName = unlocalizedName;
+            this.registeryName = registeryName;
         }
-    };
+
+        public String getUnlocalizedName() { return unlocalizedName; }
+        public String getRegisteryName() { return registeryName; }
+
+    }
+
+    public static final CreativeTabs tabModSquad = new CreativeTabs("modSquad") { @Override public Item getTabIconItem() { return ModItems.jetChestplate; } };
 
 }

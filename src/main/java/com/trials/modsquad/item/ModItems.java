@@ -26,6 +26,9 @@ public class ModItems {
     //Tools
     public static Item terraSmasher, poweredPotato;
 
+    //Food
+    public static Item breadSlice, toastSlice;
+
     public static void init() {
         //Ingots
         ingotCopper = new ModIngot(Ref.IngotReference.COPPER.getUnlocalizedName(), Ref.IngotReference.COPPER.getRegistryName());
@@ -52,6 +55,10 @@ public class ModItems {
         //Tools
         terraSmasher = new TerraSmasher(Ref.ItemReference.TERRA_SMASHER.getUnlocalizedName(), Ref.ItemReference.TERRA_SMASHER.getRegistryName());
         poweredPotato = new PoweredPotato(Ref.ItemReference.POWERED_POTATO.getUnlocalizedName(), Ref.ItemReference.POWERED_POTATO.getRegistryName());
+
+        //Food
+        breadSlice = new ItemBread(Ref.BreadReference.BREAD_SLICE.getUnlocalizedName(), Ref.BreadReference.BREAD_SLICE.getRegisteryName());
+        toastSlice = new ItemBread(Ref.BreadReference.TOAST_SLICE.getUnlocalizedName(), Ref.BreadReference.TOAST_SLICE.getRegisteryName());
 
     }
 
@@ -82,6 +89,10 @@ public class ModItems {
         GameRegistry.register(terraSmasher);
         GameRegistry.register(poweredPotato);
 
+        //Food
+        GameRegistry.register(breadSlice);
+        GameRegistry.register(toastSlice);
+
     }
 
     public static void registerRenders() {
@@ -110,6 +121,10 @@ public class ModItems {
         //Tools
         registerRender(terraSmasher);
         registerRender(poweredPotato);
+
+        //Food
+        registerRender(breadSlice);
+        registerRender(toastSlice);
 
     }
 
