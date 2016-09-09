@@ -8,6 +8,7 @@ import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
@@ -66,8 +67,8 @@ public class PoweredPotato extends ItemFood {
             entityplayer.getFoodStats().setFoodLevel(entityplayer.getFoodStats().getFoodLevel() + 4);
             entityplayer.getFoodStats().setFoodSaturationLevel(entityplayer.getFoodStats().getSaturationLevel() + 0.8F);
             this.onFoodEaten(stack, worldIn, entityplayer);
-            if(!worldIn.isRemote && electricPotatoBreakChance && ThreadLocalRandom.current().nextInt(0,100) < 20)
-                return null;
+            if(!worldIn.isRemote && electricPotatoBreakChance && ThreadLocalRandom.current().nextInt(0,100) < 40)
+                return new ItemStack(Items.POTATO, 1);
         }
         return stack;
     }
