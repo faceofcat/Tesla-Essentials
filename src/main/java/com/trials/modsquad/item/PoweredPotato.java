@@ -66,7 +66,7 @@ public class PoweredPotato extends ItemFood {
             entityplayer.getFoodStats().setFoodLevel(entityplayer.getFoodStats().getFoodLevel() + 4);
             entityplayer.getFoodStats().setFoodSaturationLevel(entityplayer.getFoodStats().getSaturationLevel() + 0.8F);
             this.onFoodEaten(stack, worldIn, entityplayer);
-            if(!worldIn.isRemote && electricPotatoBreakChance)
+            if(!worldIn.isRemote && electricPotatoBreakChance && ThreadLocalRandom.current().nextInt(0,100) < 20)
                 return null;
         }
         return stack;
