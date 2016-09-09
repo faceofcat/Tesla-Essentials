@@ -23,6 +23,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 
+import static net.minecraftforge.fml.common.registry.EntityRegistry.registerModEntity;
+
 @Mod(modid = ModSquad.MODID, version = ModSquad.VERSION)
 public class ModSquad
 {
@@ -32,6 +34,7 @@ public class ModSquad
     public static boolean allowCopperGen = false;
     public static boolean allowTinGen = false;
     public static boolean allowLeadGen = false;
+    public static boolean electricPotatoBreakChance = false;
 
     @Mod.Instance(value = MODID)
     public static ModSquad instance;
@@ -41,6 +44,16 @@ public class ModSquad
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event){
+        Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+
+        config.load();
+
+        allowCopperGen = config.getBoolean("allowCopperGen", Configuration.CATEGORY_GENERAL, true, "Generates Copper Ore");
+        allowTinGen = config.getBoolean("allowTinGen", Configuration.CATEGORY_GENERAL, true, "Generates Tin Ore");
+        allowLeadGen = config.getBoolean("allowLeadGen", Configuration.CATEGORY_GENERAL, true, "Generates Lead Ore");
+        electricPotatoBreakChance = config.getBoolean("electricPotatoBreakChance", Configuration.CATEGORY_GENERAL, true, "Allow's the electric potato to break");
+        config.save();
+
         //Network communication
         channel = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 
@@ -51,16 +64,8 @@ public class ModSquad
         ModBlocks.init();
         ModBlocks.register();
 
-        ModItems.init();
+        ModItems.init(electricPotatoBreakChance);
         ModItems.register();
-        Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-
-        config.load();
-
-        allowCopperGen = config.getBoolean("allowCopperGen", Configuration.CATEGORY_GENERAL, true, "Generates Copper Ore");
-        allowTinGen = config.getBoolean("allowTinGen", Configuration.CATEGORY_GENERAL, true, "Generates Tin Ore");
-        allowLeadGen = config.getBoolean("allowLeadGen", Configuration.CATEGORY_GENERAL, true, "Generates Lead Ore");
-        config.save();
 
         proxy.preInit();
         GameRegistry.registerWorldGenerator(new ModWorldGen(allowCopperGen, allowTinGen, allowLeadGen), 0);

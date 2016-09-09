@@ -28,8 +28,9 @@ public class PoweredPotato extends ItemFood {
 
     private final Field itemDamage;
     private long drain = 400;
+    private boolean electricPotatoBreakChance;
 
-    public PoweredPotato(String unlocalizedName, String registryName) {
+    public PoweredPotato(String unlocalizedName, String registryName, boolean electricPotatoBreakChance) {
         super(4, 0.8F, false);
         setUnlocalizedName(unlocalizedName);
         setRegistryName(registryName);
@@ -42,6 +43,7 @@ public class PoweredPotato extends ItemFood {
             f.setAccessible(true);
         } catch (NoSuchFieldException e) { }
         this.itemDamage = f;
+        this.electricPotatoBreakChance = electricPotatoBreakChance;
     }
 
     @Override
@@ -63,6 +65,8 @@ public class PoweredPotato extends ItemFood {
             entityplayer.getFoodStats().setFoodLevel(entityplayer.getFoodStats().getFoodLevel() + 4);
             entityplayer.getFoodStats().setFoodSaturationLevel(entityplayer.getFoodStats().getSaturationLevel() + 0.8F);
             this.onFoodEaten(stack, worldIn, entityplayer);
+            if(!worldIn.isRemote && electricPotatoBreakChance)
+                return null;
         }
         return stack;
     }

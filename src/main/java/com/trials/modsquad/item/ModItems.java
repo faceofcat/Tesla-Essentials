@@ -29,7 +29,7 @@ public class ModItems {
     //Food
     public static Item breadSlice, toastSlice;
 
-    public static void init() {
+    public static void init(boolean electricPotatoBreakChance) {
         //Ingots
         ingotCopper = new ModIngot(Ref.IngotReference.COPPER.getUnlocalizedName(), Ref.IngotReference.COPPER.getRegistryName());
         ingotTin = new ModIngot(Ref.IngotReference.TIN.getUnlocalizedName(), Ref.IngotReference.TIN.getRegistryName());
@@ -54,7 +54,7 @@ public class ModItems {
 
         //Tools
         terraSmasher = new TerraSmasher(Ref.ItemReference.TERRA_SMASHER.getUnlocalizedName(), Ref.ItemReference.TERRA_SMASHER.getRegistryName());
-        poweredPotato = new PoweredPotato(Ref.ItemReference.POWERED_POTATO.getUnlocalizedName(), Ref.ItemReference.POWERED_POTATO.getRegistryName());
+        poweredPotato = new PoweredPotato(Ref.ItemReference.POWERED_POTATO.getUnlocalizedName(), Ref.ItemReference.POWERED_POTATO.getRegistryName(), electricPotatoBreakChance);
 
         //Food
         breadSlice = new ItemBread(Ref.BreadReference.BREAD_SLICE.getUnlocalizedName(), Ref.BreadReference.BREAD_SLICE.getRegisteryName());
