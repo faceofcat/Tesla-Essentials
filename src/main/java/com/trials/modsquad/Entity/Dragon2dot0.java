@@ -8,10 +8,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.boss.dragon.phase.IPhase;
+import net.minecraft.entity.boss.dragon.phase.PhaseList;
 import net.minecraft.entity.boss.dragon.phase.PhaseManager;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -22,11 +24,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.end.DragonFightManager;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
-/**
- * Created by Tjeltigre on 9/9/2016.
- */
 public class Dragon2dot0 extends EntityDragon {
     private final PhaseManager phaseManager;
     private final DragonFightManager fightManager;
@@ -35,20 +35,31 @@ public class Dragon2dot0 extends EntityDragon {
     public Dragon2dot0(World worldIn){
         super(worldIn);
         this.growlTime = 100;
-        if (!worldIn.isRemote && worldIn.provider instanceof WorldProviderEnd)
-        {
-            this.fightManager = ((WorldProviderEnd)worldIn.provider).getDragonFightManager();
-        }
-        else
-        {
-            this.fightManager = null;
-        }
-        this.phaseManager = new PhaseManager((EntityDragon)this);
+
+        DragonFightManager mTemp = null;
+        PhaseManager mTemp2 = null;
+
+        try{
+            Field f = EntityDragon.class.getDeclaredField("phaseManager");
+            f.setAccessible(true);
+            mTemp2 = (PhaseManager) f.get(this);
+            f = EntityDragon.class.getDeclaredField("fightManager");
+            f.setAccessible(true);
+            mTemp = (DragonFightManager) f.get(this);
+        }catch(Exception idgaf){}
+
+        fightManager = mTemp;
+        phaseManager = mTemp2;
+
+        //entityInit();
+        phaseManager.setPhase(PhaseList.TAKEOFF);
+        initEntityAI();
     }
 
     @Override
     public void onLivingUpdate()
     {
+
         if (this.worldObj.isRemote)
         {
             this.setHealth(this.getHealth());

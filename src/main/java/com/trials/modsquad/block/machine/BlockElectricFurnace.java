@@ -21,6 +21,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import org.omg.PortableInterceptor.INACTIVE;
+
 import javax.annotation.Nullable;
 import static com.trials.modsquad.Ref.GUI_ID_FURNACE;
 
@@ -45,17 +47,39 @@ public class BlockElectricFurnace extends Block {
     @Override
     protected BlockStateContainer createBlockState(){ return new BlockStateContainer(this, PROPERTYFACING, STATE); }
 
+    /*
+        Big-Endian
+        0 00
+        | ||
+        | Facing
+        ActiveState
+     */
     @Override
-    public int getMetaFromState(IBlockState state) { return 0; }
+    public int getMetaFromState(IBlockState state) {
+        int value = state.getProperties().get(STATE).equals(States.ActiveState.INACTIVE)?1<<2:0;
+        for(EnumFacing facing : EnumFacing.Plane.HORIZONTAL)
+            if(state.getProperties().get(PROPERTYFACING).equals(facing)) {
+                value = facing.ordinal();
+                break;
+            }
+        return value;
+    }
 
     @Override
-    public IBlockState getStateFromMeta(int meta) { return getDefaultState().withProperty(PROPERTYFACING, EnumFacing.NORTH).withProperty(STATE, States.ActiveState.INACTIVE); }
+    public IBlockState getStateFromMeta(int meta) {
+        int i = meta>>2;
+        try {
+            return getDefaultState().withProperty(PROPERTYFACING, EnumFacing.Plane.HORIZONTAL.facings()[meta - i]).withProperty(STATE, States.ActiveState.values()[i]);
+        }catch(Exception e){
+            return getDefaultState();
+        }
+    }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase user, ItemStack stack)
     {
         super.onBlockPlacedBy(world, pos, state, user,stack);
-        world.setBlockState(pos, state.withProperty(PROPERTYFACING, user.getHorizontalFacing()).withProperty(STATE, States.ActiveState.INACTIVE));
+        world.setBlockState(pos, state.withProperty(PROPERTYFACING, user.getHorizontalFacing().rotateAround(EnumFacing.Axis.Y)).withProperty(STATE, States.ActiveState.INACTIVE));
     }
 
     @Override
@@ -82,9 +106,6 @@ public class BlockElectricFurnace extends Block {
         }
         super.breakBlock(worldIn, pos, state);
     }
-
-    @Override
-    public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) { return false; }
 
     @Override //Teehee "block" rendering :P
     public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) { return false; }

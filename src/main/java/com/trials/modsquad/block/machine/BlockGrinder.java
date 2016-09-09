@@ -1,5 +1,6 @@
 package com.trials.modsquad.block.machine;
 
+import com.trials.modsquad.Entity.Dragon2dot0;
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.tile.TileGrinder;
@@ -18,12 +19,16 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProviderEnd;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nullable;
 import static com.trials.modsquad.Ref.GUI_ID_GRINDER;
 
 @SuppressWarnings("deprecation")
 public class BlockGrinder extends Block {
+
+    public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+
 
     public BlockGrinder(String s, String s1) {
         super(Material.IRON);
@@ -36,8 +41,6 @@ public class BlockGrinder extends Block {
         setDefaultState(blockState.getBaseState().withProperty(PROPERTYFACING, EnumFacing.NORTH));
     }
 
-    public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-
     @Override
     protected BlockStateContainer createBlockState()
     {
@@ -45,20 +48,23 @@ public class BlockGrinder extends Block {
     }
 
     @Override
-    public int getMetaFromState(IBlockState state) {
-        return state.getValue(PROPERTYFACING).ordinal();
-    }
+    public int getMetaFromState(IBlockState state) { return 0; }
 
     @Override
-    public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(PROPERTYFACING, meta>1?EnumFacing.values()[meta] : EnumFacing.NORTH);
-    }
+    public IBlockState getStateFromMeta(int meta) { return getDefaultState().withProperty(PROPERTYFACING, EnumFacing.NORTH); }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase user, ItemStack stack)
     {
         super.onBlockPlacedBy(world, pos, state, user,stack);
         world.setBlockState(pos, state.withProperty(PROPERTYFACING, user.getHorizontalFacing().rotateAround(EnumFacing.Axis.Y)));
+        if(!world.isRemote && world.provider instanceof WorldProviderEnd){
+            Dragon2dot0 drg = new Dragon2dot0(world);
+            drg.posX = pos.getX();
+            drg.posY = pos.getY();
+            drg.posZ = pos.getZ();
+            world.spawnEntityInWorld(drg);
+        }
     }
 
     @Override
@@ -91,7 +97,5 @@ public class BlockGrinder extends Block {
     }
 
     @Override
-    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
-        return false;
-    }
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) { return false; }
 }
