@@ -1,4 +1,4 @@
-package com.trials.modsquad.Entity;
+package com.trials.modsquad.entity;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -13,7 +13,6 @@ import net.minecraft.entity.boss.dragon.phase.PhaseManager;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -21,9 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.end.DragonFightManager;
-
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -51,9 +48,7 @@ public class Dragon2dot0 extends EntityDragon {
         fightManager = mTemp;
         phaseManager = mTemp2;
 
-        //entityInit();
         phaseManager.setPhase(PhaseList.TAKEOFF);
-        initEntityAI();
     }
 
     @Override

@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 

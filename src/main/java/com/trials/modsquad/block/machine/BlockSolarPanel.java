@@ -69,7 +69,7 @@ public class BlockSolarPanel extends Block {
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-        if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking() || !worldIn.isRemote) return false;
+        if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking() || worldIn.isRemote) return false;
         TileEntity tileentity = worldIn.getTileEntity(pos);
         long power = tileentity==null?0:tileentity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower();
         long cap = tileentity==null?20000:tileentity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getCapacity();

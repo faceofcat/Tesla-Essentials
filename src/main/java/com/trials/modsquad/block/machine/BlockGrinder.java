@@ -1,6 +1,6 @@
 package com.trials.modsquad.block.machine;
 
-import com.trials.modsquad.Entity.Dragon2dot0;
+import com.trials.modsquad.entity.Dragon2dot0;
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.tile.TileGrinder;

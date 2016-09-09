@@ -1,6 +1,6 @@
 package com.trials.modsquad;
 
-import com.trials.modsquad.Entity.Dragon2dot0;
+import com.trials.modsquad.entity.Dragon2dot0;
 import com.trials.modsquad.recipe.TeslaRegistry;
 import com.trials.modsquad.block.ModBlocks;
 import com.trials.modsquad.gui.GUIHandler;

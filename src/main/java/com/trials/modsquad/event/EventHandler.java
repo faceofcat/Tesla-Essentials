@@ -1,4 +1,4 @@
-package com.trials.modsquad.Event;
+package com.trials.modsquad.event;
 
 /**
  * Created by Tjeltigre on 9/9/2016.
