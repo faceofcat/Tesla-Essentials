@@ -6,6 +6,7 @@ import com.trials.modsquad.block.ModBlocks;
 import com.trials.modsquad.gui.GUIHandler;
 import com.trials.modsquad.item.ModItems;
 import com.trials.modsquad.proxy.CommonProxy;
+import com.trials.net.ChatSync;
 import com.trials.net.TileDataSync;
 import com.trials.net.TileDataSync.Handler;
 import com.trials.modsquad.world.ModWorldGen;
@@ -30,7 +31,7 @@ public class ModSquad
 {
     public static final String MODID = "modsquad";
     public static final String VERSION = "1.0";
-    public static SimpleNetworkWrapper channel, chat;
+    public static SimpleNetworkWrapper channel;
     public static boolean allowCopperGen = false;
     public static boolean allowTinGen = false;
     public static boolean allowLeadGen = false;
@@ -56,11 +57,11 @@ public class ModSquad
 
         //Network communication
         channel = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
-        chat = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 
         //noinspection unchecked
         channel.registerMessage((Class) Handler.class, TileDataSync.class, 0, Side.CLIENT);
 
+        ChatSync.createChatSyncForMod(MODID, channel); // Register chat handler
 
         // Item init and registration
         ModBlocks.init();

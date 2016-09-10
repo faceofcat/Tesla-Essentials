@@ -2,16 +2,17 @@ package com.trials.modsquad.block.machine;
 
 import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.tile.TileSolarPanel;
+import com.trials.net.ChatSync;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -19,11 +20,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.concurrent.ThreadLocalRandom;
+import static com.trials.modsquad.ModSquad.MODID;
 
 @SuppressWarnings("deprecation")
 public class BlockSolarPanel extends Block {
@@ -74,7 +75,8 @@ public class BlockSolarPanel extends Block {
         TileEntity tileentity = worldIn.getTileEntity(pos);
         long power = tileentity==null?0:tileentity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower();
         long cap = tileentity==null?20000:tileentity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getCapacity();
-        playerIn.addChatMessage(new TextComponentString("Power: " + power + "/" + cap));
+        //playerIn.addChatMessage(new TextComponentString("Power: " + power + "/" + cap));
+        if(playerIn instanceof EntityPlayerMP) ChatSync.forMod(MODID).sendPlayerChatMessage((EntityPlayerMP)playerIn, "Power: " + power + "/" + cap, Ref.GUI_CHAT_POWER); // No-spam chat message
         return true;
     }
 

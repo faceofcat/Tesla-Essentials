@@ -19,8 +19,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import javax.annotation.Nullable;
-import java.util.concurrent.ThreadLocalRandom;
-
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_PRODUCER;

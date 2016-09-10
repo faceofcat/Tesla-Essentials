@@ -21,8 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import org.omg.PortableInterceptor.INACTIVE;
-
 import javax.annotation.Nullable;
 import static com.trials.modsquad.Ref.GUI_ID_FURNACE;
 

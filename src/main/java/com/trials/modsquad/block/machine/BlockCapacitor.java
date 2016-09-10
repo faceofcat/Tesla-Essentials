@@ -2,6 +2,7 @@ package com.trials.modsquad.block.machine;
 
 import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.tile.TileCapacitor;
+import com.trials.net.ChatSync;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -10,16 +11,16 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
 import javax.annotation.Nullable;
+import static com.trials.modsquad.ModSquad.MODID;
 
 @SuppressWarnings("deprecation")
 public class BlockCapacitor extends Block {
@@ -62,12 +63,13 @@ public class BlockCapacitor extends Block {
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-        if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking()) return false;
+        if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking() || worldIn.isRemote) return false;
         TileEntity tileentity = worldIn.getTileEntity(pos);
         if(tileentity==null) return false;
         long power = tileentity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower();
         long cap = tileentity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getCapacity();
-        if(!worldIn.isRemote) playerIn.addChatMessage(new TextComponentString("Power: " + power + "/" + cap));
+        if(playerIn instanceof EntityPlayerMP) //playerIn.addChatMessage(new TextComponentString("Power: " + power + "/" + cap));
+            ChatSync.forMod(MODID).sendPlayerChatMessage((EntityPlayerMP) playerIn, "Power: " + power + "/" + cap, Ref.GUI_CHAT_POWER);
         return true;
     }
 
