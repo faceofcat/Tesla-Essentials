@@ -161,17 +161,23 @@ public class TileCharger extends TileEntity implements IItemHandlerModifiable, I
         }
 
     }
-    private int firstfewTicks = 500;
+    private int syncTick = 0;
 
     @SuppressWarnings("unused")
     @SubscribeEvent
     public void onEntityJoinEvent(EntityJoinWorldEvent event){
-        firstfewTicks = 0;
+        //NOP
     }
 
     @Override
     public void update() {
-        if(firstfewTicks>=10 && firstfewTicks!=500 && !worldObj.isRemote){
+        if (inventory[0] != null && inventory[0].hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, EnumFacing.DOWN) &&
+                inventory[0].hasCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN)) {
+            ITeslaConsumer c = inventory[0].getCapability(TeslaCapabilities.CAPABILITY_CONSUMER, EnumFacing.DOWN);
+            ITeslaHolder h = inventory[0].getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
+            if (h.getStoredPower() < h.getCapacity()) container.takePower(c.givePower(Math.min(container.getOutputRate(), container.getStoredPower()), false), false);
+        }
+        if(syncTick==10 && !worldObj.isRemote){
             if(pos!=null){
                 int dim = 0;
                 for(int i : DimensionManager.getIDs())
@@ -181,14 +187,8 @@ public class TileCharger extends TileEntity implements IItemHandlerModifiable, I
                     }
                 ModSquad.channel.sendToAll(new TileDataSync(pos, serializeNBT().toString(), dim));
             }
-            firstfewTicks=500;
-        }else if(firstfewTicks!=500) ++firstfewTicks;
-        if (inventory[0] != null && inventory[0].hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, EnumFacing.DOWN) &&
-                inventory[0].hasCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN)) {
-            ITeslaConsumer c = inventory[0].getCapability(TeslaCapabilities.CAPABILITY_CONSUMER, EnumFacing.DOWN);
-            ITeslaHolder h = inventory[0].getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
-            if (h.getStoredPower() < h.getCapacity()) container.takePower(c.givePower(Math.min(container.getOutputRate(), container.getStoredPower()), false), false);
-        }
+            syncTick = 0;
+        }else if(syncTick<10) ++syncTick;
     }
 
     @Override

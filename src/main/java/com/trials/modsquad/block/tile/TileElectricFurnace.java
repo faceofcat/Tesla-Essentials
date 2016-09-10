@@ -156,28 +156,16 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
         workTime = compound.getInteger("GrindTime");
 
     }
-    private int firstfewTicks = 500;
+    private int syncTick = 500;
 
     @SubscribeEvent
     public void onEntityJoinEvent(EntityJoinWorldEvent event){
-        firstfewTicks = 0;
+        //NOP
     }
 
     @SuppressWarnings("ConstantConditions")
     @Override
     public void update() {
-        if(firstfewTicks>=10 && firstfewTicks!=500 && !worldObj.isRemote){
-            if(pos!=null){
-                int dim = 0;
-                for(int i : DimensionManager.getIDs())
-                    if(DimensionManager.getWorld(i).equals(worldObj)) {
-                        dim = i;
-                        break;
-                    }
-                ModSquad.channel.sendToAll(new TileDataSync(pos, serializeNBT().toString(), dim));
-            }
-            firstfewTicks=500;
-        }else if(firstfewTicks!=500) ++firstfewTicks;
 
         // Locks the current smelting process until more power is received
         if(container.getStoredPower()<DRAW_PER_TICK){
@@ -218,6 +206,18 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
                 workTime = 60;
             }
         }
+        if(syncTick==10 && !worldObj.isRemote){
+            if(pos!=null){
+                int dim = 0;
+                for(int i : DimensionManager.getIDs())
+                    if(DimensionManager.getWorld(i).equals(worldObj)) {
+                        dim = i;
+                        break;
+                    }
+                ModSquad.channel.sendToAll(new TileDataSync(pos, serializeNBT().toString(), dim));
+            }
+            syncTick = 0;
+        }else if(syncTick<10) ++syncTick;
     }
 
     @Override

@@ -149,27 +149,15 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
 
     }
 
-    private int firstfewTicks = 500;
+    private int syncTick = 0;
 
     @SubscribeEvent
     public void onEntityJoinEvent(EntityJoinWorldEvent event){
-        firstfewTicks = 0;
+        //NOP
     }
 
     @Override
     public void update() {
-        if(firstfewTicks>=10 && firstfewTicks!=500 && !worldObj.isRemote){
-            if(pos!=null){
-                int dim = 0;
-                for(int i : DimensionManager.getIDs())
-                    if(DimensionManager.getWorld(i).equals(worldObj)) {
-                        dim = i;
-                        break;
-                    }
-                ModSquad.channel.sendToAll(new TileDataSync(pos, serializeNBT().toString(), dim));
-            }
-            firstfewTicks=500;
-        }else if(firstfewTicks!=500) ++firstfewTicks;
         if(isBurning){
             container.givePower(20, false);
             if(workTime==0) isBurning = false;
@@ -185,6 +173,18 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
             if(i==0) return;
             container.takePower(TeslaUtils.distributePowerToAllFaces(worldObj, pos, Math.min(container.getStoredPower() / i, container.getOutputRate()), false), false);
         }
+        if(syncTick==10 && !worldObj.isRemote){
+            if(pos!=null){
+                int dim = 0;
+                for(int i : DimensionManager.getIDs())
+                    if(DimensionManager.getWorld(i).equals(worldObj)) {
+                        dim = i;
+                        break;
+                    }
+                ModSquad.channel.sendToAll(new TileDataSync(pos, serializeNBT().toString(), dim));
+            }
+            syncTick = 0;
+        }else if(syncTick<10) ++syncTick;
     }
 
     @Override

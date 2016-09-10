@@ -259,27 +259,15 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         grindTime = compound.getInteger("GrindTime");
     }
 
-    private int firstfewTicks = 500;
+    private int syncTick = 0;
 
     @SubscribeEvent
     public void onEntityJoinEvent(EntityJoinWorldEvent event){
-        firstfewTicks = 0;
+        //NOP
     }
 
     @Override
     public void update() {
-        if(firstfewTicks>=10 && firstfewTicks!=500 && !worldObj.isRemote){
-            if(pos!=null){
-                int dim = 0;
-                for(int i : DimensionManager.getIDs())
-                    if(DimensionManager.getWorld(i).equals(worldObj)) {
-                        dim = i;
-                        break;
-                    }
-                ModSquad.channel.sendToAll(new TileDataSync(pos, serializeNBT().toString(), dim));
-            }
-            firstfewTicks=500;
-        }else if(firstfewTicks!=500) ++firstfewTicks;
         if(isGrinding){
             if(grindTime==0){
                 ItemStack s = extractItem(0, 1, false);
@@ -306,6 +294,18 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
             isGrinding = true;
             grindTime = DEFAULT_GRIND_TIME;
         }
+        if(syncTick==10 && !worldObj.isRemote){
+            if(pos!=null){
+                int dim = 0;
+                for(int i : DimensionManager.getIDs())
+                    if(DimensionManager.getWorld(i).equals(worldObj)) {
+                        dim = i;
+                        break;
+                    }
+                ModSquad.channel.sendToAll(new TileDataSync(pos, serializeNBT().toString(), dim));
+            }
+            syncTick = 0;
+        }else if(syncTick<10) ++syncTick;
     }
 
     @Override

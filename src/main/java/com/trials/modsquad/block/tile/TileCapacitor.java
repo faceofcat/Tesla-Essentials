@@ -72,17 +72,22 @@ public class TileCapacitor extends TileEntity implements ITickable, Updatable {
         if(compound.hasKey("Container")) container.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
     }
 
-    private int firstfewTicks = 500;
+    private int syncTick = 0;
 
     @SuppressWarnings("unused")
     @SubscribeEvent
     public void onEntityJoinEvent(EntityJoinWorldEvent event){
-        firstfewTicks = 0;
+        //NOP
     }
 
     @Override
     public void update() {
-        if(firstfewTicks>=10 && firstfewTicks!=500 && !worldObj.isRemote){
+        if(container.getStoredPower()>0) {
+            int i = TeslaUtils.getConnectedCapabilities(CAPABILITY_CONSUMER, worldObj, pos).size();
+            if(i==0) return;
+            container.takePower(TeslaUtils.distributePowerToAllFaces(worldObj, pos, Math.min(container.getStoredPower() / i, container.getOutputRate()), false), false);
+        }
+        if(syncTick==10 && !worldObj.isRemote){
             if(pos!=null){
                 int dim = 0;
                 for(int i : DimensionManager.getIDs())
@@ -92,13 +97,8 @@ public class TileCapacitor extends TileEntity implements ITickable, Updatable {
                     }
                 ModSquad.channel.sendToAll(new TileDataSync(pos, serializeNBT().toString(), dim));
             }
-            firstfewTicks=500;
-        }else if(firstfewTicks!=500) ++firstfewTicks;
-        if(container.getStoredPower()>0) {
-            int i = TeslaUtils.getConnectedCapabilities(CAPABILITY_CONSUMER, worldObj, pos).size();
-            if(i==0) return;
-            container.takePower(TeslaUtils.distributePowerToAllFaces(worldObj, pos, Math.min(container.getStoredPower() / i, container.getOutputRate()), false), false);
-        }
+            syncTick = 0;
+        }else if(syncTick<10) ++syncTick;
     }
 
     @Override

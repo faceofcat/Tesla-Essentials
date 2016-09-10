@@ -69,17 +69,26 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
         super.readFromNBT(compound);
         if(compound.hasKey("Container")) solarContainer.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
     }
-    private int firstfewTicks = 500;
+    private int syncTick = 500;
 
     @SuppressWarnings("unused")
     @SubscribeEvent
     public void onEntityJoinEvent(EntityJoinWorldEvent event){
-        firstfewTicks = 0;
+        //NOP
     }
 
     @Override
     public void update() {
-        if(firstfewTicks>=10 && firstfewTicks!=500 && !worldObj.isRemote){
+        if(solarContainer.getStoredPower()>0) {
+            int i = TeslaUtils.getConnectedCapabilities(CAPABILITY_CONSUMER, worldObj, pos).size();
+            if(i!=0)
+                solarContainer.takePower(TeslaUtils.distributePowerToAllFaces(worldObj, pos, Math.min(solarContainer.getStoredPower() / i, solarContainer.getOutputRate()), false), false);
+        }
+        // Increase internal power supply
+        if (worldObj.getTopSolidOrLiquidBlock(pos).getY()-1 == pos.getY() && solarContainer.getStoredPower() < solarContainer.getCapacity() && worldObj.isDaytime()
+                && !worldObj.isRaining()) solarContainer.givePower(Math.min(solarContainer.getCapacity()-solarContainer.getStoredPower(), 5), false); // Fills as much as possible
+        // Sync after update
+        if(syncTick==10 && !worldObj.isRemote){
             if(pos!=null){
                 int dim = 0;
                 for(int i : DimensionManager.getIDs())
@@ -89,16 +98,8 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
                     }
                 ModSquad.channel.sendToAll(new TileDataSync(pos, serializeNBT().toString(), dim));
             }
-            firstfewTicks=500;
-        }else if(firstfewTicks!=500) ++firstfewTicks;
-        if(solarContainer.getStoredPower()>0) {
-            int i = TeslaUtils.getConnectedCapabilities(CAPABILITY_CONSUMER, worldObj, pos).size();
-            if(i!=0)
-                solarContainer.takePower(TeslaUtils.distributePowerToAllFaces(worldObj, pos, Math.min(solarContainer.getStoredPower() / i, solarContainer.getOutputRate()), false), false);
-        }
-        // Increase internal power supply
-        if (worldObj.getTopSolidOrLiquidBlock(pos).getY() > pos.getY() && solarContainer.getStoredPower() < solarContainer.getCapacity() && worldObj.isDaytime()
-                && !worldObj.isRaining()) solarContainer.givePower(Math.min(solarContainer.getCapacity()-solarContainer.getStoredPower(), 5), false); // Fills as much as possible
+            syncTick = 0;
+        }else if(syncTick<10) ++syncTick;
     }
 
     @Override

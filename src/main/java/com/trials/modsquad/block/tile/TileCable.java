@@ -87,8 +87,8 @@ public class TileCable extends TileEntity implements ITickable{
             needUpdate = false;
         }
 
-        // Does a specific check to see if updating the model is necessary
-        if(needUpdate()) updateModel();
+        // Does a specific check to see if updating the model is necessary. Only updates for client since graphics is clientside only
+        if(worldObj.isRemote && needUpdate()) updateModel();
 
         updatedForTick = false;
     }
