@@ -20,11 +20,14 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.1.1"
+version = "1.2.0"
 group= "com.trials.modsquad" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+//noinspection GroovyUnusedAssignment
 archivesBaseName = "modsquad"
 
+//noinspection GroovyUnusedAssignment
 sourceCompatibility = 1.8
+//noinspection GroovyUnusedAssignment
 targetCompatibility = 1.8
 
 minecraft {
@@ -51,7 +54,7 @@ repositories {
 dependencies {
 
     // Adds tesla depend
-    compile "net.darkhax.tesla:Tesla:1.10.2-1.2.1.42"
+    compile "net.darkhax.tesla:Tesla:1.10.2-1.2.1.49"
 }
 
 processResources

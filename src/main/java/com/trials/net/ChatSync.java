@@ -1,9 +1,9 @@
 package com.trials.net;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -37,8 +37,9 @@ public final class ChatSync {
         @Override
         public ChatMessage onMessage(ChatMessage message, MessageContext ctx) {
             if(ctx.side.isClient()){
-                Minecraft.getMinecraft().ingameGUI.getChatGUI().deleteChatLine(message.chatID);
-                Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessageWithOptionalDeletion(new TextComponentString(message.message), message.chatID);
+                FMLClientHandler.instance().getClient().ingameGUI.getChatGUI().deleteChatLine(message.chatID);
+                FMLClientHandler.instance().getClient().ingameGUI.getChatGUI().printChatMessageWithOptionalDeletion(
+                        new TextComponentString(message.message), message.chatID);
             }
             return null;
         }

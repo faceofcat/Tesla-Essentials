@@ -24,8 +24,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 
-import static net.minecraftforge.fml.common.registry.EntityRegistry.registerModEntity;
-
 @Mod(modid = ModSquad.MODID, version = ModSquad.VERSION)
 public class ModSquad
 {
