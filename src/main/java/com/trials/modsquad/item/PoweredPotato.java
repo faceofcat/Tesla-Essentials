@@ -2,12 +2,14 @@ package com.trials.modsquad.item;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import com.trials.modsquad.Ref;
+import com.trials.net.ChatSync;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainerProvider;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemFood;
@@ -24,6 +26,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static com.trials.modsquad.ModSquad.MODID;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 
 public class PoweredPotato extends ItemFood {
@@ -69,8 +72,11 @@ public class PoweredPotato extends ItemFood {
             entityplayer.getFoodStats().setFoodLevel(entityplayer.getFoodStats().getFoodLevel() + 4);
             entityplayer.getFoodStats().setFoodSaturationLevel(entityplayer.getFoodStats().getSaturationLevel() + 0.8F);
             this.onFoodEaten(stack, worldIn, entityplayer);
-            if(!worldIn.isRemote && electricPotatoBreakChance && ThreadLocalRandom.current().nextInt(0,100) < 5)
-                return new ItemStack(Items.POTATO, 1);
+            if(!worldIn.isRemote && electricPotatoBreakChance && ThreadLocalRandom.current().nextInt(0,100) < 5){
+                if(entityLiving instanceof EntityPlayerMP) ChatSync.forMod(MODID).sendPlayerChatMessage((EntityPlayerMP)entityLiving, "The Capacitors Overload Leaving a Cooked Potato Behind", Ref.ITEM_ID_POTATO);
+                return new ItemStack(Items.BAKED_POTATO, 1);
+            }
+
         }
         return stack;
     }
