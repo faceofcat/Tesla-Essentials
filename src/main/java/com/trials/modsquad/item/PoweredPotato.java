@@ -53,6 +53,8 @@ public class PoweredPotato extends ItemFood {
         BaseTeslaContainer container = (BaseTeslaContainer) stack.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
         tooltip.add(ChatFormatting.BLUE+"Shocking taste!");
         tooltip.add("Power: " + container.getStoredPower() + "/" + container.getCapacity());
+        if(electricPotatoBreakChance)
+            tooltip.add(ChatFormatting.DARK_RED+"Has a 5% chance to break");
         super.addInformation(stack, playerIn, tooltip, advanced);
     }
 
@@ -67,7 +69,7 @@ public class PoweredPotato extends ItemFood {
             entityplayer.getFoodStats().setFoodLevel(entityplayer.getFoodStats().getFoodLevel() + 4);
             entityplayer.getFoodStats().setFoodSaturationLevel(entityplayer.getFoodStats().getSaturationLevel() + 0.8F);
             this.onFoodEaten(stack, worldIn, entityplayer);
-            if(!worldIn.isRemote && electricPotatoBreakChance && ThreadLocalRandom.current().nextInt(0,100) < 40)
+            if(!worldIn.isRemote && electricPotatoBreakChance && ThreadLocalRandom.current().nextInt(0,100) < 5)
                 return new ItemStack(Items.POTATO, 1);
         }
         return stack;
