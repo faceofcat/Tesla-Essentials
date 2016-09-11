@@ -83,6 +83,7 @@ public class ModBlocks {
         registerTileEntity(TileCharger.class, "Charger");
         registerTileEntity(TileCapacitor.class, "Capacitor");
         registerTileEntity(TileSolarPanel.class, "Solar Panel");
+        registerTileEntity(TileToaster.class, "Toaster");
 
         //Cables
         registerTileEntity(TileCable.class, "Cable");

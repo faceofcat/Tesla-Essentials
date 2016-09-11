@@ -16,7 +16,19 @@ out
 # gradle
 build
 .gradle
+.gitignore
 
 # other
 eclipse
 run
+mods
+classes/
+config/
+crash-reports/
+logs/
+options.txt
+resourcepacks/
+saves/
+screenshots/
+usercache.json
+usernamecache.json
