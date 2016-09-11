@@ -23,11 +23,19 @@ import net.minecraft.world.World;
 import net.minecraft.world.end.DragonFightManager;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Dragon2dot0 extends EntityDragon {
     private final PhaseManager phaseManager;
     private final DragonFightManager fightManager;
     private int growlTime = 200;
+    private int attackTime = 0;
+    private final int[] attackTimes = {1957, 904, 3205, 3790, 4644, 2998, 2594, 1691, 4677, 1101, 3942, 1083, 4407, 3749,
+                3817, 1444, 2591, 4279, 1508, 3616, 2540, 3681, 3230, 3512, 2831, 3304, 2032, 1678, 1001,
+                979, 2551, 1612, 1175, 2582, 2360, 2421, 2100, 1337, 1322, 1940, 1124, 2468, 3842, 1506, 3086, 714, 2780,
+                1088, 3571, 1339, 4582, 1985, 3196, 2208, 2006, 1336, 1421, 620, 4239, 2063, 4628, 3768, 1809,
+                4346, 976, 2869, 1639, 764, 4590, 4695, 1259, 1447, 1519, 1820, 1101, 2086, 873, 4774, 930, 2381, 1476,
+                3335, 3131, 879, 1268, 2125, 2532, 681, 4135, 2221, 3917, 2386, 1669, 1353, 774, 3934, 2661,898, 3661, 3965};
 
     public Dragon2dot0(World worldIn){
         super(worldIn);
@@ -278,6 +286,9 @@ public class Dragon2dot0 extends EntityDragon {
                 if (!this.worldObj.isRemote)
                 {
                     this.slowed = this.destroyBlocksInAABB(this.dragonPartHead.getEntityBoundingBox()) | this.destroyBlocksInAABB(this.dragonPartNeck.getEntityBoundingBox()) | this.destroyBlocksInAABB(this.dragonPartBody.getEntityBoundingBox());
+
+                    if(attackTime == 0)
+                        attackTime = attackTimes[ThreadLocalRandom.current().nextInt(0,101)];
 
                     if (this.fightManager != null)
                     {
