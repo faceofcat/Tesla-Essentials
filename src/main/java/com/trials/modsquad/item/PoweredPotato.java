@@ -1,6 +1,7 @@
 package com.trials.modsquad.item;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
+import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.Ref;
 import com.trials.net.ChatSync;
 import net.darkhax.tesla.api.ITeslaHolder;
@@ -34,8 +35,9 @@ public class PoweredPotato extends ItemFood {
     private final Field itemDamage;
     private long drain = 400;
     private boolean electricPotatoBreakChance;
+    private int breakChance = 5;
 
-    public PoweredPotato(String unlocalizedName, String registryName, boolean electricPotatoBreakChance) {
+    public PoweredPotato(String unlocalizedName, String registryName, boolean electricPotatoBreakChance, int breakChance) {
         super(4, 0.8F, false);
         setUnlocalizedName(unlocalizedName);
         setRegistryName(registryName);
@@ -49,6 +51,8 @@ public class PoweredPotato extends ItemFood {
         } catch (NoSuchFieldException e) { }
         this.itemDamage = f;
         this.electricPotatoBreakChance = electricPotatoBreakChance;
+        if(breakChance < 50)
+            this.breakChance = breakChance;
     }
 
     @Override
@@ -57,7 +61,7 @@ public class PoweredPotato extends ItemFood {
         tooltip.add(ChatFormatting.BLUE+"Shocking taste!");
         tooltip.add("Power: " + container.getStoredPower() + "/" + container.getCapacity());
         if(electricPotatoBreakChance)
-            tooltip.add(ChatFormatting.DARK_RED+"Has a 5% chance to break");
+            tooltip.add(ChatFormatting.DARK_RED+"Has a "+breakChance+"% chance to break");
         super.addInformation(stack, playerIn, tooltip, advanced);
     }
 
@@ -72,8 +76,8 @@ public class PoweredPotato extends ItemFood {
             entityplayer.getFoodStats().setFoodLevel(entityplayer.getFoodStats().getFoodLevel() + 4);
             entityplayer.getFoodStats().setFoodSaturationLevel(entityplayer.getFoodStats().getSaturationLevel() + 0.8F);
             this.onFoodEaten(stack, worldIn, entityplayer);
-            if(!worldIn.isRemote && electricPotatoBreakChance && ThreadLocalRandom.current().nextInt(0,100) < 5){
-                if(entityLiving instanceof EntityPlayerMP) ChatSync.forMod(MODID).sendPlayerChatMessage((EntityPlayerMP)entityLiving, "The Capacitors Overload Leaving a Cooked Potato Behind", Ref.ITEM_ID_POTATO);
+            if(!worldIn.isRemote && electricPotatoBreakChance && ThreadLocalRandom.current().nextInt(0,100) < breakChance){
+                if(entityLiving instanceof EntityPlayerMP) ChatSync.forMod(ModSquad.MODID).sendPlayerChatMessage((EntityPlayerMP) entityLiving, "The Capacitors Overloaded;/n All that remains is a Baked Potato", Ref.ITEM_ID_POTATO);
                 return new ItemStack(Items.BAKED_POTATO, 1);
             }
 

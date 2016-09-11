@@ -34,6 +34,7 @@ public class ModSquad
     public static boolean allowTinGen = false;
     public static boolean allowLeadGen = false;
     public static boolean electricPotatoBreakChance = false;
+    public static int basePotatoBreakChance = 5;
 
     @Mod.Instance(value = MODID)
     public static ModSquad instance;
@@ -51,6 +52,8 @@ public class ModSquad
         allowTinGen = config.getBoolean("allowTinGen", Configuration.CATEGORY_GENERAL, true, "Generates Tin Ore");
         allowLeadGen = config.getBoolean("allowLeadGen", Configuration.CATEGORY_GENERAL, true, "Generates Lead Ore");
         electricPotatoBreakChance = config.getBoolean("electricPotatoBreakChance", Configuration.CATEGORY_GENERAL, true, "Allow's the electric potato to break");
+        basePotatoBreakChance = config.getInt("potatoBreakChance", Configuration.CATEGORY_GENERAL, 5, 0, 50, "The electric potato base break chance");
+
         config.save();
 
         //Network communication
@@ -65,7 +68,7 @@ public class ModSquad
         ModBlocks.init();
         ModBlocks.register();
 
-        ModItems.init(electricPotatoBreakChance);
+        ModItems.init(electricPotatoBreakChance, basePotatoBreakChance);
         ModItems.register();
 
         proxy.preInit();
