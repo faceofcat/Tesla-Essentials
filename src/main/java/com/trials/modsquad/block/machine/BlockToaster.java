@@ -26,6 +26,11 @@ import javax.annotation.Nullable;
 
 public class BlockToaster extends Block {
 
+    public static final AxisAlignedBB[] bounds = {
+            new AxisAlignedBB(4 * 0.0625, 0 * 0.0625, 1 * 0.0625, 12 * 0.0625, 11 * 0.0625, 15 * 0.0625),
+            new AxisAlignedBB(1 * 0.0625, 0 * 0.0625, 4 * 0.0625, 15 * 0.0625, 11 * 0.0625, 12 * 0.0625)
+    };
+
     public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     public BlockToaster(String unlocalizedName, String registryName) {
@@ -79,7 +84,7 @@ public class BlockToaster extends Block {
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        return new AxisAlignedBB(4 * 0.0625, 0 * 0.0625, 1 * 0.0625, 12 * 0.0625, 11 * 0.0625, 15 * 0.0625);
+        return bounds[(getMetaFromState(state)+1)%2];
     }
 
     @Override
