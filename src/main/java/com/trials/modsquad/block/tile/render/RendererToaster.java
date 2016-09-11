@@ -1,5 +1,6 @@
 package com.trials.modsquad.block.tile.render;
 
+        import com.trials.modsquad.block.machine.BlockToaster;
         import com.trials.modsquad.block.tile.TileToaster;
         import com.trials.modsquad.item.ModItems;
         import net.minecraft.client.Minecraft;
@@ -24,6 +25,8 @@ public class RendererToaster extends TileEntitySpecialRenderer<TileToaster> {
 
         EntityItem slot2 = bread;
         if (te.getToast2()) slot2 = toast;
+
+        BlockToaster.getStaticMetaFromState(Minecraft.getMinecraft().theWorld.getBlockState(te.getPos()));
 
         GlStateManager.pushMatrix();
         {

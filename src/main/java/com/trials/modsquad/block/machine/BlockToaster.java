@@ -50,11 +50,12 @@ public class BlockToaster extends Block {
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        int i = 0;
-        for(EnumFacing e : EnumFacing.Plane.HORIZONTAL)
-            if(state.getProperties().get(PROPERTYFACING).equals(e))
-                i = e.ordinal();
-        return i;
+        return getStaticMetaFromState(state);
+    }
+
+    public static int getStaticMetaFromState(IBlockState state){
+        EnumFacing f = (EnumFacing) state.getProperties().get(PROPERTYFACING);
+        return f.equals(EnumFacing.NORTH) || f.equals(EnumFacing.SOUTH)?1:0;
     }
 
     @Override
