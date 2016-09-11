@@ -5,8 +5,11 @@ import com.trials.modsquad.block.tile.TileToaster;
 import com.trials.modsquad.item.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -23,20 +26,54 @@ import javax.annotation.Nullable;
 
 public class BlockToaster extends Block {
 
+    public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+
     public BlockToaster(String unlocalizedName, String registryName) {
         super(Material.IRON);
         setUnlocalizedName(unlocalizedName);
         setRegistryName(registryName);
         setCreativeTab(Ref.tabModSquad);
+        setDefaultState(blockState.getBaseState().withProperty(PROPERTYFACING, EnumFacing.NORTH));
     }
 
-    @Override public boolean isOpaqueCube(IBlockState state) {
-        return false;
+
+    @Override
+    protected BlockStateContainer createBlockState()
+    {
+        return new BlockStateContainer(this, PROPERTYFACING);
     }
-    @Override public boolean isNormalCube(IBlockState state) {
-        return false;
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        int i = 0;
+        for(EnumFacing e : EnumFacing.Plane.HORIZONTAL)
+            if(state.getProperties().get(PROPERTYFACING).equals(e))
+                i = e.ordinal();
+        return i;
     }
-    @Override public boolean isFullCube(IBlockState state) {
+
+    @Override
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+        super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+        worldIn.setBlockState(pos, state.withProperty(PROPERTYFACING, placer.getHorizontalFacing().rotateAround(EnumFacing.Axis.Y)));
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) { return getDefaultState().withProperty(PROPERTYFACING, EnumFacing.NORTH); }
+
+    //@Override public boolean isOpaqueCube(IBlockState state) {
+    //    return false;
+    //}
+    //@Override public boolean isNormalCube(IBlockState state) {
+    //    return false;
+    //}
+    //@Override public boolean isFullCube(IBlockState state) {
+    //    return false;
+    //}
+
+
+    @Override
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
         return false;
     }
 
