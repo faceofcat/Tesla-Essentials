@@ -319,7 +319,9 @@ public class Dragon2dot0 extends EntityDragon {
                 playersInEnd = worldObj.getEntities(EntityPlayer.class, e -> e instanceof EntityPlayerMP);
             } else if(playersInEnd.size() != worldObj.getEntities(EntityPlayer.class, e->e instanceof EntityPlayerMP).size()) {
                 if(playersInEnd.size() < worldObj.getEntities(EntityPlayer.class, e->e instanceof EntityPlayerMP).size())
+                    eventMessage = "Ha, Another Mortal";
                 else
+                    eventMessage = "FOOLS, PREPARE TO FACE THE MIGHT OF THE DRAGON LORD";
                 playersInEnd = worldObj.getEntities(EntityPlayer.class, e -> e instanceof EntityPlayerMP);
                 sendMessageAllInDim(playersInEnd, this.eventMessage);
             } else
