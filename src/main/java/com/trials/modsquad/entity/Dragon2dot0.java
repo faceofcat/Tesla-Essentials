@@ -1,5 +1,8 @@
 package com.trials.modsquad.entity;
 
+import com.trials.modsquad.ModSquad;
+import com.trials.modsquad.Ref;
+import com.trials.net.ChatSync;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -11,6 +14,8 @@ import net.minecraft.entity.boss.dragon.phase.IPhase;
 import net.minecraft.entity.boss.dragon.phase.PhaseList;
 import net.minecraft.entity.boss.dragon.phase.PhaseManager;
 import net.minecraft.entity.item.EntityEnderCrystal;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
@@ -30,7 +35,11 @@ public class Dragon2dot0 extends EntityDragon {
     private final DragonFightManager fightManager;
     private int growlTime = 200;
     private int attackTime = 0;
-    private final int[] attackTimes = {1957, 904, 3205, 3790, 4644, 2998, 2594, 1691, 4677, 1101, 3942, 1083, 4407, 3749,
+    private int attackTimeDesider = 2;
+    private List<EntityPlayer> playersInEnd = null;
+    private List<String> UUIDS = null;
+    private String eventMessage = "HAHAHA INFERNO!";
+    private static final int[] attackTimes = {1957, 904, 3205, 3790, 4644, 2998, 2594, 1691, 4677, 1101, 3942, 1083, 4407, 3749,
                 3817, 1444, 2591, 4279, 1508, 3616, 2540, 3681, 3230, 3512, 2831, 3304, 2032, 1678, 1001,
                 979, 2551, 1612, 1175, 2582, 2360, 2421, 2100, 1337, 1322, 1940, 1124, 2468, 3842, 1506, 3086, 714, 2780,
                 1088, 3571, 1339, 4582, 1985, 3196, 2208, 2006, 1336, 1421, 620, 4239, 2063, 4628, 3768, 1809,
@@ -287,8 +296,11 @@ public class Dragon2dot0 extends EntityDragon {
                 {
                     this.slowed = this.destroyBlocksInAABB(this.dragonPartHead.getEntityBoundingBox()) | this.destroyBlocksInAABB(this.dragonPartNeck.getEntityBoundingBox()) | this.destroyBlocksInAABB(this.dragonPartBody.getEntityBoundingBox());
 
-                    if(attackTime == 0)
-                        attackTime = attackTimes[ThreadLocalRandom.current().nextInt(0,101)];
+                    if(attackTime == 0) {
+                        this.specialAttack(attackTimeDesider, this.worldObj);
+                        attackTimeDesider = ThreadLocalRandom.current().nextInt(0, 101);
+                        attackTime = attackTimes[attackTimeDesider];
+                    }
 
                     if (this.fightManager != null)
                     {
@@ -297,6 +309,28 @@ public class Dragon2dot0 extends EntityDragon {
                 }
             }
         }
+    }
+
+    private void specialAttack(int attackTimeDesider, World worldObj)
+    {
+        if(!worldObj.isRemote)
+        {
+            if(playersInEnd == null) {
+                playersInEnd = worldObj.getEntities(EntityPlayer.class, e -> e instanceof EntityPlayerMP);
+            } else if(playersInEnd.size() != worldObj.getEntities(EntityPlayer.class, e->e instanceof EntityPlayerMP).size()) {
+                if(playersInEnd.size() < worldObj.getEntities(EntityPlayer.class, e->e instanceof EntityPlayerMP).size())
+                else
+                playersInEnd = worldObj.getEntities(EntityPlayer.class, e -> e instanceof EntityPlayerMP);
+                sendMessageAllInDim(playersInEnd, this.eventMessage);
+            } else
+                System.out.print('h');
+        }
+    }
+
+    private static void sendMessageAllInDim(List<EntityPlayer> players, String message)
+    {
+        for(EntityPlayer a: players)
+            ChatSync.forMod(ModSquad.MODID).sendPlayerChatMessage((EntityPlayerMP) a, message, Ref.GUI_CHAT_DRFIGHT);
     }
 
     private void updateDragonEnderCrystal()
