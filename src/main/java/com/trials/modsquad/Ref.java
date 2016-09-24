@@ -11,7 +11,7 @@ public class Ref {
     public static final int GUI_ID_FURNACE = 2;
     public static final int GUI_ID_CHARGER = 3;
     public static final int ITEM_ID_POTATO = 4;
-    public static final int GUI_CHAT_DRFIGHT = 50;
+    public static final int GUI_CHAT_DRFIGHT = 52;
 
     public static final int GUI_CHAT_POWER = Integer.MAX_VALUE-1;
 
