@@ -4,6 +4,7 @@ import com.trials.modsquad.block.ModBlocks;
 import com.trials.modsquad.item.ModItems;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -127,15 +128,19 @@ public class TeslaRegistry{
     public static void registerGrinderCrafting()
     {
         //Vanilla Ores
+        teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.IRON_ORE), new ItemStack(ModItems.dustIron), 2);
+        teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.GOLD_ORE), new ItemStack(ModItems.dustGold), 2);
         teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.COAL_ORE), new ItemStack(Items.COAL), 2);
         teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.DIAMOND_ORE), new ItemStack(Items.DIAMOND), 2);
         teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.EMERALD_ORE), new ItemStack(Items.EMERALD), 2);
         teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.REDSTONE_ORE), new ItemStack(Items.REDSTONE), 12);
         teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.LAPIS_ORE), new ItemStack(Items.DYE, 1, 4), 9);
         //Misc
-        teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.WOOL), new ItemStack(Items.STRING), 2);
-        teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.CARPET), new ItemStack(Items.STRING), 1);
-        teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.TALLGRASS), new ItemStack(Items.DYE, 1, 13), 1);
+        for(int i = 0; i<16; ++i) {
+            teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.WOOL, 1, i), new ItemStack(Items.STRING), 3);
+            teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.CARPET, 1, i), new ItemStack(Items.STRING), 2);
+        }
+        teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.TALLGRASS, 1, 1), new ItemStack(Items.DYE, 1, 10), 1);
     }
 
     public static void registerOreDictCrafting()
@@ -144,7 +149,5 @@ public class TeslaRegistry{
         teslaRegistry.registerGrinderRecipe("oreLead", "dustLead", 2);
         teslaRegistry.registerGrinderRecipe("oreTin", "dustTin", 2);
         teslaRegistry.registerGrinderRecipe("oreCopper", "dustCopper", 2);
-        teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.IRON_ORE), new ItemStack(ModItems.dustIron), 2);
-        teslaRegistry.registerGrinderRecipe(new ItemStack(Blocks.GOLD_ORE), new ItemStack(ModItems.dustGold), 2);
     }
 }

@@ -5,6 +5,8 @@ import com.trials.modsquad.recipe.TeslaRegistry;
 import com.trials.net.TileDataSync;
 import com.trials.net.Updatable;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
@@ -29,7 +31,7 @@ import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 public class TileGrinder extends TileEntity implements IItemHandlerModifiable, ITickable, Updatable {
     // Primitives
     private int grindTime;
-    public static final int DEFAULT_GRIND_TIME = 60;
+    public static final int DEFAULT_GRIND_TIME = 59;
     public static final int DRAW_PER_TICK = 10;
     private boolean isGrinding = false;
 
