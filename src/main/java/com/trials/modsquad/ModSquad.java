@@ -1,6 +1,5 @@
 package com.trials.modsquad;
 
-import com.trials.modsquad.entity.Dragon2dot0;
 import com.trials.modsquad.recipe.TeslaRegistry;
 import com.trials.modsquad.block.ModBlocks;
 import com.trials.modsquad.gui.GUIHandler;
@@ -19,7 +18,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
@@ -96,9 +94,6 @@ public class ModSquad
         OreDictionary.registerOre("dustLead", ModItems.dustLead);
         OreDictionary.registerOre("dustIron", ModItems.dustIron);
         OreDictionary.registerOre("dustGold", ModItems.dustGold);
-
-
-        EntityRegistry.registerModEntity(Dragon2dot0.class, "Drg2", 1337, instance, 1337, 1, false);
     }
 
     @EventHandler

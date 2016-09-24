@@ -3,6 +3,7 @@ package com.trials.net;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -12,15 +13,19 @@ import net.minecraftforge.fml.relauncher.Side;
 import java.util.HashMap;
 import java.util.Map;
 
+
+
 public final class ChatSync {
 
     static final Map<String, ChatSync> INSTANCE = new HashMap<>();
 
-    private SimpleNetworkWrapper chatWrapper;
+    private final SimpleNetworkWrapper chatWrapper;
 
     private ChatSync(SimpleNetworkWrapper chatWrapper){ this.chatWrapper = chatWrapper; }
 
     public void sendPlayerChatMessage(EntityPlayerMP player, String message, int chatID){ chatWrapper.sendTo(new ChatMessage(message, chatID), player); }
+    public void sendPlayerChatMessages(String message, int chatID, EntityPlayerMP... player){ for(EntityPlayerMP e : player) sendPlayerChatMessage(e, message, chatID); }
+    public void sendDimensionChatMessage(WorldServer world, String message, int chatID){ for(EntityPlayerMP e : world.getEntities(EntityPlayerMP.class, å->true)) sendPlayerChatMessage(e, message, chatID); }
 
     // Factory
     public static void createChatSyncForMod(String modid, SimpleNetworkWrapper wrapper){

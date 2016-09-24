@@ -23,12 +23,16 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 
+@SuppressWarnings("deprecation")
 public class BlockToaster extends Block {
 
     public static final AxisAlignedBB[] bounds = {
-            new AxisAlignedBB(4 * 0.0625, 0 * 0.0625, 1 * 0.0625, 12 * 0.0625, 11 * 0.0625, 15 * 0.0625),
-            new AxisAlignedBB(1 * 0.0625, 0 * 0.0625, 4 * 0.0625, 15 * 0.0625, 11 * 0.0625, 12 * 0.0625)
+            new AxisAlignedBB(4.01 * 0.0625, 0 * 0.0625, .99 * 0.0625, 12.01 * 0.0625, 11.01 * 0.0625, 15.01 * 0.0625),
+            new AxisAlignedBB(0.99 * 0.0625, 0 * 0.0625, 4.01 * 0.0625, 15.01 * 0.0625, 11.01 * 0.0625, 12.01 * 0.0625)
     };
 
     public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
@@ -41,6 +45,33 @@ public class BlockToaster extends Block {
         setDefaultState(blockState.getBaseState().withProperty(PROPERTYFACING, EnumFacing.NORTH));
     }
 
+    @Override
+    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn) {
+        super.addCollisionBoxToList(state, worldIn, pos, entityBox, collidingBoxes, entityIn);
+        if(collidingBoxes.contains(bounds[(getStaticMetaFromState(state)+1)%2]))
+            collidingBoxes.remove(bounds[(getStaticMetaFromState(state))%2]);
+    }
+
+    public boolean isOpaqueCube(IBlockState state)
+    {
+        return false;
+    }
+
+    public boolean isFullCube(IBlockState state)
+    {
+        return false;
+    }
+
+    public boolean isPassable(IBlockAccess worldIn, BlockPos pos)
+    {
+        return false;
+    }
+
+    @Nullable
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
+        return getBoundingBox(blockState, worldIn, pos);
+    }
 
     @Override
     protected BlockStateContainer createBlockState()
@@ -66,17 +97,6 @@ public class BlockToaster extends Block {
 
     @Override
     public IBlockState getStateFromMeta(int meta) { return getDefaultState().withProperty(PROPERTYFACING, EnumFacing.NORTH); }
-
-    //@Override public boolean isOpaqueCube(IBlockState state) {
-    //    return false;
-    //}
-    //@Override public boolean isNormalCube(IBlockState state) {
-    //    return false;
-    //}
-    //@Override public boolean isFullCube(IBlockState state) {
-    //    return false;
-    //}
-
 
     @Override
     public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {

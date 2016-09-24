@@ -67,7 +67,7 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
         super.readFromNBT(compound);
         if(compound.hasKey("Container")) solarContainer.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
     }
-    private int syncTick = 500;
+    private int syncTick = 10;
 
     @SuppressWarnings("unused")
     @SubscribeEvent
@@ -101,11 +101,11 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) { return capability == TeslaCapabilities.CAPABILITY_PRODUCER || capability == CAPABILITY_HOLDER; }
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) { return facing==EnumFacing.DOWN && (capability == TeslaCapabilities.CAPABILITY_PRODUCER || capability == CAPABILITY_HOLDER); }
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if(capability==CAPABILITY_HOLDER || capability==CAPABILITY_PRODUCER) //noinspection unchecked
+        if(facing==EnumFacing.DOWN && (capability==CAPABILITY_HOLDER || capability==CAPABILITY_PRODUCER)) //noinspection unchecked
             return (T) solarContainer;
         return super.getCapability(capability, facing);
     }

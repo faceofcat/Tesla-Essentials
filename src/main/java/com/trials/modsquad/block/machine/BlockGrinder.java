@@ -1,6 +1,5 @@
 package com.trials.modsquad.block.machine;
 
-import com.trials.modsquad.entity.Dragon2dot0;
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.Ref;
 import com.trials.modsquad.block.tile.TileGrinder;
@@ -19,7 +18,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProviderEnd;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nullable;
 import static com.trials.modsquad.Ref.GUI_ID_GRINDER;
@@ -58,13 +56,6 @@ public class BlockGrinder extends Block {
     {
         super.onBlockPlacedBy(world, pos, state, user,stack);
         world.setBlockState(pos, state.withProperty(PROPERTYFACING, user.getHorizontalFacing().rotateAround(EnumFacing.Axis.Y)));
-        if(!world.isRemote && world.provider instanceof WorldProviderEnd){
-            Dragon2dot0 drg = new Dragon2dot0(world);
-            drg.posX = pos.getX();
-            drg.posY = pos.getY();
-            drg.posZ = pos.getZ();
-            world.spawnEntityInWorld(drg);
-        }
     }
 
     @Override
