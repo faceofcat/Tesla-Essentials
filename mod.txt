@@ -1,6 +1,6 @@
 ModSquad{
 	Status: Unfinished
-	Progress: ≈ 83% (Don't ask. I did a lot of math)
+	Progress: ≈ 90% (Don't ask. I did a lot of math)
 	TODO: See Pulverizer, Smelter, Generator, Power Storage, Ore Gen, Machine Augments, Tools
 
 
@@ -26,21 +26,21 @@ ModSquad{
 	
 	
 	
-	Power Storage{
+	Power 
 		Priority: 2
 		Status: Unfinished
-		TODO: Clear chat
+		TODO: Handle i/o management
 	}
 	
 	Power Transmission{
 		Priority: 2
-		Status: Finished
+		Status: Unfinished
+		TODO: Moar cables :D
 	}
 	
 	Ore Gen{
 		Priority: 2
-		Status: Unfinished
-		TODO: Tweak spawning ratios
+		Status: Finished
 	}
 	
 	
@@ -55,8 +55,7 @@ ModSquad{
 	
 	Tools{
 		Priority: 4
-		Status: Unfinished
-		TODO: Fix damage bar for TerraSmasher. Add other tools
+		Status: Finished
 	}
 	
 	
