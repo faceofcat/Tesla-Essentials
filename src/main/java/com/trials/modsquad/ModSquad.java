@@ -1,14 +1,14 @@
 package com.trials.modsquad;
 
-import com.trials.modsquad.recipe.TeslaRegistry;
 import com.trials.modsquad.block.ModBlocks;
 import com.trials.modsquad.gui.GUIHandler;
 import com.trials.modsquad.item.ModItems;
 import com.trials.modsquad.proxy.CommonProxy;
+import com.trials.modsquad.recipe.TeslaRegistry;
+import com.trials.modsquad.world.ModWorldGen;
 import com.trials.net.ChatSync;
 import com.trials.net.TileDataSync;
 import com.trials.net.TileDataSync.Handler;
-import com.trials.modsquad.world.ModWorldGen;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -94,6 +94,8 @@ public class ModSquad
         OreDictionary.registerOre("dustLead", ModItems.dustLead);
         OreDictionary.registerOre("dustIron", ModItems.dustIron);
         OreDictionary.registerOre("dustGold", ModItems.dustGold);
+
+        Ref.getDownloads();
     }
 
     @EventHandler
@@ -105,7 +107,7 @@ public class ModSquad
     }
 
     @EventHandler
-    public void postInit(FMLPostInitializationEvent e){
+    public void postInit(FMLPostInitializationEvent event){
         // Inter-mod interaction
         TeslaRegistry.registerOreDictCrafting();
         proxy.postInit();
