@@ -259,17 +259,19 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
                 this.worldObj.setBlockState(this.pos, this.worldObj.getBlockState(this.pos).withProperty(STATE, States.ActiveState.INACTIVE));
             }
 
-            ItemStack stack = this.getStackInSlot(0); // inventory[0] != null ? FurnaceRecipes.instance().getSmeltingResult(inventory[0]) : null;
-            if ((stack != null) && (stack.stackSize > 0)) {
-                stack = stack.copy();
-                stack.stackSize = 1;
-                ItemStack smeltedStack = FurnaceRecipes.instance().getSmeltingResult(stack);
-                ItemStack output = this.getStackInSlot(1);
-                if ((smeltedStack != null) && (smeltedStack.stackSize > 0)
-                        && ((output == null) || (output.isItemEqual(smeltedStack)))
-                        && (((output == null) ? 0 : output.stackSize) + smeltedStack.stackSize <= smeltedStack.getMaxStackSize())) {
-                    this.isSmelting = true;
-                    this.workTime = this.lastWorkTime = this.getSmeltTime(smeltedStack);
+            if (this.container.getStoredPower() >= DRAW_PER_TICK) {
+                ItemStack stack = this.getStackInSlot(0); // inventory[0] != null ? FurnaceRecipes.instance().getSmeltingResult(inventory[0]) : null;
+                if ((stack != null) && (stack.stackSize > 0)) {
+                    stack = stack.copy();
+                    stack.stackSize = 1;
+                    ItemStack smeltedStack = FurnaceRecipes.instance().getSmeltingResult(stack);
+                    ItemStack output = this.getStackInSlot(1);
+                    if ((smeltedStack != null) && (smeltedStack.stackSize > 0)
+                            && ((output == null) || (output.isItemEqual(smeltedStack)))
+                            && (((output == null) ? 0 : output.stackSize) + smeltedStack.stackSize <= smeltedStack.getMaxStackSize())) {
+                        this.isSmelting = true;
+                        this.workTime = this.lastWorkTime = this.getSmeltTime(smeltedStack);
+                    }
                 }
             }
 //            int size;

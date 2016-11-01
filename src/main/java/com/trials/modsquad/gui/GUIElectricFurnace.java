@@ -65,7 +65,7 @@ public class GUIElectricFurnace extends GuiContainer {
 //            x.setInt(p, ((width - xSize)/2) + 8);
 //            y.setInt(p, ((height-ySize)/2)+15);
 //        } catch (IllegalAccessException e) { }
-        PowerBar bar = new PowerBar(this, uix + 8, uiy + 15, PowerBar.BackgroundType.LIGHT);
+        PowerBar bar = new PowerBar(this, uix + 8, uiy + 34 - (PowerBar.HEIGHT - 18) / 2, PowerBar.BackgroundType.LIGHT);
         bar.draw(tesla);
     }
 }
