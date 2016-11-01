@@ -26,7 +26,6 @@ import static com.trials.modsquad.Ref.GUI_ID_FURNACE;
 
 @SuppressWarnings("deprecation")
 public class BlockElectricFurnace extends Block {
-
     public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
     public static final PropertyEnum<States.ActiveState> STATE = PropertyEnum.create("state", States.ActiveState.class);
 
@@ -41,7 +40,6 @@ public class BlockElectricFurnace extends Block {
         setDefaultState(blockState.getBaseState().withProperty(PROPERTYFACING, EnumFacing.NORTH).withProperty(STATE, States.ActiveState.INACTIVE));
     }
 
-
     @Override
     protected BlockStateContainer createBlockState(){ return new BlockStateContainer(this, PROPERTYFACING, STATE); }
 
@@ -54,21 +52,25 @@ public class BlockElectricFurnace extends Block {
      */
     @Override
     public int getMetaFromState(IBlockState state) {
-        int value = state.getProperties().get(STATE).equals(States.ActiveState.INACTIVE)?1<<2:0;
-        for(EnumFacing facing : EnumFacing.Plane.HORIZONTAL)
-            if(state.getProperties().get(PROPERTYFACING).equals(facing)) {
+        int value = 0;
+        for (EnumFacing facing : EnumFacing.Plane.HORIZONTAL)
+            if (state.getProperties().get(PROPERTYFACING).equals(facing)) {
                 value = facing.ordinal();
                 break;
             }
+        value = (value << 1) + (state.getProperties().get(STATE).equals(States.ActiveState.INACTIVE) ? 0 : 1);
         return value;
     }
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        int i = meta>>2;
+        int active = meta % 2;
+        int facing = meta >> 1;
         try {
-            return getDefaultState().withProperty(PROPERTYFACING, EnumFacing.Plane.HORIZONTAL.facings()[meta - i]).withProperty(STATE, States.ActiveState.values()[i]);
-        }catch(Exception e){
+            return getDefaultState()
+                    .withProperty(PROPERTYFACING, EnumFacing.Plane.HORIZONTAL.facings()[facing])
+                    .withProperty(STATE, (active == 1) ? States.ActiveState.ACTIVE : States.ActiveState.INACTIVE);
+        } catch (Exception e) {
             return getDefaultState();
         }
     }

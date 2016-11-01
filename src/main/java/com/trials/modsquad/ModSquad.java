@@ -21,6 +21,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.logging.log4j.Logger;
 
 @Mod(modid = ModSquad.MODID, version = ModSquad.VERSION)
 public class ModSquad
@@ -40,8 +41,11 @@ public class ModSquad
     @SidedProxy(clientSide = "com.trials.modsquad.proxy.ClientProxy", serverSide = "com.trials.modsquad.proxy.ServerProxy")
     public static CommonProxy proxy;
 
+    public static Logger logger = null;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event){
+        ModSquad.logger = event.getModLog();
         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 
         config.load();

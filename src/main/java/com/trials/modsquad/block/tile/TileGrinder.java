@@ -263,10 +263,10 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
 
     private int syncTick = 0;
 
-    @SubscribeEvent
-    public void onEntityJoinEvent(EntityJoinWorldEvent event){
-        //NOP
-    }
+//    @SubscribeEvent
+//    public void onEntityJoinEvent(EntityJoinWorldEvent event){
+//        //NOP
+//    }
 
     @Override
     public void update() {

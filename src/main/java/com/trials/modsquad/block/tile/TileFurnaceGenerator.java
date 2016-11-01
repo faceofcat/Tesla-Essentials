@@ -151,10 +151,10 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
 
     private int syncTick = 0;
 
-    @SubscribeEvent
-    public void onEntityJoinEvent(EntityJoinWorldEvent event){
-        //NOP
-    }
+//    @SubscribeEvent
+//    public void onEntityJoinEvent(EntityJoinWorldEvent event){
+//        //NOP
+//    }
 
     @Override
     public void update() {
