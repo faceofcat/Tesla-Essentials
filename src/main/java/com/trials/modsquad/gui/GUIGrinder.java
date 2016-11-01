@@ -16,31 +16,25 @@ import org.lwjgl.opengl.GL11;
 import java.lang.reflect.Field;
 
 public class GUIGrinder extends GuiContainer{
-
     public static ResourceLocation grinderGUI = new ResourceLocation(ModSquad.MODID, "textures/gui/container/grinder.png");
-    private ITeslaHolder grinder;
-    private PowerBar p;
-    private Field x;
-    private Field y;
+
+    private TileGrinder grinder;
+
 
     public GUIGrinder(InventoryPlayer player, TileGrinder grinder) {
         super(new ContainerGrinder(player, grinder));
-        this.grinder = grinder.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
-        p = new PowerBar(this, ((width -xSize)/2) + 8, ((height-ySize)/2)+15, PowerBar.BackgroundType.LIGHT);
-        try {
-            x = PowerBar.class.getDeclaredField("x");
-            y = PowerBar.class.getDeclaredField("y");
-            x.setAccessible(true);
-            y.setAccessible(true);
-        } catch (NoSuchFieldException e) {}
+        this.grinder = grinder; // grinder.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         fontRendererObj.drawString("Grinder", 8, 6, 4210751);
-        String power = TeslaUtils.getDisplayableTeslaCount(grinder.getStoredPower());
-        String max = TeslaUtils.getDisplayableTeslaCount(grinder.getCapacity());
-        fontRendererObj.drawString(power+" / "+max, 56, 70, 4210751);
+        ITeslaHolder tesla = this.grinder.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
+        if (tesla != null) {
+            String power = TeslaUtils.getDisplayableTeslaCount(tesla.getStoredPower());
+            String max = TeslaUtils.getDisplayableTeslaCount(tesla.getCapacity());
+            fontRendererObj.drawString(power + " / " + max, 8, 72, 4210751);
+        }
     }
 
     @Override
@@ -48,11 +42,16 @@ public class GUIGrinder extends GuiContainer{
         mc.renderEngine.getTexture(grinderGUI);
         mc.renderEngine.bindTexture(grinderGUI);
         GL11.glColor4f(1f, 1f, 1f, 1f);
-        drawTexturedModalRect((width - xSize)/2, (height-ySize)/2, 0, 0, xSize, ySize);
-        try {
-            x.setInt(p, ((width - xSize)/2) + 8);
-            y.setInt(p, ((height-ySize)/2)+15);
-        } catch (IllegalAccessException e) { }
-        p.draw(grinder);
+
+        drawTexturedModalRect(super.guiLeft, super.guiTop, 0, 0, xSize, ySize);
+        if (this.grinder.getIsGrinding()) {
+            drawTexturedModalRect(super.guiLeft + 80, super.guiTop + 35, 177, 14, Math.round(22.0f * this.grinder.getGrinderProgress() / 100.0f), 16);
+        }
+
+        ITeslaHolder tesla = this.grinder.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
+        if (tesla != null) {
+            PowerBar bar = new PowerBar(this, super.guiLeft + 8, super.guiTop + 34 - (PowerBar.HEIGHT - 18) / 2, PowerBar.BackgroundType.LIGHT);
+            bar.draw(tesla);
+        }
     }
 }

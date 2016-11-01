@@ -54,11 +54,12 @@ public class BlockElectricFurnace extends Block {
     @Override
     public int getMetaFromState(IBlockState state) {
         int value = 0;
-        for (EnumFacing facing : EnumFacing.Plane.HORIZONTAL)
-            if (state.getProperties().get(PROPERTYFACING).equals(facing)) {
-                value = facing.ordinal();
-                break;
-            }
+//        for (EnumFacing facing : EnumFacing.Plane.HORIZONTAL)
+//            if (state.getProperties().get(PROPERTYFACING).equals(facing)) {
+//                value = facing.ordinal();
+//                break;
+//            }
+        value = state.getValue(PROPERTYFACING).getIndex();
         value = (value << 1) + (state.getProperties().get(STATE).equals(States.ActiveState.INACTIVE) ? 0 : 1);
         return value;
     }
@@ -66,10 +67,11 @@ public class BlockElectricFurnace extends Block {
     @Override
     public IBlockState getStateFromMeta(int meta) {
         int active = meta % 2;
-        int facing = meta >> 1;
+        EnumFacing facing = EnumFacing.getFront(meta >> 1);
+        if (facing.getAxis() == EnumFacing.Axis.Y) { facing = EnumFacing.NORTH; }
         try {
             return getDefaultState()
-                    .withProperty(PROPERTYFACING, EnumFacing.Plane.HORIZONTAL.facings()[facing])
+                    .withProperty(PROPERTYFACING, facing)
                     .withProperty(STATE, (active == 1) ? States.ActiveState.ACTIVE : States.ActiveState.INACTIVE);
         } catch (Exception e) {
             return getDefaultState();
