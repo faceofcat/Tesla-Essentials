@@ -2,6 +2,7 @@ package com.trials.modsquad.block.tile;
 
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.block.States;
+import com.trials.modsquad.block.machine.BlockElectricFurnace;
 import com.trials.net.TileDataSync;
 import com.trials.net.Updatable;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
@@ -299,10 +300,10 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
     }
 
     @Override
-    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate)
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState)
     {
         // if we don't do this the entity gets reset on every state change and we lose isSmelting and workTick
-        return false; // ???
+        return (false == (newState.getBlock() instanceof BlockElectricFurnace));
     }
 
     @Override

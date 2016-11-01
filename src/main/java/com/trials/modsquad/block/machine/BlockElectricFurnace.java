@@ -20,7 +20,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nullable;
 import static com.trials.modsquad.Ref.GUI_ID_FURNACE;
 
@@ -98,11 +99,12 @@ public class BlockElectricFurnace extends Block {
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) { // Drop item when block breaks
         TileEntity t = worldIn.getTileEntity(pos);
-        if(!(t instanceof IItemHandlerModifiable)) return;
-        IItemHandlerModifiable h = (IItemHandlerModifiable) t;
-        for(int i = 0; i<h.getSlots(); ++i) {
-            if(h.getStackInSlot(i)!=null && h.getStackInSlot(i).stackSize>0)
-                InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), h.getStackInSlot(i));
+        if (t instanceof IItemHandler) {
+            IItemHandler h = (IItemHandler) t;
+            for (int i = 0; i < h.getSlots(); ++i) {
+                if (h.getStackInSlot(i) != null && h.getStackInSlot(i).stackSize > 0)
+                    InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), h.getStackInSlot(i));
+            }
         }
         super.breakBlock(worldIn, pos, state);
     }
