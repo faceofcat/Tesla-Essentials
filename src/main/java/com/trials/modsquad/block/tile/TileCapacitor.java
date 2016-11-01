@@ -74,11 +74,11 @@ public class TileCapacitor extends TileEntity implements ITickable, Updatable {
 
     private int syncTick = 0;
 
-    @SuppressWarnings("unused")
-    @SubscribeEvent
-    public void onEntityJoinEvent(EntityJoinWorldEvent event){
-        //NOP
-    }
+//    @SuppressWarnings("unused")
+//    @SubscribeEvent
+//    public void onEntityJoinEvent(EntityJoinWorldEvent event){
+//        //NOP
+//    }
 
     @Override
     public void update() {
