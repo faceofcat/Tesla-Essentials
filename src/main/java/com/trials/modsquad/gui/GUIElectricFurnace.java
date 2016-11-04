@@ -50,22 +50,17 @@ public class GUIElectricFurnace extends GuiContainer {
         mc.renderEngine.getTexture(texture);
         mc.renderEngine.bindTexture(texture);
 
-        int uix = (width - xSize) / 2;
-        int uiy = (height - ySize) / 2;
-
         GL11.glColor4f(1f, 1f, 1f, 1f);
-        drawTexturedModalRect(uix, uiy, 0, 0, xSize, ySize);
+        drawTexturedModalRect(super.guiLeft, super.guiTop, 0, 0, xSize, ySize);
         if (this.furnace.getIsSmelting()) {
-            drawTexturedModalRect(uix + 80, uiy + 35, 177, 14, Math.round(22.0f * this.furnace.getSmeltProgress() / 100.0f), 16);
-            drawTexturedModalRect(uix + 57, uiy + 53, 176, 0, 14, 14);
+            drawTexturedModalRect(super.guiLeft + 80, super.guiTop + 35, 177, 14, Math.round(22.0f * this.furnace.getSmeltProgress() / 100.0f), 16);
+            drawTexturedModalRect(super.guiLeft + 57, super.guiTop + 53, 176, 0, 14, 14);
         }
 
         ITeslaHolder tesla = this.furnace.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN);
-//        try {
-//            x.setInt(p, ((width - xSize)/2) + 8);
-//            y.setInt(p, ((height-ySize)/2)+15);
-//        } catch (IllegalAccessException e) { }
-        PowerBar bar = new PowerBar(this, uix + 8, uiy + 34 - (PowerBar.HEIGHT - 18) / 2, PowerBar.BackgroundType.LIGHT);
-        bar.draw(tesla);
+        if (tesla != null) {
+            PowerBar bar = new PowerBar(this, super.guiLeft + 8, super.guiTop + 34 - (PowerBar.HEIGHT - 18) / 2, PowerBar.BackgroundType.LIGHT);
+            bar.draw(tesla);
+        }
     }
 }

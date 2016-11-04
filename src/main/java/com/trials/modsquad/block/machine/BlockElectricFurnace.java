@@ -20,7 +20,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nullable;
 import static com.trials.modsquad.Ref.GUI_ID_FURNACE;
 
@@ -53,11 +54,12 @@ public class BlockElectricFurnace extends Block {
     @Override
     public int getMetaFromState(IBlockState state) {
         int value = 0;
-        for (EnumFacing facing : EnumFacing.Plane.HORIZONTAL)
-            if (state.getProperties().get(PROPERTYFACING).equals(facing)) {
-                value = facing.ordinal();
-                break;
-            }
+//        for (EnumFacing facing : EnumFacing.Plane.HORIZONTAL)
+//            if (state.getProperties().get(PROPERTYFACING).equals(facing)) {
+//                value = facing.ordinal();
+//                break;
+//            }
+        value = state.getValue(PROPERTYFACING).getIndex();
         value = (value << 1) + (state.getProperties().get(STATE).equals(States.ActiveState.INACTIVE) ? 0 : 1);
         return value;
     }
@@ -65,10 +67,11 @@ public class BlockElectricFurnace extends Block {
     @Override
     public IBlockState getStateFromMeta(int meta) {
         int active = meta % 2;
-        int facing = meta >> 1;
+        EnumFacing facing = EnumFacing.getFront(meta >> 1);
+        if (facing.getAxis() == EnumFacing.Axis.Y) { facing = EnumFacing.NORTH; }
         try {
             return getDefaultState()
-                    .withProperty(PROPERTYFACING, EnumFacing.Plane.HORIZONTAL.facings()[facing])
+                    .withProperty(PROPERTYFACING, facing)
                     .withProperty(STATE, (active == 1) ? States.ActiveState.ACTIVE : States.ActiveState.INACTIVE);
         } catch (Exception e) {
             return getDefaultState();
@@ -98,11 +101,12 @@ public class BlockElectricFurnace extends Block {
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) { // Drop item when block breaks
         TileEntity t = worldIn.getTileEntity(pos);
-        if(!(t instanceof IItemHandlerModifiable)) return;
-        IItemHandlerModifiable h = (IItemHandlerModifiable) t;
-        for(int i = 0; i<h.getSlots(); ++i) {
-            if(h.getStackInSlot(i)!=null && h.getStackInSlot(i).stackSize>0)
-                InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), h.getStackInSlot(i));
+        if (t instanceof IItemHandler) {
+            IItemHandler h = (IItemHandler) t;
+            for (int i = 0; i < h.getSlots(); ++i) {
+                if (h.getStackInSlot(i) != null && h.getStackInSlot(i).stackSize > 0)
+                    InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), h.getStackInSlot(i));
+            }
         }
         super.breakBlock(worldIn, pos, state);
     }

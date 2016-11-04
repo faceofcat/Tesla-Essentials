@@ -2,6 +2,7 @@ package com.trials.modsquad.block.tile;
 
 import com.trials.modsquad.ModSquad;
 import com.trials.modsquad.block.States;
+import com.trials.modsquad.block.machine.BlockElectricFurnace;
 import com.trials.net.TileDataSync;
 import com.trials.net.Updatable;
 import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
@@ -22,8 +23,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nullable;
@@ -44,7 +43,7 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
     private int syncTick = 500;
 
     static final int DRAW_PER_TICK = 10;
-    static final int SMELT_TIME = 60;
+    static final int DEFAULT_SMELT_TIME = 60;
 
     private IItemHandlerModifiable extractor;
     private IItemHandlerModifiable inserter;
@@ -120,7 +119,7 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
     }
 
     private int getSmeltTime(ItemStack stack) {
-        return SMELT_TIME;
+        return DEFAULT_SMELT_TIME;
     }
 
     @Nullable
@@ -247,7 +246,7 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
                 this.isSmelting = false;
             }
             if (this.container.getStoredPower() < DRAW_PER_TICK) {
-                ModSquad.logger.info("ran out of power!");
+                // ModSquad.logger.info("ran out of power!");
                 this.isSmelting = false;
                 this.workTime = 0;
             } else {
@@ -299,10 +298,10 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
     }
 
     @Override
-    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate)
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState)
     {
         // if we don't do this the entity gets reset on every state change and we lose isSmelting and workTick
-        return false; // ???
+        return (false == (newState.getBlock() instanceof BlockElectricFurnace));
     }
 
     @Override
@@ -355,15 +354,20 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
         if (inventory[slot] == null) return null;
         if (amount >= inventory[slot].stackSize) {
             split = inventory[slot];
-            if (!simulate) inventory[slot] = null;
-            if (slot == 0 && isSmelting) {
-                isSmelting = false;
-                workTime = 0;
+            if (!simulate) {
+                inventory[slot] = null;
+                if (slot == 0 && isSmelting) {
+                    isSmelting = false;
+                    workTime = 0;
+                }
             }
             return split;
         }
-        if (simulate) (split = inventory[slot].copy()).stackSize = amount;
-        else split = inventory[slot].splitStack(amount);
+        if (simulate) {
+            (split = inventory[slot].copy()).stackSize = amount;
+        } else {
+            split = inventory[slot].splitStack(amount);
+        }
         return split;
     }
 
