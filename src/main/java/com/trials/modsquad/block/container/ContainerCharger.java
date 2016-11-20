@@ -35,10 +35,10 @@ public class ContainerCharger extends Container {
                 if(!mergeItemStack(is, charger.getSlots(), 36+charger.getSlots(), true)) return null;
             }
             else if(!mergeItemStack(is, 0, charger.getSlots(), false)) return null;
-            if(is.stackSize == 0) s.putStack(null);
+            if(is.getCount() == 0) s.putStack(null);
             else s.onSlotChanged();
-            if(is.stackSize == i.stackSize) return null;
-            s.onPickupFromSlot(playerIn, is);
+            if(is.getCount() == i.getCount()) return null;
+            s.onTake(playerIn, is);
         }
         return i;
     }

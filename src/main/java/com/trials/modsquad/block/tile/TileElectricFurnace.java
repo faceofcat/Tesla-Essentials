@@ -18,6 +18,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.datafix.walkers.ItemStackData;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -158,7 +159,7 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
         if (pos != null) {
             int dim = 0;
             for (int i : DimensionManager.getIDs()) {
-                if (DimensionManager.getWorld(i).equals(this.worldObj)) {
+                if (DimensionManager.getWorld(i).equals(this.getWorld())) {
                     dim = i;
                     break;
                 }
@@ -180,7 +181,9 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
             NBTTagCompound c = list.getCompoundTagAt(i);
             int slot = c.getInteger("Slot");
             if ((slot >= 0) && (slot < this.inventory.length)) {
-                this.inventory[slot] = ItemStack.loadItemStackFromNBT(c);
+                ItemStack stack = ItemStack.EMPTY.copy();
+                stack.deserializeNBT(c);
+                this.inventory[slot] = stack;
             }
         }
         this.isSmelting = compound.getBoolean("IsSmelting");
@@ -222,8 +225,8 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
 
         // ModSquad.logger.info("smelting: " + this.isSmelting + ", tick: " + this.workTime);
         if (this.isSmelting) {
-            if (this.worldObj.getBlockState(this.pos).getProperties().get(STATE).equals(States.ActiveState.INACTIVE)) {
-                this.worldObj.setBlockState(this.pos, this.worldObj.getBlockState(this.pos).withProperty(STATE, States.ActiveState.ACTIVE));
+            if (this.getWorld().getBlockState(this.pos).getProperties().get(STATE).equals(States.ActiveState.INACTIVE)) {
+                this.getWorld().setBlockState(this.pos, this.getWorld().getBlockState(this.pos).withProperty(STATE, States.ActiveState.ACTIVE));
             }
 
             if (this.workTime <= 0) {
@@ -232,12 +235,12 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
 //                    this.isSmelting = false;
 //                    workTime = 0;
                 }
-                else if (!this.worldObj.isRemote) { // we only do the actual smelting on server side
+                else if (!this.getWorld().isRemote) { // we only do the actual smelting on server side
                     ItemStack output = this.getStackInSlot(1);
                     if (output == null) {
                         output = FurnaceRecipes.instance().getSmeltingResult(s).copy();
                     } else {
-                        output.stackSize += FurnaceRecipes.instance().getSmeltingResult(s).stackSize;
+                        output.grow(FurnaceRecipes.instance().getSmeltingResult(s).getCount());
                     }
 
                     // make sure we are not dealing with a copy
@@ -254,20 +257,20 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
                 --this.workTime;
             }
         } else {
-            if (this.worldObj.getBlockState(this.pos).getProperties().get(STATE).equals(States.ActiveState.ACTIVE)) {
-                this.worldObj.setBlockState(this.pos, this.worldObj.getBlockState(this.pos).withProperty(STATE, States.ActiveState.INACTIVE));
+            if (this.getWorld().getBlockState(this.pos).getProperties().get(STATE).equals(States.ActiveState.ACTIVE)) {
+                this.getWorld().setBlockState(this.pos, this.getWorld().getBlockState(this.pos).withProperty(STATE, States.ActiveState.INACTIVE));
             }
 
             if (this.container.getStoredPower() >= DRAW_PER_TICK) {
                 ItemStack stack = this.getStackInSlot(0); // inventory[0] != null ? FurnaceRecipes.instance().getSmeltingResult(inventory[0]) : null;
-                if ((stack != null) && (stack.stackSize > 0)) {
+                if ((stack != null) && (stack.getCount() > 0)) {
                     stack = stack.copy();
-                    stack.stackSize = 1;
+                    stack.setCount(1);
                     ItemStack smeltedStack = FurnaceRecipes.instance().getSmeltingResult(stack);
                     ItemStack output = this.getStackInSlot(1);
-                    if ((smeltedStack != null) && (smeltedStack.stackSize > 0)
+                    if ((smeltedStack != null) && (smeltedStack.getCount() > 0)
                             && ((output == null) || (output.isItemEqual(smeltedStack)))
-                            && (((output == null) ? 0 : output.stackSize) + smeltedStack.stackSize <= smeltedStack.getMaxStackSize())) {
+                            && (((output == null) ? 0 : output.getCount()) + smeltedStack.getCount() <= smeltedStack.getMaxStackSize())) {
                         this.isSmelting = true;
                         this.workTime = this.lastWorkTime = this.getSmeltTime(smeltedStack);
                     }
@@ -281,11 +284,11 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
 //            }
         }
 
-        if (this.syncTick >= 10 && !this.worldObj.isRemote) {
+        if (this.syncTick >= 10 && !this.getWorld().isRemote) {
             if (this.pos != null) {
                 int dim = 0;
                 for (int i : DimensionManager.getIDs())
-                    if (DimensionManager.getWorld(i).equals(this.worldObj)) {
+                    if (DimensionManager.getWorld(i).equals(this.getWorld())) {
                         dim = i;
                         break;
                     }
@@ -328,13 +331,13 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
             return null;
         }
         if (inventory[slot].isItemEqual(stack)) {
-            if (inventory[slot].stackSize + stack.stackSize <= 64 && inventory[slot].stackSize + stack.stackSize <= stack.getMaxStackSize()) {
-                if (!simulate) inventory[slot].stackSize += stack.stackSize;
+            if (inventory[slot].getCount() + stack.getCount() <= 64 && inventory[slot].getCount() + stack.getCount() <= stack.getMaxStackSize()) {
+                if (!simulate) inventory[slot].grow(stack.getCount());
                 return null;
             }
             tmp = stack.copy();
-            tmp.stackSize = stack.getMaxStackSize() - inventory[slot].stackSize - stack.stackSize;
-            if (!simulate) inventory[slot].stackSize = stack.getMaxStackSize();
+            tmp.setCount(stack.getMaxStackSize() - inventory[slot].getCount() - stack.getCount());
+            if (!simulate) inventory[slot].setCount(stack.getMaxStackSize());
             return tmp;
         }
         if (simulate)
@@ -352,7 +355,7 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         ItemStack split;
         if (inventory[slot] == null) return null;
-        if (amount >= inventory[slot].stackSize) {
+        if (amount >= inventory[slot].getCount()) {
             split = inventory[slot];
             if (!simulate) {
                 inventory[slot] = null;
@@ -364,7 +367,7 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
             return split;
         }
         if (simulate) {
-            (split = inventory[slot].copy()).stackSize = amount;
+            (split = inventory[slot].copy()).setCount(amount);
         } else {
             split = inventory[slot].splitStack(amount);
         }

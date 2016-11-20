@@ -62,7 +62,7 @@ public class BlockCapacitor extends Block {
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking() || worldIn.isRemote) return false;
         TileEntity tileentity = worldIn.getTileEntity(pos);
         if(tileentity==null) return false;

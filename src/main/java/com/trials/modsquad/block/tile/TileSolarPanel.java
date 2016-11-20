@@ -47,7 +47,7 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
         if(pos!=null){
             int dim = 0;
             for(int i : DimensionManager.getIDs())
-                if(DimensionManager.getWorld(i).equals(worldObj)) {
+                if(DimensionManager.getWorld(i).equals(this.getWorld())) {
                     dim = i;
                     break;
                 }
@@ -78,19 +78,19 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
     @Override
     public void update() {
         if(solarContainer.getStoredPower()>0) {
-            int i = TeslaUtils.getConnectedCapabilities(CAPABILITY_CONSUMER, worldObj, pos).size();
+            int i = TeslaUtils.getConnectedCapabilities(CAPABILITY_CONSUMER, this.getWorld(), pos).size();
             if(i!=0)
-                solarContainer.takePower(TeslaUtils.distributePowerToAllFaces(worldObj, pos, Math.min(solarContainer.getStoredPower() / i, solarContainer.getOutputRate()), false), false);
+                solarContainer.takePower(TeslaUtils.distributePowerToAllFaces(this.getWorld(), pos, Math.min(solarContainer.getStoredPower() / i, solarContainer.getOutputRate()), false), false);
         }
         // Increase internal power supply
-        if (worldObj.getTopSolidOrLiquidBlock(pos).getY()-1 == pos.getY() && solarContainer.getStoredPower() < solarContainer.getCapacity() && worldObj.isDaytime()
-                && !worldObj.isRaining()) solarContainer.givePower(Math.min(solarContainer.getCapacity()-solarContainer.getStoredPower(), 5), false); // Fills as much as possible
+        if (this.getWorld().getTopSolidOrLiquidBlock(pos).getY()-1 == pos.getY() && solarContainer.getStoredPower() < solarContainer.getCapacity() && this.getWorld().isDaytime()
+                && !this.getWorld().isRaining()) solarContainer.givePower(Math.min(solarContainer.getCapacity()-solarContainer.getStoredPower(), 5), false); // Fills as much as possible
         // Sync after update
-        if(syncTick==10 && !worldObj.isRemote){
+        if(syncTick==10 && !this.getWorld().isRemote){
             if(pos!=null){
                 int dim = 0;
                 for(int i : DimensionManager.getIDs())
-                    if(DimensionManager.getWorld(i).equals(worldObj)) {
+                    if(DimensionManager.getWorld(i).equals(this.getWorld())) {
                         dim = i;
                         break;
                     }

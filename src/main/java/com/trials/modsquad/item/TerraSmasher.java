@@ -67,7 +67,7 @@ public class TerraSmasher extends ItemTool {
         if (container.getStoredPower() >= drain) {
             return false;
         } else {
-            player.addChatMessage(new TextComponentString("Error! Out of power!"));
+            player.sendMessage(new TextComponentString("Error! Out of power!"));
             return true;
         }
     }

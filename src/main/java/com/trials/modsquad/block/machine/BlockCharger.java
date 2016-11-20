@@ -64,7 +64,7 @@ public class BlockCharger extends Block {
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking()) return false;
         playerIn.openGui(ModSquad.instance, GUI_ID_CHARGER, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
@@ -86,7 +86,7 @@ public class BlockCharger extends Block {
         if(!(t instanceof IItemHandlerModifiable)) return;
         IItemHandlerModifiable h = (IItemHandlerModifiable) t;
         for(int i = 0; i<h.getSlots(); ++i) {
-            if(h.getStackInSlot(i)!=null && h.getStackInSlot(i).stackSize>0)
+            if(h.getStackInSlot(i)!=null && h.getStackInSlot(i).getCount()>0)
                 InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), h.getStackInSlot(i));
         }
         super.breakBlock(worldIn, pos, state);

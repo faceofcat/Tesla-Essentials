@@ -35,10 +35,10 @@ public class ContainerElectricFurnace extends Container {
                 if(!mergeItemStack(is, furnace.getSlots(), 36+furnace.getSlots(), true)) return null;
             }
             else if(!mergeItemStack(is, 0, furnace.getSlots(), false)) return null;
-            if(is.stackSize == 0) s.putStack(null);
+            if(is.getCount() == 0) s.putStack(null);
             else s.onSlotChanged();
-            if(is.stackSize == i.stackSize) return null;
-            s.onPickupFromSlot(playerIn, is);
+            if(is.getCount() == i.getCount()) return null;
+            s.onTake(playerIn, is);
         }
         return i;
     }

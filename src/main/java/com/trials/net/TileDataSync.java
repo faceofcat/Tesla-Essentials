@@ -54,7 +54,7 @@ public class TileDataSync implements IMessage {
     }
 
     public boolean sendToClassHandler(){
-        Updatable e = (Updatable) Minecraft.getMinecraft().theWorld.getTileEntity(pos);
+        Updatable e = (Updatable) Minecraft.getMinecraft().world.getTileEntity(pos);
         if(e==null) return false;
         e.update(data);
         return true;

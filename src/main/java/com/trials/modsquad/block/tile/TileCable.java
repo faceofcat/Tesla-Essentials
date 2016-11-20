@@ -54,8 +54,8 @@ public class TileCable extends TileEntity implements ITickable{
     }
 
     @Override
-    public void setWorldObj(World worldIn) {
-        super.setWorldObj(worldIn);
+    public void setWorld(World worldIn) {
+        super.setWorld(worldIn);
     }
 
     @Override
@@ -73,14 +73,14 @@ public class TileCable extends TileEntity implements ITickable{
     public void update() {
         //Check for adjacent block changes
         for(EnumFacing f : EnumFacing.VALUES)
-            if(worldObj.getTileEntity(pos.offset(f))!=null && !adjacentTiles.keySet().contains(worldObj.getTileEntity(pos.offset(f)))) {
+            if(this.getWorld().getTileEntity(pos.offset(f))!=null && !adjacentTiles.keySet().contains(this.getWorld().getTileEntity(pos.offset(f)))) {
                 needUpdate = true; // Register a change has occurred
                 break;
             }
         for(TileEntity f : adjacentTiles.keySet())
             if(needUpdate) break;
-            else if (worldObj.getTileEntity(pos.offset(adjacentTiles.get(f)))==null ||
-                    (worldObj.getTileEntity(pos.offset(adjacentTiles.get(f)))!=null && !worldObj.getTileEntity(pos.offset(adjacentTiles.get(f))).equals(f))) needUpdate = true;
+            else if (this.getWorld().getTileEntity(pos.offset(adjacentTiles.get(f)))==null ||
+                    (this.getWorld().getTileEntity(pos.offset(adjacentTiles.get(f)))!=null && !this.getWorld().getTileEntity(pos.offset(adjacentTiles.get(f))).equals(f))) needUpdate = true;
 
         if(needUpdate){
             netList = buildNetwork(new ArrayList<>()); // Rebuild network of connected Tiles
@@ -88,7 +88,7 @@ public class TileCable extends TileEntity implements ITickable{
         }
 
         // Does a specific check to see if updating the model is necessary. Only updates for client since graphics is clientside only
-        if(worldObj.isRemote && needUpdate()) updateModel();
+        if(this.getWorld().isRemote && needUpdate()) updateModel();
 
         updatedForTick = false;
     }
@@ -106,7 +106,7 @@ public class TileCable extends TileEntity implements ITickable{
 
         TileEntity e;
         adjacentTiles = new HashMap<>();
-        for(EnumFacing f : EnumFacing.VALUES) if((e=worldObj.getTileEntity(pos.offset(f)))!=null) adjacentTiles.put(e, f);
+        for(EnumFacing f : EnumFacing.VALUES) if((e=this.getWorld().getTileEntity(pos.offset(f)))!=null) adjacentTiles.put(e, f);
 
         for(TileEntity t : adjacentTiles.keySet())
             if(t instanceof TileCable) cables.add((TileCable)t);
@@ -125,8 +125,8 @@ public class TileCable extends TileEntity implements ITickable{
     public boolean needUpdate(){
         boolean update = false;
         for(int i = 0; i<EnumFacing.VALUES.length; ++i){
-            if(!update && adjacent[i]!=worldObj.getTileEntity(pos.offset(EnumFacing.VALUES[i]))) update=true;
-            adjacent[i]=worldObj.getTileEntity(pos.offset(EnumFacing.VALUES[i]));
+            if(!update && adjacent[i]!=this.getWorld().getTileEntity(pos.offset(EnumFacing.VALUES[i]))) update=true;
+            adjacent[i]=this.getWorld().getTileEntity(pos.offset(EnumFacing.VALUES[i]));
         }
         return update;
     }
@@ -136,7 +136,7 @@ public class TileCable extends TileEntity implements ITickable{
      */
     public void updateModel(){
         if(updatedForTick) return;
-        BasicCable.updateModel(worldObj, pos, worldObj.getBlockState(pos), false);
+        BasicCable.updateModel(this.getWorld(), pos, this.getWorld().getBlockState(pos), false);
     }
 
     public static final class ObjectPair<K, V>{

@@ -34,19 +34,19 @@ public class TileToaster extends TileEntity {
     }
 
     public boolean addSlot1() {
-        if (!worldObj.isRemote) {
-            IBlockState state = worldObj.getBlockState(pos);
+        if (!this.getWorld().isRemote) {
+            IBlockState state = this.getWorld().getBlockState(pos);
             if (!slot1) {
                 slot1 = true;
                 toast1 = false;
                 markDirty();
-                worldObj.notifyBlockUpdate(pos,state,state,3);
+                this.getWorld().notifyBlockUpdate(pos,state,state,3);
                 return true;
             } else if (!slot2) {
                 slot2 = true;
                 toast2 = false;
                 markDirty();
-                worldObj.notifyBlockUpdate(pos,state,state,3);
+                this.getWorld().notifyBlockUpdate(pos,state,state,3);
                 return true;
             }
         }
@@ -54,24 +54,24 @@ public class TileToaster extends TileEntity {
     }
 
     public void removeSlot1() {
-        if (!worldObj.isRemote) {
-            IBlockState state = worldObj.getBlockState(pos);
+        if (!this.getWorld().isRemote) {
+            IBlockState state = this.getWorld().getBlockState(pos);
             if (slot2) {
                 Item dropItem;
                 if (toast2) {dropItem = ModItems.toastSlice;} else {dropItem = ModItems.breadSlice;}
-                worldObj.spawnEntityInWorld(new EntityItem(worldObj, pos.getX()+.5, pos.getY()+1, pos.getZ()+.5, new ItemStack(dropItem)));
+                this.getWorld().spawnEntity(new EntityItem(this.getWorld(), pos.getX()+.5, pos.getY()+1, pos.getZ()+.5, new ItemStack(dropItem)));
                 slot2 = false;
                 toast2 = false;
                 markDirty();
-                worldObj.notifyBlockUpdate(pos,state,state,3);
+                this.getWorld().notifyBlockUpdate(pos,state,state,3);
             } else if(slot1) {
                 Item dropItem;
                 if (toast1) {dropItem = ModItems.toastSlice;} else {dropItem = ModItems.breadSlice;}
-                worldObj.spawnEntityInWorld(new EntityItem(worldObj, pos.getX()+.5, pos.getY()+1, pos.getZ()+.5, new ItemStack(dropItem)));
+                this.getWorld().spawnEntity(new EntityItem(this.getWorld(), pos.getX()+.5, pos.getY()+1, pos.getZ()+.5, new ItemStack(dropItem)));
                 slot1 = false;
                 toast1 = false;
                 markDirty();
-                worldObj.notifyBlockUpdate(pos,state,state,3);
+                this.getWorld().notifyBlockUpdate(pos,state,state,3);
             }
         }
     }
@@ -119,8 +119,8 @@ public class TileToaster extends TileEntity {
             toast2 = true;
         }
         markDirty();
-        IBlockState state = worldObj.getBlockState(pos);
-        worldObj.notifyBlockUpdate(pos,state,state,3);
+        IBlockState state = this.getWorld().getBlockState(pos);
+        this.getWorld().notifyBlockUpdate(pos,state,state,3);
     }
 
     @Override

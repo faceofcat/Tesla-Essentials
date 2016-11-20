@@ -64,13 +64,13 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
             return null;
         }
         if(fuel[slot].isItemEqual(stack)){
-            if(fuel[slot].stackSize+stack.stackSize<=64 && fuel[slot].stackSize+stack.stackSize<=stack.getMaxStackSize()) {
-                if(!simulate) fuel[slot].stackSize += stack.stackSize;
+            if(fuel[slot].getCount()+stack.getCount()<=64 && fuel[slot].getCount()+stack.getCount()<=stack.getMaxStackSize()) {
+                if(!simulate) fuel[slot].grow(stack.getCount());
                 return null;
             }
             tmp = stack.copy();
-            tmp.stackSize = stack.getMaxStackSize() - fuel[slot].stackSize - stack.stackSize;
-            if(!simulate) fuel[slot].stackSize = stack.getMaxStackSize();
+            tmp.setCount(stack.getMaxStackSize() - fuel[slot].getCount() - stack.getCount());
+            if(!simulate) fuel[slot].setCount(stack.getMaxStackSize());
             return tmp;
         }
         if(simulate) return fuel[slot];
@@ -83,12 +83,12 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         ItemStack split;
         if(fuel[slot]==null) return null;
-        if(amount>=fuel[slot].stackSize){
+        if(amount>=fuel[slot].getCount()){
             split = fuel[slot];
             if(!simulate) fuel[slot] = null;
             return split;
         }
-        if(simulate) (split = fuel[slot].copy()).stackSize = amount;
+        if(simulate) (split = fuel[slot].copy()).setCount(amount);
         else split = fuel[slot].splitStack(amount);
         return split;
     }
@@ -119,7 +119,7 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
         if(pos!=null){
             int dim = 0;
             for(int i : DimensionManager.getIDs())
-                if(DimensionManager.getWorld(i).equals(worldObj)) {
+                if(DimensionManager.getWorld(i).equals(this.getWorld())) {
                     dim = i;
                     break;
                 }
@@ -142,7 +142,9 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
         for(int i = 0; i<list.tagCount(); ++i){
             NBTTagCompound c = list.getCompoundTagAt(i);
             int slot = c.getInteger("Slot");
-            if(slot>=0 && slot < fuel.length) fuel[slot] = ItemStack.loadItemStackFromNBT(c);
+            if(slot>=0 && slot < fuel.length) {
+                fuel[slot] = new ItemStack(c);
+            }
         }
         isBurning = compound.getBoolean("IsGrinding");
         workTime = compound.getInteger("GrindTime");
@@ -163,21 +165,21 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
             if(workTime==0) isBurning = false;
             else --workTime;
         }
-        else if(fuel!=null && TileEntityFurnace.isItemFuel(fuel[0])){ // Fixes bug where generator tears through fuel supply
+        else if(fuel!=null && (fuel[0] != null) && TileEntityFurnace.isItemFuel(fuel[0])){ // Fixes bug where generator tears through fuel supply
             isBurning = true;
             workTime = (int) (TileEntityFurnace.getItemBurnTime(fuel[0])*0.625); // Automatically casts away eventual decimal points
             extractItem(0, 1, false);
         }
         if(container.getStoredPower()>0) {
-            int i = TeslaUtils.getConnectedCapabilities(CAPABILITY_CONSUMER, worldObj, pos).size();
+            int i = TeslaUtils.getConnectedCapabilities(CAPABILITY_CONSUMER, this.getWorld(), pos).size();
             if(i==0) return;
-            container.takePower(TeslaUtils.distributePowerToAllFaces(worldObj, pos, Math.min(container.getStoredPower() / i, container.getOutputRate()), false), false);
+            container.takePower(TeslaUtils.distributePowerToAllFaces(this.getWorld(), pos, Math.min(container.getStoredPower() / i, container.getOutputRate()), false), false);
         }
-        if(syncTick==10 && !worldObj.isRemote){
+        if(syncTick==10 && !this.getWorld().isRemote){
             if(pos!=null){
                 int dim = 0;
                 for(int i : DimensionManager.getIDs())
-                    if(DimensionManager.getWorld(i).equals(worldObj)) {
+                    if(DimensionManager.getWorld(i).equals(this.getWorld())) {
                         dim = i;
                         break;
                     }
@@ -213,7 +215,9 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
         for(int i = 0; i<list.tagCount(); ++i){
             NBTTagCompound c = list.getCompoundTagAt(i);
             int slot = c.getInteger("Slot");
-            if(slot>=0 && slot < fuel.length) fuel[slot] = ItemStack.loadItemStackFromNBT(c);
+            if(slot>=0 && slot < fuel.length) {
+                fuel[slot] = new ItemStack(c);
+            }
         }
         isBurning = compound.getBoolean("IsGrinding");
         workTime = compound.getInteger("GrindTime");

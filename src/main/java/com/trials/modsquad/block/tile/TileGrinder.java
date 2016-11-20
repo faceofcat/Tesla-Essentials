@@ -148,7 +148,7 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         if (pos != null) {
             int dim = 0;
             for (int i : DimensionManager.getIDs())
-                if (DimensionManager.getWorld(i).equals(worldObj)) {
+                if (DimensionManager.getWorld(i).equals(this.getWorld())) {
                     dim = i;
                     break;
                 }
@@ -174,8 +174,11 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         for (int i = 0; i < list.tagCount(); ++i) {
             NBTTagCompound c = list.getCompoundTagAt(i);
             int slot = c.getInteger("Slot");
-            if (slot >= 0 && slot < this.inventory.length)
-                this.inventory[slot] = ItemStack.loadItemStackFromNBT(c);
+            if (slot >= 0 && slot < this.inventory.length) {
+                ItemStack stack = ItemStack.EMPTY.copy();
+                stack.deserializeNBT(c);
+                this.inventory[slot] = stack;
+            }
         }
         this.isGrinding = compound.getBoolean("IsGrinding");
         this.grindTime = compound.getInteger("GrindTime");
@@ -202,13 +205,13 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
             return null;
         }
         if (inventory[slot].isItemEqual(stack)) {
-            if (inventory[slot].stackSize + stack.stackSize <= 64 && inventory[slot].stackSize + stack.stackSize <= stack.getMaxStackSize()) {
-                if (!simulate) inventory[slot].stackSize += stack.stackSize;
+            if (inventory[slot].getCount() + stack.getCount() <= 64 && inventory[slot].getCount() + stack.getCount() <= stack.getMaxStackSize()) {
+                if (!simulate) inventory[slot].grow(stack.getCount());
                 return null;
             }
             tmp = stack.copy();
-            tmp.stackSize = stack.getMaxStackSize() - inventory[slot].stackSize - stack.stackSize;
-            if (!simulate) inventory[slot].stackSize = stack.getMaxStackSize();
+            tmp.setCount(stack.getMaxStackSize() - inventory[slot].getCount() - stack.getCount());
+            if (!simulate) inventory[slot].setCount(stack.getMaxStackSize());
             return tmp;
         }
         if (simulate) return inventory[slot];
@@ -225,7 +228,7 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         ItemStack split;
         if (inventory[slot] == null) return null;
-        if (amount >= inventory[slot].stackSize) {
+        if (amount >= inventory[slot].getCount()) {
             split = inventory[slot];
             if (!simulate) {
                 inventory[slot] = null;
@@ -237,7 +240,7 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
             return split;
         }
         if (simulate) {
-            (split = inventory[slot].copy()).stackSize = amount;
+            (split = inventory[slot].copy()).setCount(amount);
         } else {
             split = inventory[slot].splitStack(amount);
         }
@@ -293,8 +296,11 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         for (int i = 0; i < list.tagCount(); ++i) {
             NBTTagCompound c = list.getCompoundTagAt(i);
             int slot = c.getInteger("Slot");
-            if (slot >= 0 && slot < this.inventory.length)
-                this.inventory[slot] = ItemStack.loadItemStackFromNBT(c);
+            if (slot >= 0 && slot < this.inventory.length) {
+                ItemStack stack = ItemStack.EMPTY.copy();
+                stack.deserializeNBT(c);
+                this.inventory[slot] = stack;
+            }
         }
         this.isGrinding = compound.getBoolean("IsGrinding");
         this.grindTime = compound.getInteger("GrindTime");
@@ -357,7 +363,7 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         if (this.isGrinding) {
             if (this.grindTime <= 0) {
                 ItemStack input = this.extractItem(0, 1, true);
-                if ((input != null) && !this.worldObj.isRemote) { // we only do the actual smelting on server side
+                if ((input != null) && !this.getWorld().isRemote) { // we only do the actual smelting on server side
                     ItemStack output = TeslaRegistry.teslaRegistry.getGrinderOutFromIn(input).copy();
                     ItemStack target = this.getStackInSlot(1);
                     boolean fail = false;
@@ -365,8 +371,8 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
                         target = output;
                     } else if (target.isItemEqual(output)) {
                         target = target.copy();
-                        if ((target.stackSize + output.stackSize) <= target.getMaxStackSize()) {
-                            target.stackSize += output.stackSize;
+                        if ((target.getCount() + output.getCount()) <= target.getMaxStackSize()) {
+                            target.grow(output.getCount());
                         }
                         else {
                             fail = true;
@@ -391,25 +397,25 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
             }
         } else if (this.container.getStoredPower() >= DRAW_PER_TICK) {
             ItemStack input = this.getStackInSlot(0);
-            if ((input != null) && (input.stackSize > 0)) {
+            if ((input != null) && (input.getCount() > 0)) {
                 input = input.copy();
-                input.stackSize = 1;
+                input.setCount(1);
                 ItemStack output = TeslaRegistry.teslaRegistry.getGrinderOutFromIn(input).copy();
                 ItemStack target = this.getStackInSlot(1);
-                if ((output != null) && (output.stackSize > 0)
+                if ((output != null) && (output.getCount() > 0)
                         && ((target == null) || (target.isItemEqual(output)))
-                        && (((target == null) ? 0 : target.stackSize) + output.stackSize <= output.getMaxStackSize())) {
+                        && (((target == null) ? 0 : target.getCount()) + output.getCount() <= output.getMaxStackSize())) {
                     this.isGrinding = true;
                     this.grindTime = this.lastGrindTime = DEFAULT_GRIND_TIME;
                 }
             }
         }
 
-        if (this.syncTick >= 10 && !this.worldObj.isRemote) {
+        if (this.syncTick >= 10 && !this.getWorld().isRemote) {
             if (this.pos != null) {
                 int dim = 0;
                 for (int i : DimensionManager.getIDs())
-                    if (DimensionManager.getWorld(i).equals(this.worldObj)) {
+                    if (DimensionManager.getWorld(i).equals(this.getWorld())) {
                         dim = i;
                         break;
                     }

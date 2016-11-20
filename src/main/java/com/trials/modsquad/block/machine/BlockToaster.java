@@ -67,11 +67,12 @@ public class BlockToaster extends Block {
         return false;
     }
 
-    @Nullable
-    @Override
-    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
-        return getBoundingBox(blockState, worldIn, pos);
-    }
+    // TODO: fix this for 1.11
+//    @Nullable
+//    @Override
+//    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
+//        return getBoundingBox(blockState, worldIn, pos);
+//    }
 
     @Override
     protected BlockStateContainer createBlockState()
@@ -119,15 +120,16 @@ public class BlockToaster extends Block {
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (!worldIn.isRemote) {
             TileEntity te = worldIn.getTileEntity(pos);
             if (te instanceof TileToaster) {
                 TileToaster toaster = (TileToaster) te;
+                ItemStack heldItem = playerIn.getHeldItem(hand);
                 if (!playerIn.isSneaking()) {
                     if (heldItem != null && heldItem.getItem() == ModItems.breadSlice) {
                         if (toaster.addSlot1()) {
-                            heldItem.stackSize--;
+                            heldItem.shrink(1);
                             return true;
                         }
                     }

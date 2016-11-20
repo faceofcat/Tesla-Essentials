@@ -70,7 +70,7 @@ public class BlockSolarPanel extends Block {
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if(worldIn.getTileEntity(pos) == null || playerIn.isSneaking() || worldIn.isRemote) return false;
         TileEntity tileentity = worldIn.getTileEntity(pos);
         long power = tileentity==null?0:tileentity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower();
@@ -92,15 +92,15 @@ public class BlockSolarPanel extends Block {
         if(!(t instanceof IInventory)) return;
         ItemStack s;
         for(int i = 0; i<((IInventory) t).getSizeInventory(); ++i)
-            if((s = ((IInventory) t).getStackInSlot(i))!=null && s.stackSize > 0){
+            if((s = ((IInventory) t).getStackInSlot(i))!=null && s.getCount() > 0){
                 EntityItem item = new EntityItem(worldIn, rand.nextFloat()*0.8f+0.1f, rand.nextFloat()*.8f+.1f, rand.nextFloat()*.8f+.1f,
-                        new ItemStack(s.getItem(), s.stackSize, s.getItemDamage()));
+                        new ItemStack(s.getItem(), s.getCount(), s.getItemDamage()));
                 if(s.hasTagCompound() && s.getTagCompound()!=null) item.getEntityItem().setTagCompound(s.getTagCompound().copy());
                 item.motionX = rand.nextGaussian() * .05f;
                 item.motionY = rand.nextGaussian() * .05f + .2f;
                 item.motionZ = rand.nextGaussian() * .05f;
-                worldIn.spawnEntityInWorld(item);
-                s.stackSize = 0;
+                worldIn.spawnEntity(item);
+                s.setCount(0);
             }
         super.breakBlock(worldIn, pos, state);
     }
@@ -124,11 +124,12 @@ public class BlockSolarPanel extends Block {
         return bBox;
     }
 
-    @Nullable
-    @Override
-    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
-        return cBox;
-    }
+    // TODO: fix this for 1.11
+//    @Nullable
+//    @Override
+//    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
+//        return cBox;
+//    }
 
     @Override
     public boolean isFullCube(IBlockState state) {

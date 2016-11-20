@@ -51,7 +51,7 @@ public class TileCapacitor extends TileEntity implements ITickable, Updatable {
         if(pos!=null){
             int dim = 0;
             for(int i : DimensionManager.getIDs())
-                if(DimensionManager.getWorld(i).equals(worldObj)) {
+                if(DimensionManager.getWorld(i).equals(this.getWorld())) {
                     dim = i;
                     break;
                 }
@@ -83,15 +83,15 @@ public class TileCapacitor extends TileEntity implements ITickable, Updatable {
     @Override
     public void update() {
         if(container.getStoredPower()>0) {
-            int i = TeslaUtils.getConnectedCapabilities(CAPABILITY_CONSUMER, worldObj, pos).size();
+            int i = TeslaUtils.getConnectedCapabilities(CAPABILITY_CONSUMER, this.getWorld(), pos).size();
             if(i==0) return;
-            container.takePower(TeslaUtils.distributePowerToAllFaces(worldObj, pos, Math.min(container.getStoredPower() / i, container.getOutputRate()), false), false);
+            container.takePower(TeslaUtils.distributePowerToAllFaces(this.getWorld(), pos, Math.min(container.getStoredPower() / i, container.getOutputRate()), false), false);
         }
-        if(syncTick==10 && !worldObj.isRemote){
+        if(syncTick==10 && !this.getWorld().isRemote){
             if(pos!=null){
                 int dim = 0;
                 for(int i : DimensionManager.getIDs())
-                    if(DimensionManager.getWorld(i).equals(worldObj)) {
+                    if(DimensionManager.getWorld(i).equals(this.getWorld())) {
                         dim = i;
                         break;
                     }

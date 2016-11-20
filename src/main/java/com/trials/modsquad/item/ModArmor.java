@@ -81,19 +81,19 @@ public class ModArmor extends ItemArmor {
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
         //noinspection ConstantConditions
 
-        if (player.inventory.armorInventory[3] !=null && player.inventory.armorInventory[3].getItem() == ModItems.electricHelmet
-                && player.inventory.armorInventory[2] !=null && player.inventory.armorInventory[2].getItem() == ModItems.jetChestplate
-                && player.inventory.armorInventory[1] !=null && player.inventory.armorInventory[1].getItem() == ModItems.electricLeggings
-                && player.inventory.armorInventory[0] !=null && player.inventory.armorInventory[0].getItem() == ModItems.electricBoots
-                && player.inventory.armorInventory[2].getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
-                && player.inventory.armorInventory[1].getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
-                && player.inventory.armorInventory[0].getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
-                && player.inventory.armorInventory[3].getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
+        if (player.inventory.armorInventory.get(3) !=null && player.inventory.armorInventory.get(3).getItem() == ModItems.electricHelmet
+                && player.inventory.armorInventory.get(2) !=null && player.inventory.armorInventory.get(2).getItem() == ModItems.jetChestplate
+                && player.inventory.armorInventory.get(1) !=null && player.inventory.armorInventory.get(1).getItem() == ModItems.electricLeggings
+                && player.inventory.armorInventory.get(0) !=null && player.inventory.armorInventory.get(0).getItem() == ModItems.electricBoots
+                && player.inventory.armorInventory.get(2).getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
+                && player.inventory.armorInventory.get(1).getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
+                && player.inventory.armorInventory.get(0).getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
+                && player.inventory.armorInventory.get(3).getCapability(TeslaCapabilities.CAPABILITY_HOLDER, EnumFacing.DOWN).getStoredPower() > 0
                 || player.isCreative()) {
             player.capabilities.allowFlying = true;
             if(player.capabilities.isFlying && !player.isCreative()) {
                 if (ticks == 80) {
-                    player.inventory.armorInventory[2].getCapability(TeslaCapabilities.CAPABILITY_PRODUCER, EnumFacing.DOWN).takePower(powerDrawPerTickOnFlight, false);
+                    player.inventory.armorInventory.get(2).getCapability(TeslaCapabilities.CAPABILITY_PRODUCER, EnumFacing.DOWN).takePower(powerDrawPerTickOnFlight, false);
                     ticks = 0;
                 } else {
                     ticks++;

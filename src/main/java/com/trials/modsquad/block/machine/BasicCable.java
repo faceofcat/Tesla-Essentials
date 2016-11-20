@@ -70,11 +70,10 @@ public class BasicCable extends Block {
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem,
-                                    EnumFacing side, float hitX, float hitY, float hitZ)
-    {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         //clock: Wrench
-        if(heldItem != null && heldItem.getItem().getClass() == ItemClock.class) worldIn.destroyBlock(pos, true); //Specifically ItemClock! No other derivatives count
+        // TODO: fix this for 1.11
+        // if(heldItem != null && heldItem.getItem().getClass() == ItemClock.class) worldIn.destroyBlock(pos, true); //Specifically ItemClock! No other derivatives count
         return false;
     }
 
@@ -140,7 +139,8 @@ public class BasicCable extends Block {
     @Override public boolean isCollidable() { return true; }
     @Override public boolean isBlockSolid(IBlockAccess worldIn, BlockPos pos, EnumFacing side) { return false; }
     @Override public boolean isNormalCube(IBlockState state) { return false; }
-    @Override public boolean isVisuallyOpaque() { return false; }
+    // TODO: find what to use in 1.11 for this
+//    @Override public boolean isVisuallyOpaque() { return false; }
     @Override public boolean isSideSolid(IBlockState base_state, IBlockAccess world, BlockPos pos, EnumFacing side) { return false; }
     @Override public boolean isBlockNormalCube(IBlockState state) { return false; }
     @Override public boolean isFullyOpaque(IBlockState state) { return false; }

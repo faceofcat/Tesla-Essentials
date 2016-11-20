@@ -21,7 +21,7 @@ public class ItemGameInfo extends Item {
     private static boolean firstMessage;
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand) {
         if (!firstMessage) {
             sendMessage(playerIn, "Downloads: " + Ref.downloads);
             firstMessage = true;
@@ -29,11 +29,10 @@ public class ItemGameInfo extends Item {
             firstMessage = false;
         }
 
-        return super.onItemRightClick(itemStackIn, worldIn, playerIn, hand);
+        return super.onItemRightClick(worldIn, playerIn, hand);
     }
 
     private static void sendMessage(EntityPlayer player, String msg) {
-        player.addChatMessage(new TextComponentString(msg));
+        player.sendMessage(new TextComponentString(msg));
     }
-
 }

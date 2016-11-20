@@ -54,7 +54,7 @@ public class TeslaCraftingHandler {
     {
         GrinderRecipe recipe = grinderRecipeList.get(index);
         ItemStack stack = recipe.getOutput();
-        stack.stackSize = recipe.getAmount();
+        stack.setCount(recipe.getAmount());
         return stack;
     }
 

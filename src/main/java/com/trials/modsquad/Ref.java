@@ -2,7 +2,7 @@ package com.trials.modsquad;
 
 import com.trials.modsquad.item.ModItems;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 import java.net.URL;
 import java.net.URLConnection;
@@ -21,9 +21,9 @@ public class Ref {
     public static final int ITEM_ID_POTATO = 4;
     public static final int GUI_CHAT_DRFIGHT = 52;
 
-    public static final int GUI_CHAT_POWER = Integer.MAX_VALUE-1;
+    public static final int GUI_CHAT_POWER = Integer.MAX_VALUE - 1;
 
-    public enum ItemReference{
+    public enum ItemReference {
         ELECTRIC_HELMET("electricHelmet", "ItemElectricHelmet"),
         ELECTRIC_CHESTPLATE("electricChestplate", "ItemElectricChestplate"),
         ELECTRIC_LEGGINGS("electricLeggings", "ItemElectricLeggings"),
@@ -31,39 +31,48 @@ public class Ref {
         TERRA_SMASHER("terraSmasher", "ItemTerraSmasher"),
         POWERED_POTATO("poweredPotato", "ItemPoweredPotato"),
         JET_CHESTPLATE("jetChestplate", "ItemJetChestplate"),
-        MOD_INFO("modInfo", "ItemModInfo")
-        ;
+        MOD_INFO("modInfo", "ItemModInfo");
 
         private String unlocalizedName, registryName;
-        ItemReference(String unlocalizedName, String registryName){
+
+        ItemReference(String unlocalizedName, String registryName) {
             this.unlocalizedName = unlocalizedName;
             this.registryName = registryName;
         }
 
-        public String getUnlocalizedName(){ return unlocalizedName; }
-        public String getRegistryName(){ return registryName; }
+        public String getUnlocalizedName() {
+            return unlocalizedName;
+        }
+
+        public String getRegistryName() {
+            return registryName;
+        }
     }
 
     public enum BlockReference {
-        LEAD_CABLE("lcable","BlockLeadCable"),
+        LEAD_CABLE("lcable", "BlockLeadCable"),
         MACHINE_GRINDER("grinder", "BlockGrinder"),
         MACHINE_FURNACE("electricFurnace", "BlockElectricFurnace"),
         GENERATOR_FURNACE("generatorFurnace", "FurnaceGenerator"),
         GENERATOR_SOLAR("solarPanel", "SolarPanel"),
         MACHINE_CAPACITOR("capacitor", "BlockCapacitor"),
         MACHINE_CHARGER("charger", "BlockCharger"),
-        TOASTER("toaster", "BlockToaster")
-        ;
+        TOASTER("toaster", "BlockToaster");
 
         private String unlocalizedName, registryName;
+
         BlockReference(String unlocalizedName, String registryName) {
             this.unlocalizedName = unlocalizedName;
             this.registryName = registryName;
         }
 
-        public String getUnlocalizedName() { return unlocalizedName; }
+        public String getUnlocalizedName() {
+            return unlocalizedName;
+        }
 
-        public String getRegistryName() { return registryName; }
+        public String getRegistryName() {
+            return registryName;
+        }
     }
 
     public enum OreReference {
@@ -72,14 +81,19 @@ public class Ref {
         LEAD("oreLead", "BlockOreLead");
 
         private String unlocalizedName, registryName;
-        OreReference (String unlocalizedName, String registryName) {
+
+        OreReference(String unlocalizedName, String registryName) {
             this.unlocalizedName = unlocalizedName;
             this.registryName = registryName;
         }
 
-        public String getUnlocalizedName() { return unlocalizedName; }
+        public String getUnlocalizedName() {
+            return unlocalizedName;
+        }
 
-        public String getRegistryName() { return registryName; }
+        public String getRegistryName() {
+            return registryName;
+        }
     }
 
     public enum OreBlockReference {
@@ -88,64 +102,84 @@ public class Ref {
         LEAD("blockLead", "BlockLead");
 
         private String unlocalizedName, registryName;
-        OreBlockReference (String unlocalizedName, String registryName) {
+
+        OreBlockReference(String unlocalizedName, String registryName) {
             this.unlocalizedName = unlocalizedName;
             this.registryName = registryName;
         }
 
-        public String getUnlocalizedName() { return unlocalizedName; }
+        public String getUnlocalizedName() {
+            return unlocalizedName;
+        }
 
-        public String getRegistryName() { return registryName; }
+        public String getRegistryName() {
+            return registryName;
+        }
     }
 
-    public enum IngotReference{
+    public enum IngotReference {
         COPPER("ingotCopper", "ItemIngotCopper"),
         TIN("ingotTin", "ItemIngotTin"),
         LEAD("ingotLead", "ItemIngotLead"),
-        ELECTRICALLOY("ingotElectricAlloy","ItemIngotElectricAlloy")
-        ;
+        ELECTRICALLOY("ingotElectricAlloy", "ItemIngotElectricAlloy");
         private String unlocalizedName, registryName;
-        IngotReference(String unlocalizedName, String registryName){
+
+        IngotReference(String unlocalizedName, String registryName) {
             this.unlocalizedName = unlocalizedName;
             this.registryName = registryName;
         }
 
-        public String getUnlocalizedName(){ return unlocalizedName; }
-        public String getRegistryName(){ return registryName; }
+        public String getUnlocalizedName() {
+            return unlocalizedName;
+        }
+
+        public String getRegistryName() {
+            return registryName;
+        }
     }
 
-    public enum DustReference{
+    public enum DustReference {
         COPPER("dustCopper", "ItemDustCopper"),
         TIN("dustTin", "ItemDustTin"),
         LEAD("dustLead", "ItemDustLead"),
         IRON("dustIron", "ItemDustIron"),
         GOLD("dustGold", "ItemDustGold"),
-        ELECTRICALLOY("dustElectricAlloy","ItemDustElectricAlloy")
-        ;
+        ELECTRICALLOY("dustElectricAlloy", "ItemDustElectricAlloy");
 
         private String unlocalizedName, registryName;
-        DustReference(String unlocalizedName, String registryName){
+
+        DustReference(String unlocalizedName, String registryName) {
             this.unlocalizedName = unlocalizedName;
             this.registryName = registryName;
         }
 
-        public String getUnlocalizedName(){ return unlocalizedName; }
-        public String getRegistryName(){ return registryName; }
+        public String getUnlocalizedName() {
+            return unlocalizedName;
+        }
+
+        public String getRegistryName() {
+            return registryName;
+        }
     }
 
     public enum BreadReference {
         BREAD_SLICE("slicedBread", "ItemSlicedBread"),
-        TOAST_SLICE("toast", "ItemToast")
-        ;
+        TOAST_SLICE("toast", "ItemToast");
 
         private String unlocalizedName, registeryName;
+
         BreadReference(String unlocalizedName, String registeryName) {
             this.unlocalizedName = unlocalizedName;
             this.registeryName = registeryName;
         }
 
-        public String getUnlocalizedName() { return unlocalizedName; }
-        public String getRegisteryName() { return registeryName; }
+        public String getUnlocalizedName() {
+            return unlocalizedName;
+        }
+
+        public String getRegisteryName() {
+            return registeryName;
+        }
 
     }
 
@@ -165,8 +199,7 @@ public class Ref {
             Matcher m = p.matcher(content);
             List<String> matches = new ArrayList<>();
             // print all the matches that we find
-            while (m.find())
-            {
+            while (m.find()) {
                 matches.add(m.group(1));
             }
             String downloads = matches.get(2);
@@ -176,6 +209,10 @@ public class Ref {
         }
     }
 
-    public static final CreativeTabs tabModSquad = new CreativeTabs("modSquad") { @Override public Item getTabIconItem() { return ModItems.jetChestplate; } };
-
+    public static final CreativeTabs tabModSquad = new CreativeTabs("modSquad") {
+        @Override
+        public ItemStack getTabIconItem() {
+            return new ItemStack(ModItems.jetChestplate);
+        }
+    };
 }

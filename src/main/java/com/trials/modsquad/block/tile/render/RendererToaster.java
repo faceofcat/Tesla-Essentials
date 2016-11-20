@@ -13,8 +13,8 @@ import org.lwjgl.opengl.GL11;
 
 public class RendererToaster extends TileEntitySpecialRenderer<TileToaster> {
 
-    private static final EntityItem bread = new EntityItem(Minecraft.getMinecraft().theWorld, 0,0,0, new ItemStack(ModItems.breadSlice));
-    private static final EntityItem toast = new EntityItem(Minecraft.getMinecraft().theWorld, 0,0,0, new ItemStack(ModItems.toastSlice));
+    private static final EntityItem bread = new EntityItem(Minecraft.getMinecraft().world, 0,0,0, new ItemStack(ModItems.breadSlice));
+    private static final EntityItem toast = new EntityItem(Minecraft.getMinecraft().world, 0,0,0, new ItemStack(ModItems.toastSlice));
 
     @Override
     public void renderTileEntityAt(TileToaster te, double x, double y, double z, float partialTicks, int destroyStage) {
@@ -26,7 +26,7 @@ public class RendererToaster extends TileEntitySpecialRenderer<TileToaster> {
 
         EnumFacing f;
         //Toasts need to be rotated more if this is true
-        boolean rotated = (f=(EnumFacing) Minecraft.getMinecraft().theWorld.getBlockState(te.getPos()).getProperties().get(BlockToaster.PROPERTYFACING)).equals(EnumFacing.WEST) || f.equals(EnumFacing.EAST);
+        boolean rotated = (f=(EnumFacing) Minecraft.getMinecraft().world.getBlockState(te.getPos()).getProperties().get(BlockToaster.PROPERTYFACING)).equals(EnumFacing.WEST) || f.equals(EnumFacing.EAST);
         if(te.getSlot1()) {
             GlStateManager.pushMatrix();
             {
