@@ -319,7 +319,8 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
 
     @Override
     public ItemStack getStackInSlot(int slot) {
-        return inventory[slot];
+        ItemStack stack = this.inventory[slot];
+        return (stack != null) ? stack : ItemStack.EMPTY;
     }
 
     @Override

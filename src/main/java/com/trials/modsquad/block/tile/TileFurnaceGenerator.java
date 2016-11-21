@@ -53,7 +53,8 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
     @Nullable
     @Override
     public ItemStack getStackInSlot(int index) {
-        return fuel[index];
+        ItemStack stack = this.fuel[index];
+        return (stack != null) ? stack : ItemStack.EMPTY;
     }
 
     @Override

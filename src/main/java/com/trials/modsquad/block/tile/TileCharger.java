@@ -32,8 +32,6 @@ import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 
 
 public class TileCharger extends TileEntity implements IItemHandlerModifiable, ITickable, Updatable {
-
-
     private ItemStack[] inventory;
     private BaseTeslaContainer container;
 
@@ -53,7 +51,8 @@ public class TileCharger extends TileEntity implements IItemHandlerModifiable, I
     @Nullable
     @Override
     public ItemStack getStackInSlot(int index) {
-        return inventory[index];
+        ItemStack stack = this.inventory[index];
+        return (stack != null) ? stack : ItemStack.EMPTY;
     }
 
     @Override

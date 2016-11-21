@@ -193,7 +193,8 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
     @Nullable
     @Override
     public ItemStack getStackInSlot(int index) {
-        return inventory[index];
+        ItemStack stack = this.inventory[index];
+        return (stack != null) ? stack : ItemStack.EMPTY;
     }
 
     @Override
