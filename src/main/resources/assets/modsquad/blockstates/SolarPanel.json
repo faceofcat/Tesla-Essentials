@@ -1,8 +1,0 @@
-{
-  "variants": {
-    "facing=north":  { "model": "modsquad:solarPanel" },
-    "facing=south":  { "model": "modsquad:solarPanel", "y": 180, "uvlock": false },
-    "facing=east": { "model": "modsquad:solarPanel", "y": 90, "uvlock": false },
-    "facing=west": { "model": "modsquad:solarPanel", "y": 270, "uvlock": false }
-  }
-}
