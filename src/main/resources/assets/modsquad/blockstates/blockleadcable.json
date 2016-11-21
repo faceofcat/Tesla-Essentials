@@ -1,0 +1,61 @@
+{
+
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "0": "modsquad:blocks/cable"
+        },
+        "model": "modsquad:cable_b",
+        "uvlock": true
+    },
+    "variants": {
+        "north": {
+            "true": {
+              "submodel": {
+                "connector_n": { "model": "modsquad:cable_c", "x": 270 }
+              }
+            },
+            "false": { }
+        },
+        "south": {
+            "true": {
+              "submodel": {
+                "connector_s": { "model": "modsquad:cable_c", "x": 90 }
+              }
+            },
+            "false": { }
+        },
+        "east": {
+            "true": {
+              "submodel": {
+                "connector_e": { "model": "modsquad:cable_c", "x": 270, "y": 90 }
+              }
+            },
+            "false": { }
+        },
+        "west": {
+            "true": {
+              "submodel": {
+                "connector_w": { "model": "modsquad:cable_c", "x": 90, "y": 90 }
+              }
+            },
+            "false": { }
+        },
+        "up": {
+            "true": {
+              "submodel": {
+                "connector_u": { "model": "modsquad:cable_c", "x": 180 }
+              }
+            },
+            "false": { }
+        },
+        "down": {
+            "true": {
+              "submodel": {
+                "connector_d": { "model": "modsquad:cable_c" }
+              }
+            },
+            "false": { }
+        }
+    }
+}

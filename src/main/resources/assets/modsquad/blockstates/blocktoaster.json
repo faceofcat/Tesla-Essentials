@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north":  { "model": "modsquad:toaster" },
+    "facing=south":  { "model": "modsquad:toaster", "y": 180, "uvlock": false },
+    "facing=east": { "model": "modsquad:toaster", "y": 90, "uvlock": false },
+    "facing=west": { "model": "modsquad:toaster", "y": 270, "uvlock": false }
+  }
+}

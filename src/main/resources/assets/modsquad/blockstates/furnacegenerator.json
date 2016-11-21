@@ -1,0 +1,16 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "modsquad:generatorFurnace",
+    "y": 180,
+    "uvlock": false
+  },
+  "variants": {
+    "facing": {
+      "north":  { "model": "modsquad:generatorFurnace", "y": 180, "uvlock": false },
+      "south":  { "model": "modsquad:generatorFurnace" },
+      "east": { "model": "modsquad:generatorFurnace", "y": 270, "uvlock": false },
+      "west": { "model": "modsquad:generatorFurnace", "y": 90, "uvlock": false }
+    }
+  }
+}

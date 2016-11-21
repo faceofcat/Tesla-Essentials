@@ -1,0 +1,22 @@
+{
+  "forge_marker": 1,
+  "defaults":
+  {
+    "model": "modsquad:electricFurnace",
+    "uvlock": true
+  },
+  "variants":
+  {
+    "facing":
+    {
+        "north": {},
+        "south": { "y": 180, "uvlock": false },
+        "east": { "y": 90, "uvlock": false },
+        "west": { "y": 270, "uvlock": false }
+     },
+    "state": {
+        "active": { "model": "modsquad:electricFurnaceOn" },
+        "inactive": { "model": "modsquad:electricFurnace" }
+    }
+  }
+}

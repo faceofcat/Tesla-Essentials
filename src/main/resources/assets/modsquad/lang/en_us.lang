@@ -1,0 +1,41 @@
+item.ingotCopper.name=Copper Ingot
+item.ingotTin.name=Tin Ingot
+item.ingotLead.name=Lead Ingot
+item.ingotElectricAlloy.name=Electric Alloy Ingot
+
+item.dustCopper.name=Copper Dust
+item.dustTin.name=Tin Dust
+item.dustLead.name=Lead Dust
+item.dustElectricAlloy.name=Electric Alloy Dust
+item.dustIron.name=Iron Dust
+item.dustGold.name=Gold Dust
+
+item.terraSmasher.name=Terra Smasher
+item.poweredPotato.name=Powered Potato!
+
+item.electricHelmet.name=Electric Helmet
+item.electricChestplate.name=Electric Chestplate
+item.electricLeggings.name=Electric Leggings
+item.electricBoots.name=Electric Boots
+item.jetChestplate.name=Electric JetPlate
+
+item.slicedBread.name=Sliced Bread
+item.toast.name=Toast
+
+tile.oreCopper.name=Copper Ore
+tile.oreTin.name=Tin Ore
+tile.oreLead.name=Lead Ore
+
+tile.blockCopper.name=Block of Copper
+tile.blockTin.name=Block of Tin
+tile.blockLead.name=Block of Lead
+
+tile.grinder.name=Grinder
+tile.electricFurnace.name=Electric Furnace(WIP)
+tile.lcable.name=Lead Cable
+tile.generatorFurnace.name=Furnace Generator
+tile.charger.name=Charger
+tile.capacitor.name=Capacitor
+tile.solarPanel.name=Solar Panel
+
+itemGroup.modSquad=Tesla Essentials

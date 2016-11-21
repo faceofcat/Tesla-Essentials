@@ -1,0 +1,9 @@
+{
+  "variants": {
+    "facing=north":  { "model": "modsquad:grinder" },
+    "facing=south":  { "model": "modsquad:grinder", "y": 180, "uvlock": false },
+    "facing=east": { "model": "modsquad:grinder", "y": 90, "uvlock": false },
+    "facing=west": { "model": "modsquad:grinder", "y": 270, "uvlock": false }
+
+  }
+}
