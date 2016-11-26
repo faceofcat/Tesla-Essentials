@@ -25,19 +25,19 @@ public class ContainerCharger extends Container {
     @Nullable
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-        ItemStack i = null;
+        ItemStack i = ItemStack.EMPTY;
         Slot s = inventorySlots.get(index);
         if(s!=null && s.getHasStack()){
             ItemStack is = s.getStack();
-            assert is!=null;
+            assert ((is!=null) || (!is.isEmpty()));
             i = is.copy();
             if(index<charger.getSlots()){
-                if(!mergeItemStack(is, charger.getSlots(), 36+charger.getSlots(), true)) return null;
+                if(!mergeItemStack(is, charger.getSlots(), 36+charger.getSlots(), true)) return ItemStack.EMPTY;
             }
-            else if(!mergeItemStack(is, 0, charger.getSlots(), false)) return null;
+            else if(!mergeItemStack(is, 0, charger.getSlots(), false)) return ItemStack.EMPTY;
             if(is.getCount() == 0) s.putStack(null);
             else s.onSlotChanged();
-            if(is.getCount() == i.getCount()) return null;
+            if(is.getCount() == i.getCount()) return ItemStack.EMPTY;
             s.onTake(playerIn, is);
         }
         return i;
