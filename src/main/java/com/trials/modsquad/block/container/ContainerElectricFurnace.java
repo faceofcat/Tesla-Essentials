@@ -26,18 +26,29 @@ public class ContainerElectricFurnace extends Container {
     @Nullable
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-        ItemStack i = null;
+        ItemStack i = ItemStack.EMPTY;
         Slot s = inventorySlots.get(index);
-        if(s!=null && s.getHasStack() && s.getStack()!=null){
+        if (s != null && s.getHasStack()) {
             ItemStack is = s.getStack();
+            assert ((is != null) || !is.isEmpty());
             i = is.copy();
-            if(index<furnace.getSlots()){
-                if(!mergeItemStack(is, furnace.getSlots(), 36+furnace.getSlots(), true)) return null;
+            if (index < furnace.getSlots()) {
+                if (!mergeItemStack(is, furnace.getSlots(), 36 + furnace.getSlots(), true)) {
+                    return ItemStack.EMPTY;
+                }
             }
-            else if(!mergeItemStack(is, 0, furnace.getSlots(), false)) return null;
-            if(is.getCount() == 0) s.putStack(null);
-            else s.onSlotChanged();
-            if(is.getCount() == i.getCount()) return null;
+            else if (!mergeItemStack(is, 0, furnace.getSlots(), false)) {
+                return ItemStack.EMPTY;
+            }
+            if (is.getCount() == 0) {
+                s.putStack(ItemStack.EMPTY);
+            }
+            else {
+                s.onSlotChanged();
+            }
+            if (is.getCount() == i.getCount()) {
+                return ItemStack.EMPTY;
+            }
             s.onTake(playerIn, is);
         }
         return i;

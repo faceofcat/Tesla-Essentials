@@ -32,19 +32,29 @@ public class ContainerFurnaceGenerator extends Container {
     @Nullable
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-        ItemStack i = null;
+        ItemStack i = ItemStack.EMPTY;
         Slot s = inventorySlots.get(index);
-        if(s!=null && s.getHasStack()){
+        if (s != null && s.getHasStack()) {
             ItemStack is = s.getStack();
-            assert is!=null;
+            assert ((is != null) || !is.isEmpty());
             i = is.copy();
-            if(index<generator.getSlots()){
-                if(!mergeItemStack(is, generator.getSlots(), 36+generator.getSlots(), true)) return null;
+            if (index < generator.getSlots()) {
+                if (!mergeItemStack(is, generator.getSlots(), 36 + generator.getSlots(), true)) {
+                    return ItemStack.EMPTY;
+                }
             }
-            else if(!mergeItemStack(is, 0, generator.getSlots(), false)) return null;
-            if(is.getCount() == 0) s.putStack(null);
-            else s.onSlotChanged();
-            if(is.getCount() == i.getCount()) return null;
+            else if (!mergeItemStack(is, 0, generator.getSlots(), false)) {
+                return ItemStack.EMPTY;
+            }
+            if (is.getCount() == 0) {
+                s.putStack(ItemStack.EMPTY);
+            }
+            else {
+                s.onSlotChanged();
+            }
+            if (is.getCount() == i.getCount()) {
+                return ItemStack.EMPTY;
+            }
             s.onTake(playerIn, is);
         }
         return i;

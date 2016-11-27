@@ -401,7 +401,10 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
             if ((input != null) && (input.getCount() > 0)) {
                 input = input.copy();
                 input.setCount(1);
-                ItemStack output = TeslaRegistry.teslaRegistry.getGrinderOutFromIn(input).copy();
+                ItemStack output = TeslaRegistry.teslaRegistry.getGrinderOutFromIn(input);
+                if (output != null) {
+                    output = output.copy();
+                }
                 ItemStack target = this.getStackInSlot(1);
                 if ((output != null) && (output.getCount() > 0)
                         && ((target == null) || (target.isItemEqual(output)))

@@ -30,18 +30,29 @@ public class ContainerGrinder extends Container {
     @Nullable
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-        ItemStack i = null;
+        ItemStack i = ItemStack.EMPTY;
         Slot s = inventorySlots.get(index);
-        if(s!=null && s.getHasStack() && s.getStack()!=null){
+        if (s != null && s.getHasStack()) {
             ItemStack is = s.getStack();
+            assert ((is != null) || !is.isEmpty());
             i = is.copy();
-            if(index<grinder.getSlots()){
-                if(!mergeItemStack(is, grinder.getSlots(), 36+grinder.getSlots(), true)) return null;
+            if (index < grinder.getSlots()) {
+                if (!mergeItemStack(is, grinder.getSlots(), 36 + grinder.getSlots(), true)) {
+                    return ItemStack.EMPTY;
+                }
             }
-            else if(!mergeItemStack(is, 0, grinder.getSlots(), false)) return null;
-            if(is.getCount() == 0) s.putStack(null);
-            else s.onSlotChanged();
-            if(is.getCount() == i.getCount()) return null;
+            else if (!mergeItemStack(is, 0, grinder.getSlots(), false)) {
+                return ItemStack.EMPTY;
+            }
+            if (is.getCount() == 0) {
+                s.putStack(ItemStack.EMPTY);
+            }
+            else {
+                s.onSlotChanged();
+            }
+            if (is.getCount() == i.getCount()) {
+                return ItemStack.EMPTY;
+            }
             s.onTake(playerIn, is);
         }
         return i;
