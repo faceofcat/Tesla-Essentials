@@ -58,6 +58,11 @@ public class TileFurnaceGenerator extends TileEntity implements IItemHandlerModi
     }
 
     @Override
+    public int getSlotLimit(int slot) {
+        return 64;
+    }
+
+    @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         ItemStack tmp;
         if(fuel[slot] == null){

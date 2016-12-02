@@ -78,6 +78,11 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
                 return TileElectricFurnace.this.extractItem(slot + 1, amount, simulate);
             }
+
+            @Override
+            public int getSlotLimit(int slot) {
+                return 64;
+            }
         };
         inserter = new IItemHandlerModifiable() {
             @Override
@@ -103,6 +108,11 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
             @Override
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
                 return null;
+            }
+
+            @Override
+            public int getSlotLimit(int slot) {
+                return 64;
             }
         };
     }
@@ -321,6 +331,11 @@ public class TileElectricFurnace extends TileEntity implements IItemHandlerModif
     public ItemStack getStackInSlot(int slot) {
         ItemStack stack = this.inventory[slot];
         return (stack != null) ? stack : ItemStack.EMPTY;
+    }
+
+    @Override
+    public int getSlotLimit(int slot) {
+        return 64;
     }
 
     @Override

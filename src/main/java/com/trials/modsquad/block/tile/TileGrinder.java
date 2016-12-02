@@ -78,6 +78,11 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
                 return TileGrinder.this.extractItem(slot+1, amount, simulate);
             }
+
+            @Override
+            public int getSlotLimit(int slot) {
+                return 64;
+            }
         };
         inserter = new IItemHandlerModifiable() {
             @Override
@@ -103,6 +108,11 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
             @Override
             public ItemStack extractItem(int slot, int amount, boolean simulate) {
                 return null;
+            }
+
+            @Override
+            public int getSlotLimit(int slot) {
+                return 64;
             }
         };
     }
@@ -195,6 +205,11 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
     public ItemStack getStackInSlot(int index) {
         ItemStack stack = this.inventory[index];
         return (stack != null) ? stack : ItemStack.EMPTY;
+    }
+
+    @Override
+    public int getSlotLimit(int slot) {
+        return 64;
     }
 
     @Override

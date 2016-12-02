@@ -25,9 +25,9 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "1.11-13.19.0.2160"
+    version = "1.11-13.19.0.2178"
     runDir = "run"
-    mappings = "snapshot_20161126"
+    mappings = "snapshot_20161202"
     makeObfSourceJar = false
 }
 

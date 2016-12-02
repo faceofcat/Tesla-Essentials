@@ -42,7 +42,6 @@ public class TileCharger extends TileEntity implements IItemHandlerModifiable, I
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-
     @Override
     public int getSlots() {
         return inventory.length;
@@ -53,6 +52,11 @@ public class TileCharger extends TileEntity implements IItemHandlerModifiable, I
     public ItemStack getStackInSlot(int index) {
         ItemStack stack = this.inventory[index];
         return (stack != null) ? stack : ItemStack.EMPTY;
+    }
+
+    @Override
+    public int getSlotLimit(int slot) {
+        return 64;
     }
 
     @Override
