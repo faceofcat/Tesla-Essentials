@@ -1,14 +1,14 @@
 package com.trials.modsquad;
 
-import com.trials.modsquad.recipe.TeslaRegistry;
 import com.trials.modsquad.block.ModBlocks;
 import com.trials.modsquad.gui.GUIHandler;
 import com.trials.modsquad.item.ModItems;
 import com.trials.modsquad.proxy.CommonProxy;
+import com.trials.modsquad.recipe.TeslaRegistry;
+import com.trials.modsquad.world.ModWorldGen;
 import com.trials.net.ChatSync;
 import com.trials.net.TileDataSync;
 import com.trials.net.TileDataSync.Handler;
-import com.trials.modsquad.world.ModWorldGen;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -21,6 +21,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.logging.log4j.Logger;
 
 @Mod(modid = ModSquad.MODID, version = ModSquad.VERSION)
 public class ModSquad
@@ -40,8 +41,11 @@ public class ModSquad
     @SidedProxy(clientSide = "com.trials.modsquad.proxy.ClientProxy", serverSide = "com.trials.modsquad.proxy.ServerProxy")
     public static CommonProxy proxy;
 
+    public static Logger logger = null;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event){
+        ModSquad.logger = event.getModLog();
         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 
         config.load();
@@ -94,6 +98,8 @@ public class ModSquad
         OreDictionary.registerOre("dustLead", ModItems.dustLead);
         OreDictionary.registerOre("dustIron", ModItems.dustIron);
         OreDictionary.registerOre("dustGold", ModItems.dustGold);
+
+        Ref.getDownloads();
     }
 
     @EventHandler
@@ -105,7 +111,7 @@ public class ModSquad
     }
 
     @EventHandler
-    public void postInit(FMLPostInitializationEvent e){
+    public void postInit(FMLPostInitializationEvent event){
         // Inter-mod interaction
         TeslaRegistry.registerOreDictCrafting();
         proxy.postInit();

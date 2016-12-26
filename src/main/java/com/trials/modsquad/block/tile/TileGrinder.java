@@ -1,6 +1,7 @@
 package com.trials.modsquad.block.tile;
 
 import com.trials.modsquad.ModSquad;
+import com.trials.modsquad.block.States;
 import com.trials.modsquad.recipe.TeslaRegistry;
 import com.trials.net.TileDataSync;
 import com.trials.net.Updatable;
@@ -8,6 +9,7 @@ import net.darkhax.tesla.api.implementation.BaseTeslaContainer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,15 +27,20 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nullable;
+
+import static com.trials.modsquad.block.machine.BlockElectricFurnace.STATE;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_CONSUMER;
 import static net.darkhax.tesla.capability.TeslaCapabilities.CAPABILITY_HOLDER;
 
 public class TileGrinder extends TileEntity implements IItemHandlerModifiable, ITickable, Updatable {
     // Primitives
     private int grindTime;
-    public static final int DEFAULT_GRIND_TIME = 59;
+    private int lastGrindTime = 0;
+    public static final int DEFAULT_GRIND_TIME = 60;
     public static final int DRAW_PER_TICK = 10;
     private boolean isGrinding = false;
+
+    private int syncTick = 0;
 
     // Objects
     private final ItemStack[] inventory; // I'm an idiot
@@ -100,6 +107,17 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         };
     }
 
+    public boolean getIsGrinding() {
+        return this.isGrinding;
+    }
+
+    public int getGrinderProgress() {
+        if (!this.isGrinding || (this.lastGrindTime <= 0)) {
+            return 0;
+        }
+
+        return Math.min(100, Math.max(0, Math.round((float) (this.lastGrindTime - Math.max(0, this.grindTime)) * 100.0f / (float) this.lastGrindTime)));
+    }
 
     @Nullable
     @Override
@@ -112,27 +130,31 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         NBTTagList list = new NBTTagList();
-        for(int i = 0; i<inventory.length; ++i)
-            if(inventory[i]!=null){
+        for (int i = 0; i < this.inventory.length; ++i) {
+            if (this.inventory[i] != null) {
                 NBTTagCompound comp = new NBTTagCompound();
                 comp.setInteger("Slot", i);
-                inventory[i].writeToNBT(comp);
+                this.inventory[i].writeToNBT(comp);
                 list.appendTag(comp);
             }
+        }
         compound.setTag("Inventory", list);
-        compound.setBoolean("IsGrinding", isGrinding);
-        compound.setInteger("GrindTime", grindTime);
-        compound.setTag("Container", container.serializeNBT());
+        compound.setBoolean("IsGrinding", this.isGrinding);
+        compound.setInteger("GrindTime", this.grindTime);
+        compound.setInteger("LastGrindTime", this.lastGrindTime);
+        compound.setTag("Container", this.container.serializeNBT());
         compound = super.writeToNBT(compound);
-        if(pos!=null){
+
+        if (pos != null) {
             int dim = 0;
-            for(int i : DimensionManager.getIDs())
-                if(DimensionManager.getWorld(i).equals(worldObj)) {
+            for (int i : DimensionManager.getIDs())
+                if (DimensionManager.getWorld(i).equals(worldObj)) {
                     dim = i;
                     break;
                 }
             ModSquad.channel.sendToAll(new TileDataSync(pos, compound.toString(), dim));
         }
+
         return compound;
     }
 
@@ -145,17 +167,21 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
-        if(compound.hasKey("Container")) container.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
+
+        if (compound.hasKey("Container"))
+            this.container.deserializeNBT((NBTTagCompound)compound.getTag("Container"));
         NBTTagList list = compound.getTagList("Inventory", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
-        for(int i = 0; i<list.tagCount(); ++i){
+        for (int i = 0; i < list.tagCount(); ++i) {
             NBTTagCompound c = list.getCompoundTagAt(i);
             int slot = c.getInteger("Slot");
-            if(slot>=0 && slot < inventory.length) inventory[slot] = ItemStack.loadItemStackFromNBT(c);
+            if (slot >= 0 && slot < this.inventory.length)
+                this.inventory[slot] = ItemStack.loadItemStackFromNBT(c);
         }
-        isGrinding = compound.getBoolean("IsGrinding");
-        grindTime = compound.getInteger("GrindTime");
-
+        this.isGrinding = compound.getBoolean("IsGrinding");
+        this.grindTime = compound.getInteger("GrindTime");
+        this.lastGrindTime = compound.getInteger("LastGrindTime");
     }
+
     @Override
     public int getSlots() {
         return inventory!=null?inventory.length:0;
@@ -170,25 +196,25 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         ItemStack tmp;
-        if(slot==1) return stack;
-        if(inventory[slot] == null){
-            if(!simulate) inventory[slot] = stack.copy();
+        if (slot == 1) return stack;
+        if (inventory[slot] == null) {
+            if (!simulate) inventory[slot] = stack.copy();
             return null;
         }
-        if(inventory[slot].isItemEqual(stack)){
-            if(inventory[slot].stackSize+stack.stackSize<=64 && inventory[slot].stackSize+stack.stackSize<=stack.getMaxStackSize()) {
-                if(!simulate) inventory[slot].stackSize += stack.stackSize;
+        if (inventory[slot].isItemEqual(stack)) {
+            if (inventory[slot].stackSize + stack.stackSize <= 64 && inventory[slot].stackSize + stack.stackSize <= stack.getMaxStackSize()) {
+                if (!simulate) inventory[slot].stackSize += stack.stackSize;
                 return null;
             }
             tmp = stack.copy();
             tmp.stackSize = stack.getMaxStackSize() - inventory[slot].stackSize - stack.stackSize;
-            if(!simulate) inventory[slot].stackSize = stack.getMaxStackSize();
+            if (!simulate) inventory[slot].stackSize = stack.getMaxStackSize();
             return tmp;
         }
-        if(simulate) return inventory[slot];
+        if (simulate) return inventory[slot];
         tmp = inventory[slot];
         inventory[slot] = stack;
-        if(isGrinding){ // If item are switched while grinding, grinding stops
+        if (isGrinding) { // If item are switched while grinding, grinding stops
             isGrinding = false;
             grindTime = 0;
         }
@@ -198,14 +224,23 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         ItemStack split;
-        if(inventory[slot]==null) return null;
-        if(amount>=inventory[slot].stackSize){
+        if (inventory[slot] == null) return null;
+        if (amount >= inventory[slot].stackSize) {
             split = inventory[slot];
-            if(!simulate) inventory[slot] = null;
+            if (!simulate) {
+                inventory[slot] = null;
+                if (slot == 0 && this.isGrinding) {
+                    this.isGrinding = false;
+                    this.grindTime = 0;
+                }
+            }
             return split;
         }
-        if(simulate) (split = inventory[slot].copy()).stackSize = amount;
-        else split = inventory[slot].splitStack(amount);
+        if (simulate) {
+            (split = inventory[slot].copy()).stackSize = amount;
+        } else {
+            split = inventory[slot].splitStack(amount);
+        }
         return split;
     }
 
@@ -231,17 +266,19 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
     public NBTTagCompound serializeNBT() {
         NBTTagCompound compound = new NBTTagCompound();
         NBTTagList list = new NBTTagList();
-        for(int i = 0; i<inventory.length; ++i)
-            if(inventory[i]!=null){
+        for (int i = 0; i < this.inventory.length; ++i) {
+            if (this.inventory[i] != null) {
                 NBTTagCompound comp = new NBTTagCompound();
                 comp.setInteger("Slot", i);
-                inventory[i].writeToNBT(comp);
+                this.inventory[i].writeToNBT(comp);
                 list.appendTag(comp);
             }
+        }
         compound.setTag("Inventory", list);
-        compound.setBoolean("IsGrinding", isGrinding);
-        compound.setInteger("GrindTime", grindTime);
-        compound.setTag("Container", container.serializeNBT());
+        compound.setBoolean("IsGrinding", this.isGrinding);
+        compound.setInteger("GrindTime", this.grindTime);
+        compound.setInteger("LastGrindTime", this.lastGrindTime);
+        compound.setTag("Container", this.container.serializeNBT());
 
         compound = super.writeToNBT(compound);
         return compound;
@@ -250,64 +287,138 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
     @Override
     public void deserializeNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
-        if(compound.hasKey("Container")) container.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
+        if (compound.hasKey("Container"))
+            this.container.deserializeNBT((NBTTagCompound) compound.getTag("Container"));
         NBTTagList list = compound.getTagList("Inventory", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
-        for(int i = 0; i<list.tagCount(); ++i){
+        for (int i = 0; i < list.tagCount(); ++i) {
             NBTTagCompound c = list.getCompoundTagAt(i);
             int slot = c.getInteger("Slot");
-            if(slot>=0 && slot < inventory.length) inventory[slot] = ItemStack.loadItemStackFromNBT(c);
+            if (slot >= 0 && slot < this.inventory.length)
+                this.inventory[slot] = ItemStack.loadItemStackFromNBT(c);
         }
-        isGrinding = compound.getBoolean("IsGrinding");
-        grindTime = compound.getInteger("GrindTime");
+        this.isGrinding = compound.getBoolean("IsGrinding");
+        this.grindTime = compound.getInteger("GrindTime");
+        this.lastGrindTime = compound.getInteger("LastGrindTime");
     }
 
-    private int syncTick = 0;
-
-    @SubscribeEvent
-    public void onEntityJoinEvent(EntityJoinWorldEvent event){
-        //NOP
-    }
+//    @SubscribeEvent
+//    public void onEntityJoinEvent(EntityJoinWorldEvent event){
+//        //NOP
+//    }
 
     @Override
     public void update() {
-        if(isGrinding){
-            if(grindTime==0){
-                ItemStack s = extractItem(0, 1, false);
-                if(s==null){ // Invalid state that for some reason can arise
-                    isGrinding = false;
-                    return;
+//        if (this.isGrinding) {
+//            if (this.grindTime == 0) {
+//                ItemStack s = extractItem(0, 1, false);
+//                if (s == null) { // Invalid state that for some reason can arise
+//                    // isGrinding = false;
+//                }
+//                else {
+//                    if (this.inventory[1] == null) {
+//                        this.inventory[1] = TeslaRegistry.teslaRegistry.getGrinderOutFromIn(s).copy();
+//                        this.inventory[1].stackSize = TeslaRegistry.teslaRegistry.getGrinderRecipeFromIn(s).getAmount();
+//                    } else {
+//                        this.inventory[1].stackSize += TeslaRegistry.teslaRegistry.getGrinderRecipeFromIn(s).getAmount();
+//                    }
+//                }
+//                this.isGrinding = false;
+//            }
+//            else if (container.getStoredPower() < DRAW_PER_TICK) {
+//                this.isGrinding = false;
+//                this.grindTime = 0;
+//            }
+//            else {
+//                this.container.takePower(DRAW_PER_TICK, false);
+//                --this.grindTime;
+//            }
+//        } else if (inventory[0] != null && TeslaRegistry.teslaRegistry.hasRecipe(inventory[0]) && (inventory[1] == null ||
+//                inventory[1].isItemEqual(TeslaRegistry.teslaRegistry.getGrinderOutFromIn(inventory[0]))) && container.getStoredPower() > 0 &&
+//                (inventory[1] == null || inventory[1].stackSize < 64)) {
+//            this.isGrinding = true;
+//            this.grindTime = this.lastGrindTime = DEFAULT_GRIND_TIME;
+//        }
+//
+//        if (this.syncTick == 10 && !this.worldObj.isRemote) {
+//            if (this.pos != null) {
+//                int dim = 0;
+//                for (int i : DimensionManager.getIDs())
+//                    if (DimensionManager.getWorld(i).equals(this.worldObj)) {
+//                        dim = i;
+//                        break;
+//                    }
+//                ModSquad.channel.sendToAll(new TileDataSync(this.pos, serializeNBT().toString(), dim));
+//            }
+//            this.syncTick = 0;
+//        } else if (this.syncTick < 10) {
+//            ++this.syncTick;
+//        }
+
+        if (this.isGrinding) {
+            if (this.grindTime <= 0) {
+                ItemStack input = this.extractItem(0, 1, true);
+                if ((input != null) && !this.worldObj.isRemote) { // we only do the actual smelting on server side
+                    ItemStack output = TeslaRegistry.teslaRegistry.getGrinderOutFromIn(input).copy();
+                    ItemStack target = this.getStackInSlot(1);
+                    boolean fail = false;
+                    if (target == null) {
+                        target = output;
+                    } else if (target.isItemEqual(output)) {
+                        target = target.copy();
+                        if ((target.stackSize + output.stackSize) <= target.getMaxStackSize()) {
+                            target.stackSize += output.stackSize;
+                        }
+                        else {
+                            fail = true;
+                        }
+                    } else {
+                        fail = true;
+                    }
+
+                    if (!fail) {
+                        this.extractItem(0, 1, false);
+                        this.setStackInSlot(1, target);
+                    }
                 }
-                if(inventory[1]==null){
-                    inventory[1] = TeslaRegistry.teslaRegistry.getGrinderOutFromIn(s).copy();
-                    inventory[1].stackSize = TeslaRegistry.teslaRegistry.getGrinderRecipeFromIn(s).getAmount();
-                }else inventory[1].stackSize+=TeslaRegistry.teslaRegistry.getGrinderRecipeFromIn(s).getAmount();
-                isGrinding = false;
+                this.isGrinding = false;
             }
-            if(container.getStoredPower()<DRAW_PER_TICK){
-                isGrinding = false;
-                grindTime = 0;
-                return;
+            if (this.container.getStoredPower() < DRAW_PER_TICK) {
+                this.isGrinding = false;
+                this.grindTime = 0;
+            } else {
+                this.container.takePower(DRAW_PER_TICK, false);
+                --this.grindTime;
             }
-            container.takePower(DRAW_PER_TICK, false);
-            --grindTime;
-        }else if(inventory[0]!=null && TeslaRegistry.teslaRegistry.hasRecipe(inventory[0]) && (inventory[1] == null ||
-                inventory[1].isItemEqual(TeslaRegistry.teslaRegistry.getGrinderOutFromIn(inventory[0]))) && container.getStoredPower()>0 &&
-                (inventory[1]==null || inventory[1].stackSize<64)){
-            isGrinding = true;
-            grindTime = DEFAULT_GRIND_TIME;
+        } else if (this.container.getStoredPower() >= DRAW_PER_TICK) {
+            ItemStack input = this.getStackInSlot(0);
+            if ((input != null) && (input.stackSize > 0)) {
+                input = input.copy();
+                input.stackSize = 1;
+                ItemStack output = TeslaRegistry.teslaRegistry.getGrinderOutFromIn(input).copy();
+                ItemStack target = this.getStackInSlot(1);
+                if ((output != null) && (output.stackSize > 0)
+                        && ((target == null) || (target.isItemEqual(output)))
+                        && (((target == null) ? 0 : target.stackSize) + output.stackSize <= output.getMaxStackSize())) {
+                    this.isGrinding = true;
+                    this.grindTime = this.lastGrindTime = DEFAULT_GRIND_TIME;
+                }
+            }
         }
-        if(syncTick==10 && !worldObj.isRemote){
-            if(pos!=null){
+
+        if (this.syncTick >= 10 && !this.worldObj.isRemote) {
+            if (this.pos != null) {
                 int dim = 0;
-                for(int i : DimensionManager.getIDs())
-                    if(DimensionManager.getWorld(i).equals(worldObj)) {
+                for (int i : DimensionManager.getIDs())
+                    if (DimensionManager.getWorld(i).equals(this.worldObj)) {
                         dim = i;
                         break;
                     }
-                ModSquad.channel.sendToAll(new TileDataSync(pos, serializeNBT().toString(), dim));
+                ModSquad.channel.sendToAll(new TileDataSync(this.pos, serializeNBT().toString(), dim));
             }
-            syncTick = 0;
-        }else if(syncTick<10) ++syncTick;
+            this.syncTick = 0;
+        } else if (this.syncTick < 10) {
+            ++this.syncTick;
+        }
     }
 
     @Override
@@ -323,5 +434,4 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
             e.printStackTrace();
         }
     }
-
 }

@@ -69,11 +69,11 @@ public class TileSolarPanel extends TileEntity implements net.minecraft.util.ITi
     }
     private int syncTick = 10;
 
-    @SuppressWarnings("unused")
-    @SubscribeEvent
-    public void onEntityJoinEvent(EntityJoinWorldEvent event){
-        //NOP
-    }
+//    @SuppressWarnings("unused")
+//    @SubscribeEvent
+//    public void onEntityJoinEvent(EntityJoinWorldEvent event){
+//        //NOP
+//    }
 
     @Override
     public void update() {

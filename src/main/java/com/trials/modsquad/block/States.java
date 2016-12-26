@@ -4,7 +4,6 @@ import net.minecraft.util.IStringSerializable;
 
 public class States {
     public enum ActiveState implements IStringSerializable {
-
         ACTIVE(true, "active"), INACTIVE(false, "inactive");
 
         private boolean state;

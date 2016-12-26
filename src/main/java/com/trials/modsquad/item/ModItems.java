@@ -29,6 +29,9 @@ public class ModItems {
     //Food
     public static Item breadSlice, toastSlice;
 
+    //Misc
+    public static Item gameInfo;
+
     public static void init(boolean electricPotatoBreakChance, int basePotatoBreakChance) {
         //Ingots
         ingotCopper = new ModIngot(Ref.IngotReference.COPPER.getUnlocalizedName(), Ref.IngotReference.COPPER.getRegistryName());
@@ -59,6 +62,9 @@ public class ModItems {
         //Food
         breadSlice = new ItemBread(Ref.BreadReference.BREAD_SLICE.getUnlocalizedName(), Ref.BreadReference.BREAD_SLICE.getRegisteryName());
         toastSlice = new ItemBread(Ref.BreadReference.TOAST_SLICE.getUnlocalizedName(), Ref.BreadReference.TOAST_SLICE.getRegisteryName());
+
+        //Misc
+        gameInfo = new ItemGameInfo(Ref.ItemReference.MOD_INFO.getUnlocalizedName(), Ref.ItemReference.MOD_INFO.getRegistryName());
 
     }
 
@@ -93,6 +99,10 @@ public class ModItems {
         GameRegistry.register(breadSlice);
         GameRegistry.register(toastSlice);
 
+        //Misc
+
+        GameRegistry.register(gameInfo);
+
     }
 
     public static void registerRenders() {
@@ -125,6 +135,9 @@ public class ModItems {
         //Food
         registerRender(breadSlice);
         registerRender(toastSlice);
+
+        //Misc
+        registerRender(gameInfo);
 
     }
 

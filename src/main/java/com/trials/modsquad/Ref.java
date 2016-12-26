@@ -4,6 +4,14 @@ import com.trials.modsquad.item.ModItems;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Ref {
 
     public static final int GUI_ID_GRINDER = 0;
@@ -22,7 +30,8 @@ public class Ref {
         ELECTRIC_BOOTS("electricBoots", "ItemElectricBoots"),
         TERRA_SMASHER("terraSmasher", "ItemTerraSmasher"),
         POWERED_POTATO("poweredPotato", "ItemPoweredPotato"),
-        JET_CHESTPLATE("jetChestplate", "ItemJetChestplate")
+        JET_CHESTPLATE("jetChestplate", "ItemJetChestplate"),
+        MOD_INFO("modInfo", "ItemModInfo")
         ;
 
         private String unlocalizedName, registryName;
@@ -138,6 +147,33 @@ public class Ref {
         public String getUnlocalizedName() { return unlocalizedName; }
         public String getRegisteryName() { return registeryName; }
 
+    }
+
+    public static String downloads = "";
+
+    public static void getDownloads() {
+        String content;
+        URLConnection connection;
+        try {
+            connection = new URL("https://minecraft.curseforge.com/projects/tesla-essentials?gameCategorySlug=mc-mods&projectID=248607").openConnection();
+            Scanner scanner = new Scanner(connection.getInputStream());
+            scanner.useDelimiter("\\Z");
+            content = scanner.next();
+            scanner.close();
+            // the pattern we want to search for
+            Pattern p = Pattern.compile("<div class=\"info-data\">(.+?)</div>", Pattern.MULTILINE);
+            Matcher m = p.matcher(content);
+            List<String> matches = new ArrayList<>();
+            // print all the matches that we find
+            while (m.find())
+            {
+                matches.add(m.group(1));
+            }
+            String downloads = matches.get(2);
+            Ref.downloads = downloads;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static final CreativeTabs tabModSquad = new CreativeTabs("modSquad") { @Override public Item getTabIconItem() { return ModItems.jetChestplate; } };

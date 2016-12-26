@@ -20,13 +20,13 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nullable;
 import static com.trials.modsquad.Ref.GUI_ID_FURNACE;
 
 @SuppressWarnings("deprecation")
 public class BlockElectricFurnace extends Block {
-
     public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
     public static final PropertyEnum<States.ActiveState> STATE = PropertyEnum.create("state", States.ActiveState.class);
 
@@ -41,7 +41,6 @@ public class BlockElectricFurnace extends Block {
         setDefaultState(blockState.getBaseState().withProperty(PROPERTYFACING, EnumFacing.NORTH).withProperty(STATE, States.ActiveState.INACTIVE));
     }
 
-
     @Override
     protected BlockStateContainer createBlockState(){ return new BlockStateContainer(this, PROPERTYFACING, STATE); }
 
@@ -54,21 +53,27 @@ public class BlockElectricFurnace extends Block {
      */
     @Override
     public int getMetaFromState(IBlockState state) {
-        int value = state.getProperties().get(STATE).equals(States.ActiveState.INACTIVE)?1<<2:0;
-        for(EnumFacing facing : EnumFacing.Plane.HORIZONTAL)
-            if(state.getProperties().get(PROPERTYFACING).equals(facing)) {
-                value = facing.ordinal();
-                break;
-            }
+        int value = 0;
+//        for (EnumFacing facing : EnumFacing.Plane.HORIZONTAL)
+//            if (state.getProperties().get(PROPERTYFACING).equals(facing)) {
+//                value = facing.ordinal();
+//                break;
+//            }
+        value = state.getValue(PROPERTYFACING).getIndex();
+        value = (value << 1) + (state.getProperties().get(STATE).equals(States.ActiveState.INACTIVE) ? 0 : 1);
         return value;
     }
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        int i = meta>>2;
+        int active = meta % 2;
+        EnumFacing facing = EnumFacing.getFront(meta >> 1);
+        if (facing.getAxis() == EnumFacing.Axis.Y) { facing = EnumFacing.NORTH; }
         try {
-            return getDefaultState().withProperty(PROPERTYFACING, EnumFacing.Plane.HORIZONTAL.facings()[meta - i]).withProperty(STATE, States.ActiveState.values()[i]);
-        }catch(Exception e){
+            return getDefaultState()
+                    .withProperty(PROPERTYFACING, facing)
+                    .withProperty(STATE, (active == 1) ? States.ActiveState.ACTIVE : States.ActiveState.INACTIVE);
+        } catch (Exception e) {
             return getDefaultState();
         }
     }
@@ -96,11 +101,12 @@ public class BlockElectricFurnace extends Block {
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) { // Drop item when block breaks
         TileEntity t = worldIn.getTileEntity(pos);
-        if(!(t instanceof IItemHandlerModifiable)) return;
-        IItemHandlerModifiable h = (IItemHandlerModifiable) t;
-        for(int i = 0; i<h.getSlots(); ++i) {
-            if(h.getStackInSlot(i)!=null && h.getStackInSlot(i).stackSize>0)
-                InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), h.getStackInSlot(i));
+        if (t instanceof IItemHandler) {
+            IItemHandler h = (IItemHandler) t;
+            for (int i = 0; i < h.getSlots(); ++i) {
+                if (h.getStackInSlot(i) != null && h.getStackInSlot(i).stackSize > 0)
+                    InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), h.getStackInSlot(i));
+            }
         }
         super.breakBlock(worldIn, pos, state);
     }

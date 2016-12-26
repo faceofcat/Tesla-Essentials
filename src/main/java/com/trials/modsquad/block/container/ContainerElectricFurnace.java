@@ -42,6 +42,7 @@ public class ContainerElectricFurnace extends Container {
         }
         return i;
     }
+
     @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
         return furnace.getDistanceSq(playerIn.posX+.5, playerIn.posY+.5, playerIn.posZ+.5)<64;

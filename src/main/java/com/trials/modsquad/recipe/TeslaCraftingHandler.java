@@ -52,7 +52,10 @@ public class TeslaCraftingHandler {
 
     private ItemStack getGrinderResult(int index)
     {
-        return grinderRecipeList.get(index).getOutput();
+        GrinderRecipe recipe = grinderRecipeList.get(index);
+        ItemStack stack = recipe.getOutput();
+        stack.stackSize = recipe.getAmount();
+        return stack;
     }
 
     private ItemStack getGrinderInput(int index)

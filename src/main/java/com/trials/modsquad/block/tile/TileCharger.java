@@ -163,11 +163,11 @@ public class TileCharger extends TileEntity implements IItemHandlerModifiable, I
     }
     private int syncTick = 0;
 
-    @SuppressWarnings("unused")
-    @SubscribeEvent
-    public void onEntityJoinEvent(EntityJoinWorldEvent event){
-        //NOP
-    }
+//    @SuppressWarnings("unused")
+//    @SubscribeEvent
+//    public void onEntityJoinEvent(EntityJoinWorldEvent event){
+//        //NOP
+//    }
 
     @Override
     public void update() {
