@@ -313,8 +313,8 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
             NBTTagCompound c = list.getCompoundTagAt(i);
             int slot = c.getInteger("Slot");
             if (slot >= 0 && slot < this.inventory.length) {
-                ItemStack stack = ItemStack.EMPTY.copy();
-                stack.deserializeNBT(c);
+                ItemStack stack = new ItemStack(c); // ItemStack.EMPTY.copy();
+                // stack.deserializeNBT(c);
                 this.inventory[slot] = stack;
             }
         }
@@ -379,11 +379,11 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
         if (this.isGrinding) {
             if (this.grindTime <= 0) {
                 ItemStack input = this.extractItem(0, 1, true);
-                if ((input != null) && !this.getWorld().isRemote) { // we only do the actual smelting on server side
+                if ((input != null) && !input.isEmpty() && !this.getWorld().isRemote) { // we only do the actual smelting on server side
                     ItemStack output = TeslaRegistry.teslaRegistry.getGrinderOutFromIn(input).copy();
                     ItemStack target = this.getStackInSlot(1);
                     boolean fail = false;
-                    if (target == null) {
+                    if ((target == null) || target.isEmpty()) {
                         target = output;
                     } else if (target.isItemEqual(output)) {
                         target = target.copy();
@@ -413,7 +413,7 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
             }
         } else if (this.container.getStoredPower() >= DRAW_PER_TICK) {
             ItemStack input = this.getStackInSlot(0);
-            if ((input != null) && (input.getCount() > 0)) {
+            if ((input != null) && !input.isEmpty()) {
                 input = input.copy();
                 input.setCount(1);
                 ItemStack output = TeslaRegistry.teslaRegistry.getGrinderOutFromIn(input);
@@ -421,8 +421,8 @@ public class TileGrinder extends TileEntity implements IItemHandlerModifiable, I
                     output = output.copy();
                 }
                 ItemStack target = this.getStackInSlot(1);
-                if ((output != null) && (output.getCount() > 0)
-                        && ((target == null) || (target.isItemEqual(output)))
+                if ((output != null) && !output.isEmpty()
+                        && ((target == null) || target.isEmpty() || (target.isItemEqual(output)))
                         && (((target == null) ? 0 : target.getCount()) + output.getCount() <= output.getMaxStackSize())) {
                     this.isGrinding = true;
                     this.grindTime = this.lastGrindTime = DEFAULT_GRIND_TIME;
