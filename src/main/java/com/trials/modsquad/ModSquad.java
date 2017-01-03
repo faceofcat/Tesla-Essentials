@@ -80,24 +80,38 @@ public class ModSquad
         //OreDictionary stuff
         //Ores
         OreDictionary.registerOre("oreCopper", ModBlocks.oreCopper);
+        OreDictionary.registerOre("ore_copper", ModBlocks.oreCopper);
         OreDictionary.registerOre("oreTin", ModBlocks.oreTin);
+        OreDictionary.registerOre("ore_tin", ModBlocks.oreTin);
         OreDictionary.registerOre("oreLead", ModBlocks.oreLead);
+        OreDictionary.registerOre("ore_lead", ModBlocks.oreLead);
 
         //Ingots
         OreDictionary.registerOre("ingotCopper", ModItems.ingotCopper);
+        OreDictionary.registerOre("ingot_copper", ModItems.ingotCopper);
         OreDictionary.registerOre("ingotTin", ModItems.ingotTin);
+        OreDictionary.registerOre("ingot_tin", ModItems.ingotTin);
         OreDictionary.registerOre("ingotLead", ModItems.ingotLead);
+        OreDictionary.registerOre("ingot_lead", ModItems.ingotLead);
 
         OreDictionary.registerOre("blockCopper", ModBlocks.blockCopper);
+        OreDictionary.registerOre("block_copper", ModBlocks.blockCopper);
         OreDictionary.registerOre("blockTin", ModBlocks.blockTin);
+        OreDictionary.registerOre("block_tin", ModBlocks.blockTin);
         OreDictionary.registerOre("blockLead", ModBlocks.blockLead);
+        OreDictionary.registerOre("block_lead", ModBlocks.blockLead);
 
         //Dusts
         OreDictionary.registerOre("dustCopper", ModItems.dustCopper);
+        OreDictionary.registerOre("dust_copper", ModItems.dustCopper);
         OreDictionary.registerOre("dustTin", ModItems.dustTin);
+        OreDictionary.registerOre("dust_tin", ModItems.dustTin);
         OreDictionary.registerOre("dustLead", ModItems.dustLead);
+        OreDictionary.registerOre("dust_lead", ModItems.dustLead);
         OreDictionary.registerOre("dustIron", ModItems.dustIron);
+        OreDictionary.registerOre("dust_iron", ModItems.dustIron);
         OreDictionary.registerOre("dustGold", ModItems.dustGold);
+        OreDictionary.registerOre("dust_gold", ModItems.dustGold);
 
         Ref.getDownloads();
     }
